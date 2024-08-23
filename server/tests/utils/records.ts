@@ -44,12 +44,12 @@ export const clearTables = async <
  * @param db Kysely database instance
  * @param tableName Name of the table
  */
-export const insertAll = <N extends keyof DB, T extends DatabaseTypes<N>>(
+export const insertAll = async <N extends keyof DB, T extends DatabaseTypes<N>>(
   db: Kysely<T>,
   tableName: N,
   records: Insertable<DB[N]> | Insertable<DB[N]>[]
 ) =>
-  db
+  await db
     .insertInto(tableName)
     .values(records as any)
     .returningAll()

@@ -2,18 +2,14 @@ import { createTestDatabase } from '@tests/utils/database'
 import t from '@server/trpc'
 import userRouter from '..'
 import { userRepository } from '@server/repositories/userRepository'
-import { clearTables } from '@tests/utils/records'
+import { wrapInRollbacks } from '@tests/utils/transactions'
 
-const db = createTestDatabase()
+const db = await wrapInRollbacks(createTestDatabase())
 
 const createCaller = t.createCallerFactory(userRouter)
 const { signup } = createCaller({ db })
 
 const { find_registered_user_by_email } = userRepository(db)
-
-afterEach(async () => {
-  await clearTables(db, ['registeredUsers'])
-})
 
 it('should save a user', async () => {
   const user = {

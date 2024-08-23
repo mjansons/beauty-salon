@@ -5,7 +5,7 @@ import {
   userKeysAll,
   userKeysPublic,
 } from '@server/schemas/registeredUser'
-import type { Insertable, Selectable } from 'kysely'
+import type { Insertable, Selectable, Updateable } from 'kysely'
 
 export function userRepository(db: Database) {
   return {
@@ -25,8 +25,33 @@ export function userRepository(db: Database) {
       return db
         .selectFrom('registeredUsers')
         .select(userKeysAll)
-        .where("email", "=", email)
+        .where('email', '=', email)
         .executeTakeFirst()
+    },
+
+    async find_registered_user_by_id(
+      id: number
+    ): Promise<Selectable<RegisteredUsers> | undefined> {
+      return db
+        .selectFrom('registeredUsers')
+        .select(userKeysAll)
+        .where('id', '=', id)
+        .executeTakeFirst()
+    },
+
+    async update_registered_user_row(
+      id: number,
+      row: string,
+      newValue: string
+    ): Promise<UserPublic | undefined> {
+      return db
+        .updateTable('registeredUsers')
+        .set({
+          [row]: newValue,
+        })
+        .where('id', '=', id)
+        .returning(userKeysPublic)
+        .executeTakeFirstOrThrow()
     },
   }
 }

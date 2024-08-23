@@ -1,13 +1,15 @@
 import t from '@server/trpc'
 import { createTestDatabase } from '@tests/utils/database'
 import userRouter from '..'
-import { clearTables } from '@tests/utils/records'
+import { wrapInRollbacks } from '@tests/utils/transactions'
+import { insertAll } from '@tests/utils/records'
 
-const db = createTestDatabase()
+const db = await wrapInRollbacks(createTestDatabase())
+
 const createCaller = t.createCallerFactory(userRouter)
-const { login, signup } = createCaller({ db })
+const { login } = createCaller({ db })
 
-const user = {
+const theuser = {
   email: 'someoneelse@test.com',
   firstName: 'user',
   lastName: 'surname',
@@ -15,17 +17,26 @@ const user = {
   phoneNumber: '12345678',
 }
 
-afterEach(async () => {
-  await clearTables(db, ['registeredUsers'])
+vi.mock('bcrypt', () => ({
+  default: {
+    compare: (currentPass: string, storedPass: string) => {
+      if(currentPass === "verystrongpasswordthatishashed"){
+        return true
+      }
+      false
+    },
+  },
+}))
+
+afterAll(async () => {
   vi.clearAllMocks()
 })
 
 it('returns a token if the password matches', async () => {
-  // await create_registered_user(user)
-  await signup(user)
+  await insertAll(db, "registeredUsers", theuser)
   const { accessToken } = await login({
-    email: user.email,
-    password: user.password,
+    email: theuser.email,
+    password: theuser.password,
   })
   console.log(accessToken)
 
@@ -34,7 +45,7 @@ it('returns a token if the password matches', async () => {
 })
 
 it('should throw an error for non-existant user', async () => {
-  await signup(user)
+  await insertAll(db, "registeredUsers", theuser)
   await expect(
     login({
       email: 'nonexisting@user.com',
@@ -44,51 +55,52 @@ it('should throw an error for non-existant user', async () => {
 })
 
 it('should throw an error for incorrect password', async () => {
-  await signup(user)
+  await insertAll(db, "registeredUsers", theuser)
   expect(
     login({
-      email: user.email,
+      email: theuser.email,
       password: 'password.123!',
     })
   ).rejects.toThrow(/password/i)
 })
 
 it('throws an error for invalid email', async () => {
-  await signup(user)
+  await insertAll(db, "registeredUsers", theuser)
+  // await signup(theuser)
   await expect(
     login({
       email: 'not-an-email',
-      password: user.password,
+      password: theuser.password,
     })
-  ).rejects.toThrow(/email/)
+  ).rejects.toThrow(/email/i)
 })
 
 it('throws an error for a short password', async () => {
-  await signup(user)
+  await insertAll(db, "registeredUsers", theuser)
   await expect(
     login({
-      email: user.email,
+      email: theuser.email,
       password: 'short',
     })
   ).rejects.toThrow(/password/)
 })
 
 it('allows logging in with different email case', async () => {
-  await signup(user)
+  await insertAll(db, "registeredUsers", theuser)
   await expect(
     login({
-      email: user.email.toUpperCase(),
-      password: user.password,
+      email: theuser.email.toUpperCase(),
+      password: theuser.password,
     })
   ).resolves.toEqual(expect.anything())
 })
 
 it('allows logging in with surrounding white space', async () => {
-  await signup(user)
+  await insertAll(db, "registeredUsers", theuser)
   await expect(
     login({
-      email: ` \t ${user.email}\t `, // tabs and spaces
-      password: user.password,
+      email: ` \t ${theuser.email}\t `, // tabs and spaces
+      password: theuser.password,
     })
   ).resolves.toEqual(expect.anything())
 })
