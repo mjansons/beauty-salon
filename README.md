@@ -62,6 +62,10 @@ npm run test: Runs the test suite.
 npm run lint: Lints the codebase using ESLint.
 npm run format: Formats the code using Prettier.
 
+## Frontend
+
+to be continued...
+
 #### License
 
 This project is licensed under the MIT License. For more details, see the LICENSE file.
