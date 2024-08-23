@@ -8,7 +8,7 @@ import { requestContext } from '@tests/utils/context'
 const db = await wrapInRollbacks(createTestDatabase())
 const createCaller = t.createCallerFactory(userRouter)
 
-it.todo('adds a speciality', async () => {
+it('adds a speciality', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -28,16 +28,16 @@ it.todo('adds a speciality', async () => {
     authUser: { id: createdUser.id },
   })
 
-  await validTokenCaller.addRoleToUser({ role: 'client' })
+  await validTokenCaller.addSpecialityToUser({ speciality: 'makeup' })
 
-  const [newEntry] = await selectAll(db, 'userRoles', (eb) =>
-    eb('registeredUserId', '=', createdUser.id)
+  const [newEntry] = await selectAll(db, 'specialists', (eb) =>
+    eb('specialistId', '=', createdUser.id)
   )
 
   expect(newEntry).toBeDefined()
 })
 
-it.todo('should throw an error for unauthenticated change', async () => {
+it('should throw an error for unauthenticated change', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -55,11 +55,11 @@ it.todo('should throw an error for unauthenticated change', async () => {
   )
 
   await expect(
-    unauthenticatedCaller.addRoleToUser({ role: 'client' })
+    unauthenticatedCaller.addSpecialityToUser({ speciality: 'makeup' })
   ).rejects.toThrow(/unauthenticated/i)
 })
 
-it.todo('should throw an error for invalid speciality type', async () => {
+it('should throw an error for invalid speciality type', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -80,11 +80,11 @@ it.todo('should throw an error for invalid speciality type', async () => {
   })
 
   await expect(
-    validTokenCaller.addRoleToUser({ role: 'invalidRole' })
+    validTokenCaller.addSpecialityToUser({ speciality: 'invalid_speciality' })
   ).rejects.toThrow(/invalid/i)
 })
 
-it.todo('should throw an error if speciality already added', async () => {
+it('should throw an error if speciality already added', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -104,9 +104,9 @@ it.todo('should throw an error if speciality already added', async () => {
     authUser: { id: createdUser.id },
   })
 
-  await validTokenCaller.addRoleToUser({ role: 'client' })
+  await validTokenCaller.addSpecialityToUser({ speciality: 'makeup' })
 
   await expect(
-    validTokenCaller.addRoleToUser({ role: 'client' })
+    validTokenCaller.addSpecialityToUser({ speciality: 'makeup' })
   ).rejects.toThrow(/duplicate/i)
 })
