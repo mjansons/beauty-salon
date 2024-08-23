@@ -1,15 +1,13 @@
 import { createTestDatabase } from '@tests/utils/database'
 import t from '@server/trpc'
 import userRouter from '..'
-import { userRepository } from '@server/repositories/userRepository'
 import { wrapInRollbacks } from '@tests/utils/transactions'
+import { selectAll } from '@tests/utils/records'
 
 const db = await wrapInRollbacks(createTestDatabase())
 
 const createCaller = t.createCallerFactory(userRouter)
 const { signup } = createCaller({ db })
-
-const { find_registered_user_by_email } = userRepository(db)
 
 it('should save a user', async () => {
   const user = {
@@ -21,10 +19,13 @@ it('should save a user', async () => {
   }
 
   await signup(user)
-  const registeredUser = await find_registered_user_by_email('email@test.com')
 
-  expect(registeredUser).toBeDefined()
-  expect(registeredUser).toMatchObject({
+  const [createdUser] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('email', '=', user.email)
+  )
+
+  expect(createdUser).toBeDefined()
+  expect(createdUser).toMatchObject({
     email: 'email@test.com',
     firstName: 'user',
     lastName: 'surname',
@@ -42,8 +43,12 @@ it('should hash the password', async () => {
   }
 
   await signup(user)
-  const registeredUser = await find_registered_user_by_email('email@test.com')
-  expect(registeredUser!.password.slice(0, 4)).toEqual('$2b$')
+
+  const [createdUser] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('email', '=', user.email)
+  )
+
+  expect(createdUser.password.slice(0, 4)).toEqual('$2b$')
 })
 
 it('throws an error for duplicate email', async () => {
@@ -94,9 +99,11 @@ it('stores lowercased email', async () => {
 
   await signup(user)
 
-  const registeredUser = await find_registered_user_by_email('email@test.com')
+  const [createdUser] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('email', '=', user.email.toLowerCase())
+  )
 
-  expect(registeredUser!.email).toEqual(user.email.toLocaleLowerCase())
+  expect(createdUser.email).toEqual(user.email.toLowerCase())
 })
 
 it('stores email with trimmed whitespace', async () => {
@@ -110,7 +117,9 @@ it('stores email with trimmed whitespace', async () => {
 
   await signup(user)
 
-  const registeredUser = await find_registered_user_by_email('email@test.com')
+  const [createdUser] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('email', '=', user.email.trim())
+  )
 
-  expect(registeredUser!.email).toEqual(user.email.trim())
+  expect(createdUser.email).toEqual(user.email.trim())
 })

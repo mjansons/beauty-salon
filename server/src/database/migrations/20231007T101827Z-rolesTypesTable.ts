@@ -8,6 +8,12 @@ export async function up(db: Kysely<any>) {
     )
     .addColumn('role', 'text', (c) => c.unique().notNull())
     .execute()
+
+  // Insert initial roles into the 'role_types' table
+  await db
+    .insertInto('role_types')
+    .values([{ role: 'client' }, { role: 'specialist' }, { role: 'owner' }])
+    .execute()
 }
 
 export async function down(db: Kysely<any>) {

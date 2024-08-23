@@ -1,9 +1,10 @@
 import type { Database } from '@server/database'
 import { userRepository } from './userRepository'
+import { roleRepository } from './roleRepository'
 
 export type RepositoryFactory = <T>(db: Database) => T
 
-const repositories = { userRepository }
+const repositories = { userRepository, roleRepository }
 
 export type RepositoriesFactories = typeof repositories
 export type Repositories = {

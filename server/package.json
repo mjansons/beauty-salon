@@ -19,7 +19,8 @@
     "test": "vitest",
     "test:safe": "vitest --no-file-parallelism --maxWorkers 1 --poolOptions.threads.useAtomics false --poolOptions.threads.isolate true",
     "typecheck": "tsc --noEmit",
-    "reset-test-db": "psql postgres://postgres:1234@localhost:5432/template1 -c 'DROP DATABASE IF EXISTS test_beauty_salons' -c 'CREATE DATABASE test_beauty_salons' && npm run migrate:latest"
+    "reset-test-db": "psql postgres://postgres:1234@localhost:5432/template1 -c 'DROP DATABASE IF EXISTS test_beauty_salons' -c 'CREATE DATABASE test_beauty_salons' && npm run migrate:latest",
+    "reset-db": "psql postgres://postgres:1234@localhost:5432/template1 -c 'DROP DATABASE IF EXISTS beauty_salons' -c 'CREATE DATABASE beauty_salons' && npm run migrate:latest"
   },
   "keywords": [],
   "author": "",

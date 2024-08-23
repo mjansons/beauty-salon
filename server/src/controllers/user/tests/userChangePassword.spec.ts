@@ -1,12 +1,12 @@
 import t from '@server/trpc'
 import { createTestDatabase } from '@tests/utils/database'
 import userRouter from '..'
-import { clearTables, insertAll, selectAll } from '@tests/utils/records'
+import { insertAll, selectAll } from '@tests/utils/records'
 import { wrapInRollbacks } from '@tests/utils/transactions'
+import { requestContext } from '@tests/utils/context'
 
 const db = await wrapInRollbacks(createTestDatabase())
 const createCaller = t.createCallerFactory(userRouter)
-const { login, signup } = createCaller({ db })
 
 it('changes the password to the new one, with authenticated user', async () => {
   const user = {
@@ -28,7 +28,7 @@ it('changes the password to the new one, with authenticated user', async () => {
     authUser: { id: createdUser.id },
   })
 
-  await validTokenCaller.resetPassword({
+  await validTokenCaller.changePassword({
     password: 'abracadabra',
   })
 
@@ -60,6 +60,28 @@ it('should throw an error for too short password', async () => {
   })
 
   await expect(
-    validTokenCaller.resetPassword({ password: 'arst' })
+    validTokenCaller.changePassword({ password: 'arst' })
   ).rejects.toThrow(/password/)
+})
+
+it('should throw an error for unauthorised password change', async () => {
+  const user = {
+    email: 'newusere@test.com',
+    firstName: 'user',
+    lastName: 'surname',
+    password: 'verystrongpasswordthatishashed',
+    phoneNumber: '12345678',
+  }
+
+  await insertAll(db, 'registeredUsers', user)
+
+  const unauthenticatedCaller = createCaller(
+    requestContext({
+      db,
+    })
+  )
+
+  await expect(
+    unauthenticatedCaller.changePassword({ password: 'arstarst' })
+  ).rejects.toThrow(/unauthenticated/i)
 })

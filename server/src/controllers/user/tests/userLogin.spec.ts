@@ -5,7 +5,6 @@ import { wrapInRollbacks } from '@tests/utils/transactions'
 import { insertAll } from '@tests/utils/records'
 
 const db = await wrapInRollbacks(createTestDatabase())
-
 const createCaller = t.createCallerFactory(userRouter)
 const { login } = createCaller({ db })
 
