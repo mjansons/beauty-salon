@@ -5,7 +5,7 @@ import {
   userKeysAll,
   userKeysPublic,
 } from '@server/schemas/registeredUser'
-import type { Insertable, Selectable, Updateable } from 'kysely'
+import type { Insertable, Selectable } from 'kysely'
 
 export function userRepository(db: Database) {
   return {
