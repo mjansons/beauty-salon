@@ -27,6 +27,6 @@ export type UserPublic = Pick<
   (typeof userKeysPublic)[number]
 >
 
-export const authUserSchema = registeredUserSchema.pick({ id: true })
+export const authUserSchema = registeredUserSchema.pick({ id: true, email: true, firstName: true, lastName: true, phoneNumber: true })
 
 export type AuthUser = z.infer<typeof authUserSchema>
