@@ -12,6 +12,7 @@ export async function up(db: Kysely<any>) {
     .addColumn('speciality_id', 'integer', (column) =>
       column.references('specialities.id').notNull()
     )
+    .addColumn('price', 'integer', (column) => column.notNull())
     .execute()
 }
 

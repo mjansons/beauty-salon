@@ -7,6 +7,14 @@ export type Generated<T> =
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
+export interface BusinessAvailability {
+  businessesId: number
+  dayOfWeek: number
+  endTime: string
+  id: Generated<number>
+  startTime: string
+}
+
 export interface Businesses {
   address: string
   city: string
@@ -22,18 +30,8 @@ export interface Businesses {
 export interface BusinessSpecialities {
   businessId: number
   id: Generated<number>
+  price: number
   specialityId: number
-}
-
-export interface RegisteredUserAppointments {
-  appointmentTime: Timestamp
-  businessId: number
-  clientId: number
-  createdAt: Generated<Timestamp>
-  id: Generated<number>
-  serviceId: number
-  specialistId: number
-  status: string
 }
 
 export interface RegisteredUsers {
@@ -51,6 +49,14 @@ export interface RoleTypes {
   role: string
 }
 
+export interface SpecialistAvailability {
+  dayOfWeek: number
+  endTime: string
+  id: Generated<number>
+  specialistId: number
+  startTime: string
+}
+
 export interface Specialists {
   createdAt: Generated<Timestamp>
   id: Generated<number>
@@ -63,24 +69,19 @@ export interface Specialities {
   speciality: string
 }
 
-export interface UnregisteredUserAppointments {
-  appointmentTime: Timestamp
+export interface UserAppointments {
+  appointmentEndTime: Timestamp
+  appointmentStartTime: Timestamp
   businessId: number
-  clientId: number
+  clientEmail: string
+  clientName: string
+  clientSurname: string
   createdAt: Generated<Timestamp>
   id: Generated<number>
+  phoneNumber: string
+  registeredClientId: number | null
   serviceId: number
   specialistId: number
-  status: string
-}
-
-export interface UnregisteredUsers {
-  createdAt: Generated<Timestamp>
-  email: string | null
-  firstName: string
-  id: Generated<number>
-  lastName: string
-  phoneNumber: string
 }
 
 export interface UserRoles {
@@ -89,14 +90,14 @@ export interface UserRoles {
 }
 
 export interface DB {
+  businessAvailability: BusinessAvailability
   businesses: Businesses
   businessSpecialities: BusinessSpecialities
-  registeredUserAppointments: RegisteredUserAppointments
   registeredUsers: RegisteredUsers
   roleTypes: RoleTypes
+  specialistAvailability: SpecialistAvailability
   specialists: Specialists
   specialities: Specialities
-  unregisteredUserAppointments: UnregisteredUserAppointments
-  unregisteredUsers: UnregisteredUsers
+  userAppointments: UserAppointments
   userRoles: UserRoles
 }
