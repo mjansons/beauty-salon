@@ -25,7 +25,13 @@ it('adds a new role', async () => {
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
   await validTokenCaller.addRoleToUser({ role: 'client' })
@@ -76,7 +82,13 @@ it('should throw an error for invalid role type', async () => {
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
   await expect(
@@ -101,7 +113,13 @@ it('should throw an error if role already added', async () => {
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
   await validTokenCaller.addRoleToUser({ role: 'client' })

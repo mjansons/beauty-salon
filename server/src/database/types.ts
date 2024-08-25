@@ -8,11 +8,18 @@ export type Generated<T> =
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
 export interface BusinessAvailability {
-  businessesId: number
-  dayOfWeek: number
-  endTime: string
   id: Generated<number>
+  businessId: number
+  dayOfWeek: number
   startTime: string
+  endTime: string
+}
+
+export interface BusinessEmployees {
+  businessId: number
+  createdAt: Generated<Timestamp>
+  employeeId: number
+  id: Generated<number>
 }
 
 export interface Businesses {
@@ -59,8 +66,7 @@ export interface SpecialistAvailability {
 
 export interface Specialists {
   createdAt: Generated<Timestamp>
-  id: Generated<number>
-  specialistId: number
+  registeredUserId: number
   specialityId: number
 }
 
@@ -73,14 +79,14 @@ export interface UserAppointments {
   appointmentEndTime: Timestamp
   appointmentStartTime: Timestamp
   businessId: number
-  clientEmail: string
-  clientName: string
-  clientSurname: string
+  businessSpecialityId: number
+  clientId: number | null
   createdAt: Generated<Timestamp>
+  email: string
+  firstName: string
   id: Generated<number>
+  lastName: string
   phoneNumber: string
-  registeredClientId: number | null
-  serviceId: number
   specialistId: number
 }
 
@@ -91,6 +97,7 @@ export interface UserRoles {
 
 export interface DB {
   businessAvailability: BusinessAvailability
+  businessEmployees: BusinessEmployees
   businesses: Businesses
   businessSpecialities: BusinessSpecialities
   registeredUsers: RegisteredUsers

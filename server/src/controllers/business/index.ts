@@ -1,6 +1,6 @@
 import t from '@server/trpc'
-import addPublicAppointment from './addPublicAppointment'
+import addRegisteredUserAppointment from './addRegisteredAppointment'
 
 export default t.router({
-    addPublicAppointment
+    addRegisteredUserAppointment
 })

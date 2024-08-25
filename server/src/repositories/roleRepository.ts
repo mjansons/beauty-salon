@@ -27,7 +27,7 @@ export function roleRepository(db: Database) {
         .where("registeredUserId", '=', userId)
         .execute();
 
-    },
+    }
   }
 }
 

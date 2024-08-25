@@ -52,19 +52,7 @@ export function userRepository(db: Database) {
         .where('id', '=', id)
         .returning(userKeysPublic)
         .executeTakeFirstOrThrow()
-    },
-
-    async add_role_to_user(
-      userId: number,
-      roleId: number
-    ): Promise<{ registeredUserId: number; roleId: number } | undefined> {
-      return db
-        .insertInto('userRoles')
-        .values({ registeredUserId: userId, roleId: roleId })
-        .returning(['registeredUserId', 'roleId'])
-        .executeTakeFirstOrThrow()
-    },
-
+    }
   }
 }
 

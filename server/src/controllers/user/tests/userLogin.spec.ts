@@ -37,7 +37,6 @@ it('returns a token if the password matches', async () => {
     email: theuser.email,
     password: theuser.password,
   })
-  console.log(accessToken)
 
   expect(accessToken).toEqual(expect.any(String))
   expect(accessToken.slice(0, 3)).toEqual('eyJ')

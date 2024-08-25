@@ -25,13 +25,19 @@ it('adds a speciality', async () => {
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
   await validTokenCaller.addSpecialityToUser({ speciality: 'makeup' })
 
   const [newEntry] = await selectAll(db, 'specialists', (eb) =>
-    eb('specialistId', '=', createdUser.id)
+    eb('registeredUserId', '=', createdUser.id)
   )
 
   expect(newEntry).toBeDefined()
@@ -76,7 +82,13 @@ it('should throw an error for invalid speciality type', async () => {
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
   await expect(
@@ -101,7 +113,13 @@ it('should throw an error if speciality already added', async () => {
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
   await validTokenCaller.addSpecialityToUser({ speciality: 'makeup' })

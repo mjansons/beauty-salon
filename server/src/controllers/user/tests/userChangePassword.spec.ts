@@ -25,7 +25,13 @@ it('changes the password to the new one, with authenticated user', async () => {
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
   await validTokenCaller.changePassword({
@@ -56,7 +62,13 @@ it('should throw an error for too short password', async () => {
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
   await expect(
