@@ -8,11 +8,11 @@ export type Generated<T> =
 export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
 export interface BusinessAvailability {
-  id: Generated<number>
   businessId: number
   dayOfWeek: number
-  startTime: string
   endTime: string
+  id: Generated<number>
+  startTime: string
 }
 
 export interface BusinessEmployees {

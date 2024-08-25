@@ -14,6 +14,7 @@ export async function up(db: Kysely<any>) {
     )
     .addColumn('start_time', 'time', (col) => col.notNull())
     .addColumn('end_time', 'time', (col) => col.notNull())
+    .addUniqueConstraint('business_availability_unique', ['business_id', 'day_of_week'])
     .execute()
 }
 

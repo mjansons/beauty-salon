@@ -1,4 +1,6 @@
 import type { Database } from '@server/database'
+import { type UserAppointments } from '@server/database'
+import { type Selectable } from 'kysely'
 
 export function businessRepository(db: Database) {
   return {
@@ -17,12 +19,14 @@ export function businessRepository(db: Database) {
         .execute()
     },
 
-    async get_business_working_hours_by_id(businessId: number): Promise<
-      { id: number,
-        businessId: number,
-        dayOfWeek: number,
-        startTime: string,
-        endTime: string}[]
+    async get_business_availability_by_id(businessId: number): Promise<
+      {
+        id: number
+        businessId: number
+        dayOfWeek: number
+        startTime: string
+        endTime: string
+      }[]
     > {
       return db
         .selectFrom('businessAvailability')
@@ -31,8 +35,69 @@ export function businessRepository(db: Database) {
         .execute()
     },
 
+    async get_specialist_availability_by_id(specialistId: number): Promise<
+      {
+        id: number
+        specialistId: number
+        dayOfWeek: number
+        startTime: string
+        endTime: string
+      }[]
+    > {
+      return db
+        .selectFrom('specialistAvailability')
+        .selectAll()
+        .where('specialistId', '=', specialistId)
+        .execute()
+    },
 
+    async get_specialist_appointments_by_time(
+      specialistId: number,
+      startTime: Date,
+      endTime: Date
+    ): Promise<Selectable<UserAppointments>[]> {
+      const appointments = await db
+        .selectFrom('userAppointments')
+        .selectAll()
+        .where('specialistId', '=', specialistId)
+        .where('appointmentStartTime', '>=', startTime)
+        .where('appointmentEndTime', '<=', endTime)
+        .execute()
 
+      return appointments
+    },
+
+    async add_appointment(
+      clientId: number | null,
+      firstName: string,
+      lastName: string,
+      email: string,
+      phoneNumber: string,
+      businessId: number,
+      businessSpecialityId: number,
+      specialistId: number,
+      appointmentStartTime: Date,
+      appointmentEndTime: Date,
+    ): Promise<Selectable<UserAppointments>[]> {
+      const appointments = await db
+        .insertInto('userAppointments')
+        .values({
+          appointmentEndTime: appointmentEndTime,
+          appointmentStartTime: appointmentStartTime,
+          businessId: businessId,
+          businessSpecialityId: businessSpecialityId,
+          clientId: clientId,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          phoneNumber: phoneNumber,
+          specialistId: specialistId,
+        })
+        .returningAll()
+        .execute()
+
+      return appointments
+    },
   }
 }
 

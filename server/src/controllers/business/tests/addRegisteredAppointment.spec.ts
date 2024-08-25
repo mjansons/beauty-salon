@@ -4,7 +4,12 @@ import businessRouter from '..'
 import { insertAll, selectAll, clearTables } from '@tests/utils/records'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { requestContext } from '@tests/utils/context'
-import { getFutureTimestamp, addHoursToDate } from '@tests/utils/timestamps'
+import {
+  getFutureTimestamp,
+  addHoursToDate,
+  getNextWeekDayAtHour,
+} from '@tests/utils/timestamps'
+import { businessRepository } from '@server/repositories/businessReporitory'
 
 const db = await wrapInRollbacks(createTestDatabase())
 const createCaller = t.createCallerFactory(businessRouter)
@@ -81,7 +86,7 @@ beforeAll(async () => {
   })
 })
 
-it.todo('adds a new appointment', async () => {
+it('adds a new appointment', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -90,7 +95,7 @@ it.todo('adds a new appointment', async () => {
     phoneNumber: '12345678',
   }
   const [createdUser] = await insertAll(db, 'registeredUsers', user)
-  const futureTimestamp = getFutureTimestamp(1, 14)
+  const futureTimestamp = getFutureTimestamp(7, 14)
   const futureTimestampPlus1h = addHoursToDate(futureTimestamp, 1)
 
   const validTokenCaller = createCaller({
@@ -291,7 +296,7 @@ it('throw error if the specialist is not specialised', async () => {
   ).rejects.toThrow(/specialist/i)
 })
 
-it.todo('throw error if not within business working hours', async () => {
+it('throw error if not within business working days', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -299,26 +304,45 @@ it.todo('throw error if not within business working hours', async () => {
     password: 'verystrongpasswordthatishashed',
     phoneNumber: '12345678',
   }
-
-  await insertAll(db, 'registeredUsers', user)
-
-  const [createdUser] = await selectAll(db, 'registeredUsers', (eb) =>
-    eb('email', '=', user.email)
-  )
+  const [createdUser] = await insertAll(db, 'registeredUsers', user)
+  const nextWeekMonday = getNextWeekDayAtHour(1, 14)
+  const futureTimestampPlus1h = addHoursToDate(nextWeekMonday, 1)
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
-  await validTokenCaller.addRoleToUser({ role: 'client' })
+  const [business] = await selectAll(db, 'businesses', (eb) =>
+    eb('name', '=', 'the place')
+  )
+
+  const [speciality] = await selectAll(db, 'businessSpecialities', (eb) =>
+    eb('businessId', '=', business.id)
+  )
+
+  const [specialist] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('firstName', '=', 'user2')
+  )
 
   await expect(
-    validTokenCaller.addRoleToUser({ role: 'client' })
-  ).rejects.toThrow(/duplicate/i)
+    validTokenCaller.addRegisteredUserAppointment({
+      businessId: business.id,
+      businessSpecialityId: speciality.id,
+      specialistId: specialist.id,
+      appointmentStartTime: nextWeekMonday,
+      appointmentEndTime: futureTimestampPlus1h,
+    })
+  ).rejects.toThrow(/day/i)
 })
 
-it.todo('throw error if not within specialists working hours', async () => {
+it('throw error if not within business working hours', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -326,23 +350,145 @@ it.todo('throw error if not within specialists working hours', async () => {
     password: 'verystrongpasswordthatishashed',
     phoneNumber: '12345678',
   }
-
-  await insertAll(db, 'registeredUsers', user)
-
-  const [createdUser] = await selectAll(db, 'registeredUsers', (eb) =>
-    eb('email', '=', user.email)
-  )
+  const [createdUser] = await insertAll(db, 'registeredUsers', user)
+  const nextWeekMonday = getNextWeekDayAtHour(0, 1)
+  const futureTimestampPlus1h = addHoursToDate(nextWeekMonday, 1)
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
-  await validTokenCaller.addRoleToUser({ role: 'client' })
+  const [business] = await selectAll(db, 'businesses', (eb) =>
+    eb('name', '=', 'the place')
+  )
+
+  const [speciality] = await selectAll(db, 'businessSpecialities', (eb) =>
+    eb('businessId', '=', business.id)
+  )
+
+  const [specialist] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('firstName', '=', 'user2')
+  )
 
   await expect(
-    validTokenCaller.addRoleToUser({ role: 'client' })
-  ).rejects.toThrow(/duplicate/i)
+    validTokenCaller.addRegisteredUserAppointment({
+      businessId: business.id,
+      businessSpecialityId: speciality.id,
+      specialistId: specialist.id,
+      appointmentStartTime: nextWeekMonday,
+      appointmentEndTime: futureTimestampPlus1h,
+    })
+  ).rejects.toThrow(/hour/i)
+})
+
+it('throw error if not within specialists working days', async () => {
+  const user = {
+    email: 'newusere@test.com',
+    firstName: 'user',
+    lastName: 'surname',
+    password: 'verystrongpasswordthatishashed',
+    phoneNumber: '12345678',
+  }
+  const [createdUser] = await insertAll(db, 'registeredUsers', user)
+  const nextWeekMonday = getNextWeekDayAtHour(1, 14)
+  const futureTimestampPlus1h = addHoursToDate(nextWeekMonday, 1)
+
+  const validTokenCaller = createCaller({
+    db,
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
+  })
+
+  const [business] = await selectAll(db, 'businesses', (eb) =>
+    eb('name', '=', 'the place')
+  )
+
+  const [speciality] = await selectAll(db, 'businessSpecialities', (eb) =>
+    eb('businessId', '=', business.id)
+  )
+
+  const [specialist] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('firstName', '=', 'user2')
+  )
+
+  await clearTables(db, ['specialistAvailability'])
+
+  await expect(
+    validTokenCaller.addRegisteredUserAppointment({
+      businessId: business.id,
+      businessSpecialityId: speciality.id,
+      specialistId: specialist.id,
+      appointmentStartTime: nextWeekMonday,
+      appointmentEndTime: futureTimestampPlus1h,
+    })
+  ).rejects.toThrow(/day/i)
+})
+
+it('throw error if not within specialists working hours', async () => {
+  const user = {
+    email: 'newusere@test.com',
+    firstName: 'user',
+    lastName: 'surname',
+    password: 'verystrongpasswordthatishashed',
+    phoneNumber: '12345678',
+  }
+  const [createdUser] = await insertAll(db, 'registeredUsers', user)
+  const nextWeekMonday = getNextWeekDayAtHour(0, 1)
+  const futureTimestampPlus1h = addHoursToDate(nextWeekMonday, 1)
+
+  const validTokenCaller = createCaller({
+    db,
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
+  })
+
+  const [business] = await selectAll(db, 'businesses', (eb) =>
+    eb('name', '=', 'the place')
+  )
+
+  const [speciality] = await selectAll(db, 'businessSpecialities', (eb) =>
+    eb('businessId', '=', business.id)
+  )
+
+  const [specialist] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('firstName', '=', 'user2')
+  )
+
+  await clearTables(db, ['specialistAvailability'])
+
+  await insertAll(db, 'specialistAvailability', {
+    specialistId: createdUser.id,
+    dayOfWeek: 0,
+    startTime: '08:00:00.000Z',
+    endTime: '09:00:00.000Z',
+  })
+
+  await expect(
+    validTokenCaller.addRegisteredUserAppointment({
+      businessId: business.id,
+      businessSpecialityId: speciality.id,
+      specialistId: specialist.id,
+      appointmentStartTime: nextWeekMonday,
+      appointmentEndTime: futureTimestampPlus1h,
+    })
+  ).rejects.toThrow(/hour/i)
 })
 
 it('throw error if booking for a past date', async () => {
@@ -390,7 +536,7 @@ it('throw error if booking for a past date', async () => {
   ).rejects.toThrow(/appointment/i)
 })
 
-it.todo('throw error if overlaps with specialists appointments', async () => {
+it('throw error if overlaps with specialists appointments', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -398,48 +544,137 @@ it.todo('throw error if overlaps with specialists appointments', async () => {
     password: 'verystrongpasswordthatishashed',
     phoneNumber: '12345678',
   }
-
-  await insertAll(db, 'registeredUsers', user)
-
-  const [createdUser] = await selectAll(db, 'registeredUsers', (eb) =>
-    eb('email', '=', user.email)
-  )
+  const [createdUser] = await insertAll(db, 'registeredUsers', user)
+  const futureTimestamp = getFutureTimestamp(7, 14)
+  const futureTimestampPlus1h = addHoursToDate(futureTimestamp, 1)
 
   const validTokenCaller = createCaller({
     db,
-    authUser: { id: createdUser.id },
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
   })
 
-  await validTokenCaller.addRoleToUser({ role: 'client' })
-
-  await expect(
-    validTokenCaller.addRoleToUser({ role: 'client' })
-  ).rejects.toThrow(/duplicate/i)
-})
-
-it('prints stuff for me', async () => {
-  const user2 = {
-    email: 'anotherone@test.com',
-    firstName: 'user2',
-    lastName: 'surname2',
-    password: 'verystrongpasswordthatishashed',
-    phoneNumber: '12345678910',
-  }
-  const [createdUser2] = await selectAll(db, 'registeredUsers', (eb) =>
-    eb('email', '=', user2.email)
+  const [business] = await selectAll(db, 'businesses', (eb) =>
+    eb('name', '=', 'the place')
   )
 
-  // console.log(createdUser2)
+  const [speciality] = await selectAll(db, 'businessSpecialities', (eb) =>
+    eb('businessId', '=', business.id)
+  )
 
-  // Example: Get a timestamp 1 day ahead of now
-  const futureTimestamp = getFutureTimestamp(1, 14)
-  // console.log(futureTimestamp)
+  const [specialist] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('firstName', '=', 'user2')
+  )
 
+  // add appointment for this user:
+
+  await insertAll(db, 'userAppointments', {
+    clientId: createdUser.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+
+    appointmentStartTime: futureTimestamp,
+    appointmentEndTime: futureTimestampPlus1h,
+    businessId: business.id,
+    businessSpecialityId: speciality.id,
+    specialistId: specialist.id,
+  })
+
+  await expect(
+    validTokenCaller.addRegisteredUserAppointment({
+      businessId: business.id,
+      businessSpecialityId: speciality.id,
+      specialistId: specialist.id,
+      appointmentStartTime: futureTimestamp,
+      appointmentEndTime: futureTimestampPlus1h,
+    })
+  ).rejects.toThrow(/booked/i)
+})
+
+it.todo('more printing', async () => {
+  const user = {
+    email: 'newusere@test.com',
+    firstName: 'user',
+    lastName: 'surname',
+    password: 'verystrongpasswordthatishashed',
+    phoneNumber: '12345678',
+  }
+  const [createdUser] = await insertAll(db, 'registeredUsers', user)
+  const futureTimestamp = getFutureTimestamp(7, 14)
   const futureTimestampPlus1h = addHoursToDate(futureTimestamp, 1)
-  // console.log(futureTimestampPlus1h)
-  // 2024-08-25T13:17:48.541Z
 
-  const [hours] = await selectAll(db, 'businessAvailability')
+  const validTokenCaller = createCaller({
+    db,
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
+  })
 
-  console.log(hours)
+  const [business] = await selectAll(db, 'businesses', (eb) =>
+    eb('name', '=', 'the place')
+  )
+
+  const [speciality] = await selectAll(db, 'businessSpecialities', (eb) =>
+    eb('businessId', '=', business.id)
+  )
+
+  const [specialist] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('firstName', '=', 'user2')
+  )
+
+  // add appointment for this user:
+
+  const appointments = await insertAll(db, 'userAppointments', {
+    clientId: createdUser.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    appointmentStartTime: futureTimestamp,
+    appointmentEndTime: futureTimestampPlus1h,
+    businessId: business.id,
+    businessSpecialityId: speciality.id,
+    specialistId: specialist.id,
+  })
+
+  console.log(appointments)
+
+  const repo = businessRepository(db)
+
+  const res = await repo.get_specialist_appointments_by_time(
+    specialist.id,
+    futureTimestamp,
+    futureTimestampPlus1h
+  )
+
+  console.log(res)
+  // validTokenCaller.addRegisteredUserAppointment({
+  //   businessId: business.id,
+  //   businessSpecialityId: speciality.id,
+  //   specialistId: specialist.id,
+  //   appointmentStartTime: futureTimestamp,
+  //   appointmentEndTime: futureTimestampPlus1h,
+  // })
+  // const more = await selectAll(db, 'userAppointments')
+  // console.log(more)
+
+  // await expect(validTokenCaller.addRegisteredUserAppointment({
+  //   businessId: business.id,
+  //   businessSpecialityId: speciality.id,
+  //   specialistId: specialist.id,
+  //   appointmentStartTime: futureTimestamp,
+  //   appointmentEndTime: futureTimestampPlus1h,
+  // })
+  // ).rejects.toThrow(/booked/i)
 })

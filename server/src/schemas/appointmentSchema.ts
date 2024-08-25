@@ -4,18 +4,20 @@ import { idSchema } from './shared'
 
 export const userAppointmentsSchema = z.object({
   id: idSchema,
+  clientId: idSchema,
+  businessId: idSchema,
+  specialistId: idSchema,
+  businessSpecialityId: idSchema,
   appointmentStartTime: z.date(),
   appointmentEndTime: z.date(),
-  businessId: idSchema,
-  email: z.string().trim().toLowerCase().email(),
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
-  createdAt: z.date(),
+  email: z.string().trim().toLowerCase().email(),
   phoneNumber: z.string().min(8).max(15),
-  registeredClientId: idSchema,
-  businessSpecialityId: idSchema,
-  specialistId: idSchema,
+  createdAt: z.date(),
 })
+
+export type Appointments = z.infer<typeof userAppointmentsSchema>
 
 export const appointmentKeysAll = Object.keys(
   userAppointmentsSchema.shape
