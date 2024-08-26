@@ -124,7 +124,7 @@ it('should throw an error if speciality already added', async () => {
 
   await validTokenCaller.addSpecialityToUser({ speciality: 'makeup' })
 
-  await expect(
-    validTokenCaller.addSpecialityToUser({ speciality: 'makeup' })
-  ).rejects.toThrow(/duplicate/i)
+  expect(
+    await validTokenCaller.addSpecialityToUser({ speciality: 'makeup' })
+  ).toMatchObject({ message: 'User already has this speciality assigned.' })
 })

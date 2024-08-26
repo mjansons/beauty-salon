@@ -4,6 +4,7 @@ import config from '@server/config'
 import { TRPCError } from '@trpc/server'
 import provideRepos from '@server/trpc/provideRepos'
 import { userRepository } from '@server/repositories/userRepository'
+import { roleRepository } from '@server/repositories/roleRepository'
 import { assertError } from '@server/utils/errors'
 import { registeredUserSchema } from '@server/schemas/registeredUser'
 
@@ -11,6 +12,7 @@ export default t.procedure
   .use(
     provideRepos({
       userRepository,
+      roleRepository
     })
   )
   .input(
@@ -47,6 +49,16 @@ export default t.procedure
         }
         throw error
       })
+
+    try {
+      await repositories.roleRepository.add_role_to_user(userCreated.id, 1)
+    } catch(error) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Failed to assign client role to the user.',
+        cause: error,
+      })
+    }
 
     return {
       id: userCreated.id,

@@ -12,7 +12,7 @@ export default authenticatedProcedure
       specialityRepository,
     })
   )
-  .input(z.object({ speciality: z.string().max(50) }))
+  .input(z.object({ speciality: z.string().trim().toLowerCase().max(50) }))
   .mutation(
     async ({ input: { speciality }, ctx: { repositories, authUser } }) => {
       // check if that is a real speciality
@@ -40,10 +40,7 @@ export default authenticatedProcedure
       )
 
       if (foundUserSpeciality !== undefined) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: `Duplicate. User already has this speciality assigned.`,
-        })
+        return { message: 'User already has this speciality assigned.' }
       }
 
       try {

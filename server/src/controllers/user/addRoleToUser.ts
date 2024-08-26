@@ -12,7 +12,7 @@ export default authenticatedProcedure
       roleRepository,
     })
   )
-  .input(z.object({ role: z.string().max(20) }))
+  .input(z.object({ role: z.string().trim().toLowerCase().max(20) }))
   .mutation(async ({ input: { role }, ctx: { repositories, authUser } }) => {
     // check if that is a real role
     const roles = await repositories.roleRepository.get_role_types()
@@ -34,10 +34,7 @@ export default authenticatedProcedure
     const foundUserRole = userRoles.find((r) => r.roleId === foundRoleType.id)
 
     if (foundUserRole !== undefined) {
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: `Duplicate. User already has this role assigned.`,
-      })
+      return { message: 'Role already assigned' }
     }
 
     try {

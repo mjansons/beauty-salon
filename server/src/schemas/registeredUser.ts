@@ -10,8 +10,8 @@ export const registeredUserSchema = z.object({
     .string()
     .min(8, 'Password must be at least 8 characters long')
     .max(64, 'Password must be at most 64 characters long'),
-  firstName: z.string().min(1).max(100),
-  lastName: z.string().min(1).max(100),
+  firstName: z.string().trim().toLowerCase().min(1).max(100),
+  lastName: z.string().trim().toLowerCase().min(1).max(100),
   phoneNumber: z.string().min(8).max(15),
   createdAt: z.date(),
 })

@@ -57,11 +57,11 @@ export interface RoleTypes {
 }
 
 export interface SpecialistAvailability {
+  dayOfWeek: number
+  endTime: string
   id: Generated<number>
   specialistId: number
-  dayOfWeek: number
   startTime: string
-  endTime: string
 }
 
 export interface Specialists {

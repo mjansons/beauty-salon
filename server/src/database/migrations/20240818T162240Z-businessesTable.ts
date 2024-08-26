@@ -6,7 +6,7 @@ export async function up(db: Kysely<any>) {
     .addColumn('id', 'integer', (column) =>
       column.primaryKey().generatedAlwaysAsIdentity()
     )
-    .addColumn('name', 'text', (column) => column.notNull())
+    .addColumn('name', 'text', (column) => column.notNull().unique())
     .addColumn('owner_id', 'integer', (column) =>
       column.references('registered_users.id').notNull()
     )

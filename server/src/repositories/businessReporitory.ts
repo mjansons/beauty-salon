@@ -1,6 +1,7 @@
 import type { Database } from '@server/database'
 import { type UserAppointments } from '@server/database'
 import { type Selectable } from 'kysely'
+import { type BusinessSchema } from '@server/schemas/businessSchema'
 
 export function businessRepository(db: Database) {
   return {
@@ -97,6 +98,30 @@ export function businessRepository(db: Database) {
         .execute()
 
       return appointments
+    },
+
+    async add_business(
+      name: string,
+      ownerId: number,
+      city: string,
+      address: string,
+      postalCode: string,
+      email: string,
+      phoneNumber: string
+    ): Promise<BusinessSchema[]> {
+      return await db
+        .insertInto('businesses')
+        .values({
+          name: name,
+          ownerId: ownerId,
+          city: city,
+          address: address,
+          postalCode: postalCode,
+          email: email,
+          phoneNumber: phoneNumber,
+        })
+        .returningAll()
+        .execute()
     },
   }
 }

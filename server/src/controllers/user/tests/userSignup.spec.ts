@@ -51,6 +51,18 @@ it('should hash the password', async () => {
   expect(createdUser.password.slice(0, 4)).toEqual('$2b$')
 })
 
+// it('throws error when it fails to assign role', async () => {
+//   const user = {
+//     email: 'email@test.com',
+//     firstName: 'user',
+//     lastName: 'surname',
+//     password: 'verystrongpassword',
+//     phoneNumber: '12345678',
+//   }
+
+//   await expect(signup(user)).rejects.toThrow(/role/i)
+// })
+
 it('throws an error for duplicate email', async () => {
   const user = {
     email: 'email@test.com',

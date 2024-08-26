@@ -96,7 +96,7 @@ it('should throw an error for invalid role type', async () => {
   ).rejects.toThrow(/invalid/i)
 })
 
-it('should throw an error if role already added', async () => {
+it('should return if role already added', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -124,7 +124,7 @@ it('should throw an error if role already added', async () => {
 
   await validTokenCaller.addRoleToUser({ role: 'client' })
 
-  await expect(
+  expect( await
     validTokenCaller.addRoleToUser({ role: 'client' })
-  ).rejects.toThrow(/duplicate/i)
+  ).toMatchObject({ message: 'Role already assigned' })
 })

@@ -76,7 +76,7 @@ beforeAll(async () => {
     endTime: '21:00:00.000Z',
   })
 
-  // decleare specialist schedule
+  // declare specialist schedule
   await insertAll(db, 'specialistAvailability', {
     specialistId: createdUser2.id,
     dayOfWeek: 0,
