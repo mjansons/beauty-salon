@@ -14,7 +14,10 @@ export async function up(db: Kysely<any>) {
     )
     .addColumn('start_time', 'time', (col) => col.notNull())
     .addColumn('end_time', 'time', (col) => col.notNull())
-    .addUniqueConstraint('specialist_availability_unique', ['specialist_id', 'day_of_week'])
+    .addUniqueConstraint('specialist_availability_unique', [
+      'specialist_id',
+      'day_of_week',
+    ])
     .execute()
 }
 

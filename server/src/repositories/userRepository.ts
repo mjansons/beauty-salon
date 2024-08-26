@@ -52,7 +52,7 @@ export function userRepository(db: Database) {
         .where('id', '=', id)
         .returning(userKeysPublic)
         .executeTakeFirstOrThrow()
-    }
+    },
   }
 }
 

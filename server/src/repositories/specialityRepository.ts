@@ -41,7 +41,8 @@ export function specialityRepository(db: Database) {
     async get_business_specality_by_id(
       businessSpecialityId: number
     ): Promise<
-      { id: number; businessId: number; price: number; specialityId: number } | undefined
+      | { id: number; businessId: number; price: number; specialityId: number }
+      | undefined
     > {
       return db
         .selectFrom('businessSpecialities')

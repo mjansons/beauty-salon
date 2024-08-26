@@ -10,5 +10,5 @@ export default t.router({
   signup,
   changePassword,
   addRoleToUser,
-  addSpecialityToUser
+  addSpecialityToUser,
 })

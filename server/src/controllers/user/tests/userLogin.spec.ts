@@ -19,7 +19,7 @@ const theuser = {
 vi.mock('bcrypt', () => ({
   default: {
     compare: (currentPass: string, storedPass: string) => {
-      if(currentPass === "verystrongpasswordthatishashed"){
+      if (currentPass === 'verystrongpasswordthatishashed') {
         return true
       }
       false
@@ -32,7 +32,7 @@ afterAll(async () => {
 })
 
 it('returns a token if the password matches', async () => {
-  await insertAll(db, "registeredUsers", theuser)
+  await insertAll(db, 'registeredUsers', theuser)
   const { accessToken } = await login({
     email: theuser.email,
     password: theuser.password,
@@ -43,7 +43,7 @@ it('returns a token if the password matches', async () => {
 })
 
 it('should throw an error for non-existant user', async () => {
-  await insertAll(db, "registeredUsers", theuser)
+  await insertAll(db, 'registeredUsers', theuser)
   await expect(
     login({
       email: 'nonexisting@user.com',
@@ -53,7 +53,7 @@ it('should throw an error for non-existant user', async () => {
 })
 
 it('should throw an error for incorrect password', async () => {
-  await insertAll(db, "registeredUsers", theuser)
+  await insertAll(db, 'registeredUsers', theuser)
   expect(
     login({
       email: theuser.email,
@@ -63,7 +63,7 @@ it('should throw an error for incorrect password', async () => {
 })
 
 it('throws an error for invalid email', async () => {
-  await insertAll(db, "registeredUsers", theuser)
+  await insertAll(db, 'registeredUsers', theuser)
   // await signup(theuser)
   await expect(
     login({
@@ -74,7 +74,7 @@ it('throws an error for invalid email', async () => {
 })
 
 it('throws an error for a short password', async () => {
-  await insertAll(db, "registeredUsers", theuser)
+  await insertAll(db, 'registeredUsers', theuser)
   await expect(
     login({
       email: theuser.email,
@@ -84,7 +84,7 @@ it('throws an error for a short password', async () => {
 })
 
 it('allows logging in with different email case', async () => {
-  await insertAll(db, "registeredUsers", theuser)
+  await insertAll(db, 'registeredUsers', theuser)
   await expect(
     login({
       email: theuser.email.toUpperCase(),
@@ -94,7 +94,7 @@ it('allows logging in with different email case', async () => {
 })
 
 it('allows logging in with surrounding white space', async () => {
-  await insertAll(db, "registeredUsers", theuser)
+  await insertAll(db, 'registeredUsers', theuser)
   await expect(
     login({
       email: ` \t ${theuser.email}\t `, // tabs and spaces

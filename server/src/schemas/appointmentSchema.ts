@@ -30,4 +30,12 @@ export const RegisteredAppointmentsSchema = userAppointmentsSchema.pick({
   businessSpecialityId: true,
   specialistId: true,
 })
-export type RegisteredAppointments = z.infer<typeof RegisteredAppointmentsSchema>
+export type RegisteredAppointments = z.infer<
+  typeof RegisteredAppointmentsSchema
+>
+
+export const PublicAppointmentSchema = userAppointmentsSchema.omit({
+  id: true,
+  clientId: true,
+  createdAt: true,
+})

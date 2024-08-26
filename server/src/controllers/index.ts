@@ -4,7 +4,7 @@ import business from './business'
 
 export const appRouter = t.router({
   user,
-  business
+  business,
 })
 
 export type AppRouter = typeof appRouter

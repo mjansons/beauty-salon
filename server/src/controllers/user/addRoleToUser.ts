@@ -20,7 +20,7 @@ export default authenticatedProcedure
     const foundRoleType = roles.find((r) => r.role === role)
 
     if (foundRoleType === undefined) {
-      const roleNames = roles.map((r) => r.role);
+      const roleNames = roles.map((r) => r.role)
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: `Invalid. Role must be one of: ${roleNames}`,

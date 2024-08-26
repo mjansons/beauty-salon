@@ -77,7 +77,7 @@ export function businessRepository(db: Database) {
       businessSpecialityId: number,
       specialistId: number,
       appointmentStartTime: Date,
-      appointmentEndTime: Date,
+      appointmentEndTime: Date
     ): Promise<Selectable<UserAppointments>[]> {
       const appointments = await db
         .insertInto('userAppointments')

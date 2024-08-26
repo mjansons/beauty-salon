@@ -13,20 +13,33 @@ export const registeredUserSchema = z.object({
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
   phoneNumber: z.string().min(8).max(15),
-  createdAt: z.date()
+  createdAt: z.date(),
 })
 
 export const userKeysAll = Object.keys(
   registeredUserSchema.shape
 ) as (keyof RegisteredUsers)[]
 
-export const userKeysPublic = ['id', 'firstName', 'lastName', 'email', 'phoneNumber', `createdAt`] as const
+export const userKeysPublic = [
+  'id',
+  'firstName',
+  'lastName',
+  'email',
+  'phoneNumber',
+  `createdAt`,
+] as const
 
 export type UserPublic = Pick<
   Selectable<RegisteredUsers>,
   (typeof userKeysPublic)[number]
 >
 
-export const authUserSchema = registeredUserSchema.pick({ id: true, email: true, firstName: true, lastName: true, phoneNumber: true })
+export const authUserSchema = registeredUserSchema.pick({
+  id: true,
+  email: true,
+  firstName: true,
+  lastName: true,
+  phoneNumber: true,
+})
 
 export type AuthUser = z.infer<typeof authUserSchema>

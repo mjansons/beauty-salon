@@ -13,21 +13,19 @@ export function roleRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
-    async get_role_types(): Promise< { id: number; role: string; }[]> {
-      return db
-        .selectFrom('roleTypes')
-        .selectAll()
-        .execute()
+    async get_role_types(): Promise<{ id: number; role: string }[]> {
+      return db.selectFrom('roleTypes').selectAll().execute()
     },
 
-    async get_user_assigned_roles(userId: number): Promise< { registeredUserId: number; roleId: number; }[]> {
+    async get_user_assigned_roles(
+      userId: number
+    ): Promise<{ registeredUserId: number; roleId: number }[]> {
       return db
         .selectFrom('userRoles')
         .selectAll()
-        .where("registeredUserId", '=', userId)
-        .execute();
-
-    }
+        .where('registeredUserId', '=', userId)
+        .execute()
+    },
   }
 }
 

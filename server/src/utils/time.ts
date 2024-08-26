@@ -9,7 +9,12 @@ export function isValidFutureDate(date: Date): boolean {
   return date > oneHourFromNow
 }
 
-export function isWithinTimeRange(startDate: Date, endDate: Date, startTime: string, endTime: string): boolean {
+export function isWithinTimeRange(
+  startDate: Date,
+  endDate: Date,
+  startTime: string,
+  endTime: string
+): boolean {
   // Extract the hours, minutes, and seconds from start and end date objects
   const startHours = startDate.getHours()
   const startMinutes = startDate.getMinutes()
@@ -27,7 +32,8 @@ export function isWithinTimeRange(startDate: Date, endDate: Date, startTime: str
   const startTimeNumber = startHours * 10000 + startMinutes * 100 + startSeconds
   const endTimeNumber = endHours * 10000 + endMinutes * 100 + endSeconds
 
-  const rangeStartTimeNumber = startHour * 10000 + startMinute * 100 + startSecond
+  const rangeStartTimeNumber =
+    startHour * 10000 + startMinute * 100 + startSecond
   const rangeEndTimeNumber = endHour * 10000 + endMinute * 100 + endSecond
 
   // Check if the start time is within the time range and the end time is within the time range

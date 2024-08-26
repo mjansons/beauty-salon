@@ -66,7 +66,7 @@ if (isFileRunDirectly) {
   const db = createDatabase(config.database)
   await migrateLatest(db)
 
-  if(config.test_database){
+  if (config.test_database) {
     const testDb = createDatabase(config.test_database)
     await migrateLatest(testDb)
   }

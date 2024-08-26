@@ -23,7 +23,8 @@ export default t.procedure
     })
   )
   .mutation(async ({ input: { email, password }, ctx: { repositories } }) => {
-    const user = await repositories.userRepository.find_registered_user_by_email(email)
+    const user =
+      await repositories.userRepository.find_registered_user_by_email(email)
 
     if (!user) {
       throw new TRPCError({

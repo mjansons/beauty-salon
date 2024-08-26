@@ -28,8 +28,8 @@ export default t.procedure
     const updatedUser = {
       ...user,
       email: user.email.toLowerCase().trim(),
-      password: passwordHash
-    };
+      password: passwordHash,
+    }
 
     const userCreated = await repositories.userRepository
       .create_registered_user({

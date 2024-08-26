@@ -9,7 +9,6 @@
     "dev": "tsx watch src",
     "format": "prettier --write \"src/**/*.ts\"",
     "gen:types": "kysely-codegen --camel-case --dialect postgres --out-file src/database/types.ts && prettier --write src/database/types.ts",
-    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx --fix",
     "migrate:new": "tsx ./src/database/migrate/new",
     "migrate:latest": "tsx src/database/migrate/latest",
     "migrate:latest:prod": "npm run node-es dist/database/migrate/latest.js",
