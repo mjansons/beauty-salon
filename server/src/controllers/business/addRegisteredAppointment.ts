@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server'
 import provideRepos from '@server/trpc/provideRepos'
 import { userRepository } from '@server/repositories/userRepository'
 import { specialityRepository } from '@server/repositories/specialityRepository'
-import { businessRepository } from '@server/repositories/businessReporitory'
+import { businessRepository } from '@server/repositories/businessRepository'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure/index'
 import { RegisteredAppointmentsSchema } from '@server/schemas/appointmentSchema'
 import {

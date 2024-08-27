@@ -35,10 +35,10 @@ export interface Businesses {
 }
 
 export interface BusinessSpecialities {
-  businessId: number
   id: Generated<number>
-  price: number
+  businessId: number
   specialityId: number
+  price: number
 }
 
 export interface RegisteredUsers {

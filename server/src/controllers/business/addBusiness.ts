@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server'
 import provideRepos from '@server/trpc/provideRepos'
-import { businessRepository } from '@server/repositories/businessReporitory'
+import { businessRepository } from '@server/repositories/businessRepository'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure/index'
 import { BusinessRegistrationSchema } from '@server/schemas/businessSchema'
 import { userRepository } from '@server/repositories/userRepository'
