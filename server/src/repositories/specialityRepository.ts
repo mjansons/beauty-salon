@@ -1,5 +1,7 @@
 import type { Database } from '@server/database'
 import type { InsertableSpecialistDaySchema } from '@server/schemas/specialistAvailabilitySchema'
+import { type UserAppointments } from '@server/database'
+import { type Selectable } from 'kysely'
 
 export function specialityRepository(db: Database) {
   return {
@@ -37,6 +39,21 @@ export function specialityRepository(db: Database) {
         .select(['specialities.id', 'specialities.speciality'])
         .where('specialists.registeredUserId', '=', registeredUserId)
         .execute()
+    },
+
+    async get_specialist_by_email(
+      email: string
+    ): Promise<{ registeredUserId: number; specialityId: number } | undefined> {
+      return db
+        .selectFrom('specialists')
+        .innerJoin(
+          'registeredUsers',
+          'registeredUsers.id',
+          'specialists.registeredUserId'
+        )
+        .select(['specialists.registeredUserId', 'specialists.specialityId'])
+        .where('registeredUsers.email', '=', email)
+        .executeTakeFirst()
     },
 
     async get_business_specality_by_id(
@@ -101,6 +118,38 @@ export function specialityRepository(db: Database) {
         })
         .returningAll()
         .executeTakeFirstOrThrow()
+    },
+
+    async get_specialist_availability_by_id(specialistId: number): Promise<
+      {
+        id: number
+        specialistId: number
+        dayOfWeek: number
+        startTime: string
+        endTime: string
+      }[]
+    > {
+      return db
+        .selectFrom('specialistAvailability')
+        .selectAll()
+        .where('specialistId', '=', specialistId)
+        .execute()
+    },
+
+    async get_specialist_appointments_by_time(
+      specialistId: number,
+      startTime: Date,
+      endTime: Date
+    ): Promise<Selectable<UserAppointments>[]> {
+      const appointments = await db
+        .selectFrom('userAppointments')
+        .selectAll()
+        .where('specialistId', '=', specialistId)
+        .where('appointmentStartTime', '>=', startTime)
+        .where('appointmentEndTime', '<=', endTime)
+        .execute()
+
+      return appointments
     },
   }
 }

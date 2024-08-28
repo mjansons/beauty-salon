@@ -120,7 +120,7 @@ export default authenticatedProcedure
 
       // throw error if not within specialists working time, i.e:
       const specialistAvailability =
-        await repositories.businessRepository.get_specialist_availability_by_id(
+        await repositories.specialityRepository.get_specialist_availability_by_id(
           specialistId
         )
 
@@ -156,7 +156,7 @@ export default authenticatedProcedure
 
       // throw error if overlaps with specialists appointments
       const userAppointments =
-        await repositories.businessRepository.get_specialist_appointments_by_time(
+        await repositories.specialityRepository.get_specialist_appointments_by_time(
           specialistId,
           appointmentStartTime,
           appointmentEndTime

@@ -2,7 +2,7 @@ import type { Database } from '@server/database'
 import { type UserAppointments } from '@server/database'
 import { type Selectable } from 'kysely'
 import { type BusinessSchema } from '@server/schemas/businessSchema'
-import {BusinessDaySchema } from '@server/schemas/businessAvailabilitySchema'
+import { BusinessDaySchema } from '@server/schemas/businessAvailabilitySchema'
 
 export function businessRepository(db: Database) {
   return {
@@ -35,38 +35,6 @@ export function businessRepository(db: Database) {
         .selectAll()
         .where('businessId', '=', businessId)
         .execute()
-    },
-
-    async get_specialist_availability_by_id(specialistId: number): Promise<
-      {
-        id: number
-        specialistId: number
-        dayOfWeek: number
-        startTime: string
-        endTime: string
-      }[]
-    > {
-      return db
-        .selectFrom('specialistAvailability')
-        .selectAll()
-        .where('specialistId', '=', specialistId)
-        .execute()
-    },
-
-    async get_specialist_appointments_by_time(
-      specialistId: number,
-      startTime: Date,
-      endTime: Date
-    ): Promise<Selectable<UserAppointments>[]> {
-      const appointments = await db
-        .selectFrom('userAppointments')
-        .selectAll()
-        .where('specialistId', '=', specialistId)
-        .where('appointmentStartTime', '>=', startTime)
-        .where('appointmentEndTime', '<=', endTime)
-        .execute()
-
-      return appointments
     },
 
     async add_appointment(
@@ -144,7 +112,29 @@ export function businessRepository(db: Database) {
       return await db
         .insertInto('businessAvailability')
         .values({
-          businessId, dayOfWeek, startTime, endTime
+          businessId,
+          dayOfWeek,
+          startTime,
+          endTime,
+        })
+        .returningAll()
+        .executeTakeFirstOrThrow()
+    },
+
+    async add_emplyee(
+      businessId: number,
+      employeeId: number
+    ): Promise<{
+      id: number
+      businessId: number
+      employeeId: number
+      createdAt: Date
+    }> {
+      return await db
+        .insertInto('businessEmployees')
+        .values({
+          businessId,
+          employeeId,
         })
         .returningAll()
         .executeTakeFirstOrThrow()

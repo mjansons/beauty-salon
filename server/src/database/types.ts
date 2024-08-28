@@ -16,10 +16,10 @@ export interface BusinessAvailability {
 }
 
 export interface BusinessEmployees {
-  businessId: number
-  createdAt: Generated<Timestamp>
-  employeeId: number
   id: Generated<number>
+  businessId: number
+  employeeId: number
+  createdAt: Generated<Timestamp>
 }
 
 export interface Businesses {
