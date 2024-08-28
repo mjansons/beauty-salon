@@ -1,6 +1,6 @@
 # Overview
 
-The Beauty Salon app is a comprehensive full-stack application designed for managing beauty salon services. It consists of a frontend built with Vue, TypeScript, and Vite, and a backend developed using Node.js, TypeScript, Express.js, TRPC, and PostgreSQL.
+The Beauty Salon app is a comprehensive full-stack application designed for managing beauty salon services for various businesses. It consists of a frontend built with Vue, TypeScript, and Vite, and a backend developed using Node.js, TypeScript, Express.js, TRPC, and PostgreSQL.
 
 ## Key Features
 
@@ -8,6 +8,7 @@ The Beauty Salon app is a comprehensive full-stack application designed for mana
 -   Role Management: Supports three different user roles: client, specialist, and owner.
 -   Appointment Scheduling: Allows users to schedule and manage appointments.
 -   Business and Specialities Management: Users can add businesses and define specialities.
+-   Specialists can build their own reputation while operating in various businesses.
 -   Database Management: Includes migrations for database schema management and seeding with initial data.
 -   Development and Testing: Comprehensive scripts for running development servers and tests.
 
@@ -28,8 +29,11 @@ Ensure you have PostgreSQL installed and create a main database and a test datab
 #### Create a .env file in the root of the project and add the following environment variables:
 
 NODE_ENV=development
+
 DATABASE_URL=postgres://user:password@localhost:5432/database_name
+
 TEST_DATABASE_URL=postgres://user:password@localhost:5432/test_database_name
+
 TOKEN_KEY=your_secret_key
 
 ### Database Migrations
@@ -54,12 +58,11 @@ npm run test
 
 Here are some key scripts defined in the package.json:
 
-npm run build: Compiles the TypeScript code and prepares it for production.
 npm run dev: Starts the development server.
 npm run migrate:latest: Runs the latest database migrations.
 npm run reset-db: Drops and recreates the database, then runs migrations.
+npm run reset-test-db: Drops and recreates the test database, then runs migrations.
 npm run test: Runs the test suite.
-npm run lint: Lints the codebase using ESLint.
 npm run format: Formats the code using Prettier.
 
 ## Frontend
