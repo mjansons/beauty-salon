@@ -1,6 +1,6 @@
 # Overview
 
-The Beauty Salon app is a comprehensive full-stack application designed for managing beauty salon services for various businesses. It consists of a frontend built with Vue, TypeScript, and Vite, and a backend developed using Node.js, TypeScript, Express.js, TRPC, and PostgreSQL.
+The Beauty Salon app will be a comprehensive full-stack application used for managing beauty salon services for various businesses. It consists of a frontend built with Vue, TypeScript, and Vite, and a backend developed using Node.js, TypeScript, Express.js, TRPC, and PostgreSQL.
 
 ## Key Features
 
