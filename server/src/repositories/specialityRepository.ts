@@ -1,4 +1,5 @@
 import type { Database } from '@server/database'
+import type { InsertableSpecialistDaySchema } from '@server/schemas/specialistAvailabilitySchema'
 
 export function specialityRepository(db: Database) {
   return {
@@ -79,6 +80,24 @@ export function specialityRepository(db: Database) {
           businessId: businessId,
           specialityId: specialityId,
           price: price,
+        })
+        .returningAll()
+        .executeTakeFirstOrThrow()
+    },
+
+    async add_specialist_hours_to_day(
+      specialistId: number,
+      dayOfWeek: number,
+      startTime: string,
+      endTime: string
+    ): Promise<InsertableSpecialistDaySchema> {
+      return await db
+        .insertInto('specialistAvailability')
+        .values({
+          specialistId,
+          dayOfWeek,
+          startTime,
+          endTime,
         })
         .returningAll()
         .executeTakeFirstOrThrow()

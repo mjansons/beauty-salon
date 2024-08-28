@@ -35,10 +35,10 @@ export interface Businesses {
 }
 
 export interface BusinessSpecialities {
-  id: Generated<number>
   businessId: number
-  specialityId: number
+  id: Generated<number>
   price: number
+  specialityId: number
 }
 
 export interface RegisteredUsers {
@@ -57,11 +57,11 @@ export interface RoleTypes {
 }
 
 export interface SpecialistAvailability {
-  dayOfWeek: number
-  endTime: string
   id: Generated<number>
   specialistId: number
+  dayOfWeek: number
   startTime: string
+  endTime: string
 }
 
 export interface Specialists {

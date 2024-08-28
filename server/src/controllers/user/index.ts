@@ -4,6 +4,7 @@ import signup from './signup'
 import changePassword from './changePassword'
 import addRoleToUser from './addRoleToUser'
 import addSpecialityToUser from './addSpecialityToUser'
+import addSpecialistHours from './addSpecialistHours'
 
 export default t.router({
   login,
@@ -11,4 +12,5 @@ export default t.router({
   changePassword,
   addRoleToUser,
   addSpecialityToUser,
+  addSpecialistHours
 })

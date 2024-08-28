@@ -26,7 +26,7 @@ export default authenticatedProcedure
       const userBusiness = userBusinesses.find(
         (business) => business.id === businessId
       )
-      if (userBusiness === undefined) {
+      if (!userBusiness) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'The server cannot find the requested business.',

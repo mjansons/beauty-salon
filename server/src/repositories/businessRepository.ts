@@ -2,6 +2,7 @@ import type { Database } from '@server/database'
 import { type UserAppointments } from '@server/database'
 import { type Selectable } from 'kysely'
 import { type BusinessSchema } from '@server/schemas/businessSchema'
+import {BusinessDaySchema } from '@server/schemas/businessAvailabilitySchema'
 
 export function businessRepository(db: Database) {
   return {
@@ -125,15 +126,29 @@ export function businessRepository(db: Database) {
     },
 
     async get_businesses_by_registered_user_id(
-      regesteredUserId: number,
+      regesteredUserId: number
     ): Promise<BusinessSchema[]> {
       return await db
         .selectFrom('businesses')
         .selectAll()
-        .where("ownerId", "=", regesteredUserId)
+        .where('ownerId', '=', regesteredUserId)
         .execute()
     },
 
+    async add_business_hours_to_day(
+      businessId: number,
+      dayOfWeek: number,
+      startTime: string,
+      endTime: string
+    ): Promise<BusinessDaySchema> {
+      return await db
+        .insertInto('businessAvailability')
+        .values({
+          businessId, dayOfWeek, startTime, endTime
+        })
+        .returningAll()
+        .executeTakeFirstOrThrow()
+    },
   }
 }
 
