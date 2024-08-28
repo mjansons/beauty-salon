@@ -50,6 +50,39 @@ export function specialityRepository(db: Database) {
         .where('id', '=', businessSpecialityId)
         .executeTakeFirst()
     },
+
+    async get_business_specalities_by_business_id(
+      businessId: number
+    ): Promise<
+      { id: number; businessId: number; price: number; specialityId: number }[]
+    > {
+      return db
+        .selectFrom('businessSpecialities')
+        .selectAll()
+        .where('businessId', '=', businessId)
+        .execute()
+    },
+
+    async add_business_speciality(
+      businessId: number,
+      specialityId: number,
+      price: number
+    ): Promise<{
+      id: number
+      specialityId: number
+      businessId: number
+      price: number
+    }> {
+      return db
+        .insertInto('businessSpecialities')
+        .values({
+          businessId: businessId,
+          specialityId: specialityId,
+          price: price,
+        })
+        .returningAll()
+        .executeTakeFirstOrThrow()
+    },
   }
 }
 

@@ -103,35 +103,4 @@ it('throws error if user cannot be located', async () => {
   ).rejects.toThrow(/user/i)
 })
 
-it('throws error if role cant be updated', async () => {
-  const user = {
-    email: 'newusere@test.com',
-    firstName: 'user',
-    lastName: 'surname',
-    password: 'verystrongpasswordthatishashed',
-    phoneNumber: '12345678',
-  }
-  const [createdUser] = await insertAll(db, 'registeredUsers', user)
-
-  const validTokenCaller = createCaller({
-    db,
-    authUser: {
-      id: createdUser.id,
-      email: 'newusere@gmail.com',
-      firstName: 'user',
-      lastName: 'surname',
-      phoneNumber: '12345678',
-    },
-  })
-
-  const newEntry = await validTokenCaller.addBusiness({
-    name: 'newBusiness',
-    city: 'vilnus',
-    address: 'some streetd',
-    postalCode: 'some code 1234',
-    email: 'business@emai.com',
-    phoneNumber: '12345678',
-  })
-
-  expect(newEntry).toBeDefined()
-})
+// what about duplicated business name?

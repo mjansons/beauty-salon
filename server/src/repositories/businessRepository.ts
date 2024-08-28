@@ -123,6 +123,17 @@ export function businessRepository(db: Database) {
         .returningAll()
         .execute()
     },
+
+    async get_businesses_by_registered_user_id(
+      regesteredUserId: number,
+    ): Promise<BusinessSchema[]> {
+      return await db
+        .selectFrom('businesses')
+        .selectAll()
+        .where("ownerId", "=", regesteredUserId)
+        .execute()
+    },
+
   }
 }
 

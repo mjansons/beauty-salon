@@ -17,7 +17,9 @@ export const businessKeysAll = Object.keys(
   BusinesSpecialitySchema.shape
 ) as (keyof BusinessSpecialities)[]
 
-export const newBusinessSpeciality = BusinesSpecialitySchema.omit({
-  id: true
-})
 
+export const newBusinessSpeciality = z.object({
+  businessId: idSchema,
+  specialityName: z.string().min(3).max(50),
+  price: z.number().int().positive()
+})

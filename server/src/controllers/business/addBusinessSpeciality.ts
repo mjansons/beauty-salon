@@ -1,88 +1,60 @@
-// import { TRPCError } from '@trpc/server'
-// import provideRepos from '@server/trpc/provideRepos'
-// import { businessRepository } from '@server/repositories/businessRepository'
-// import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure/index'
-// import { newBusinessSpeciality } from '@server/schemas/businessSpecialitySchema'
-// import { userRepository } from '@server/repositories/userRepository'
-// import { assertError } from '@server/utils/errors'
-// import { roleRepository } from '@server/repositories/roleRepository'
+import { TRPCError } from '@trpc/server'
+import provideRepos from '@server/trpc/provideRepos'
+import { businessRepository } from '@server/repositories/businessRepository'
+import authenticatedOwnerProcedure from '@server/trpc/authenticatedOwnerProcedure'
+import { newBusinessSpeciality } from '@server/schemas/businessSpecialitySchema'
+import { specialityRepository } from '@server/repositories/specialityRepository'
 
-// export default authenticatedProcedure
-//   .use(
-//     provideRepos({
-//       businessRepository,
-//       userRepository,
-//       roleRepository,
-//     })
-//   )
-//   .input(newBusinessSpeciality)
-//   .mutation(
-//     async ({
-//       input: { businessId, specialityId, price },
-//       ctx: { repositories, authUser },
-//     }) => {
+export default authenticatedOwnerProcedure
+  .use(
+    provideRepos({
+      businessRepository,
+      specialityRepository,
+    })
+  )
+  .input(newBusinessSpeciality)
+  .mutation(
+    async ({
+      input: { businessId, specialityName, price },
+      ctx: { repositories },
+    }) => {
+      // is that a real speciality?
+      const allSpecialities =
+        await repositories.specialityRepository.get_all_specialities()
 
-//       // does business exist?
+      const foundSpeciality = allSpecialities.find(
+        (s) => s.speciality === specialityName
+      )
 
-//       // is business of user? maybe I need business owner procedure?
+      if (!foundSpeciality) {
+        const specialityNames = allSpecialities.map((s) => s.speciality)
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `Invalid. Speciality must be one of: ${specialityNames}`,
+        })
+      }
 
-//       // does speciality exist?
+      // is speciality already assigned to business?
+      const businessSpecialities =
+        await repositories.specialityRepository.get_business_specalities_by_business_id(
+          businessId
+        )
 
+      const assignedSpeciality = businessSpecialities.find(
+        (s) => s.specialityId === foundSpeciality.id
+      )
 
-//       //
+      if (assignedSpeciality) {
+        return { message: 'Speciality already assigned to business' }
+      }
 
+      const newSpeciality =
+        await repositories.specialityRepository.add_business_speciality(
+          businessId,
+          foundSpeciality.id,
+          price
+        )
 
-
-//       const user = await repositories.userRepository.find_registered_user_by_id(
-//         authUser.id
-//       )
-//       if (!user) {
-//         throw new TRPCError({
-//           code: 'NOT_FOUND',
-//           message: 'The server cannot find the requested user.',
-//         })
-//       }
-
-//       const businessCreated = await repositories.businessRepository
-//         .add_business(
-//           name,
-//           authUser.id,
-//           city,
-//           address,
-//           postalCode,
-//           email,
-//           phoneNumber
-//         )
-//         .catch((error: unknown) => {
-//           assertError(error)
-
-//           if (error.message.includes('duplicate key')) {
-//             throw new TRPCError({
-//               code: 'BAD_REQUEST',
-//               message: 'Business with this name already exists',
-//               cause: error,
-//             })
-//           }
-//           throw error
-//         })
-
-//       // should add owner role to user if he doesnt have it already
-//       const userRoles =
-//         await repositories.roleRepository.get_user_assigned_roles(authUser.id)
-//       const foundUserRole = userRoles.find((r) => r.roleId === 3)
-
-//       if (foundUserRole === undefined) {
-//         try {
-//           await repositories.roleRepository.add_role_to_user(authUser.id, 3)
-//         } catch (error) {
-//           throw new TRPCError({
-//             code: 'BAD_REQUEST',
-//             message: 'Failed to assign owner role to the user.',
-//             cause: error,
-//           })
-//         }
-//       }
-
-//       return businessCreated
-//     }
-//   )
+      return newSpeciality
+    }
+  )
