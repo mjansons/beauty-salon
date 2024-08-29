@@ -93,6 +93,32 @@ export function businessRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
+    async edit_business(
+      id: number,
+      name: string,
+      ownerId: number,
+      city: string,
+      address: string,
+      postalCode: string,
+      email: string,
+      phoneNumber: string
+    ): Promise<BusinessSchema> {
+      return await db
+        .updateTable('businesses')
+        .set({
+          name: name,
+          ownerId: ownerId,
+          city: city,
+          address: address,
+          postalCode: postalCode,
+          email: email,
+          phoneNumber: phoneNumber,
+        })
+        .where("id", "=", id)
+        .returningAll()
+        .executeTakeFirstOrThrow()
+    },
+
     async get_businesses_by_registered_user_id(
       regesteredUserId: number
     ): Promise<BusinessSchema[]> {

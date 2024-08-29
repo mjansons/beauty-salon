@@ -36,9 +36,6 @@ it('finds a business a business', async () => {
   const [allspec] = await selectAll(db, 'businessSpecialities')
   const sp = await selectAll(db, 'specialities')
 
-  console.log(allspec)
-  console.log(sp)
-
   const publicCaller = createCaller({
     db,
   })

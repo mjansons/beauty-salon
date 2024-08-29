@@ -11,12 +11,10 @@ export const BusinessSchema = z.object({
   postalCode: z.string().trim().toLowerCase().min(3).max(150),
   email: z.string().trim().toLowerCase().email(),
   phoneNumber: z.string().min(8).max(15),
-  createdAt: z.date()
+  createdAt: z.date(),
 })
 
-export type BusinessSchema = z.infer<
-  typeof BusinessSchema
->
+export type BusinessSchema = z.infer<typeof BusinessSchema>
 
 export const businessKeysAll = Object.keys(
   BusinessSchema.shape
@@ -25,6 +23,15 @@ export const businessKeysAll = Object.keys(
 export const BusinessRegistrationSchema = BusinessSchema.omit({
   id: true,
   createdAt: true,
-  ownerId: true
+  ownerId: true,
 })
 
+export const BusinessUpdatingSchema = z.object({
+  businessId: idSchema,
+  name: z.string().trim().toLowerCase().min(3).max(50),
+  city: z.string().trim().toLowerCase().min(3).max(50),
+  address: z.string().trim().toLowerCase().min(3).max(150),
+  postalCode: z.string().trim().toLowerCase().min(3).max(150),
+  email: z.string().trim().toLowerCase().email(),
+  phoneNumber: z.string().min(8).max(15),
+})
