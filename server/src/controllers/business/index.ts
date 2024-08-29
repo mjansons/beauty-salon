@@ -6,6 +6,7 @@ import addBusinessSpeciality from './addBusinessSpeciality'
 import addBusinessHours from './addBusinessHours'
 import addEmployee from './addEmployee'
 import getBusinessesByTitle from './getBusinessesByTitle'
+import getBusinessesByService from './getBusinessesByService'
 
 export default t.router({
   addRegisteredUserAppointment,
@@ -14,5 +15,6 @@ export default t.router({
   addBusinessSpeciality,
   addBusinessHours,
   addEmployee,
-  getBusinessesByTitle
+  getBusinessesByTitle,
+  getBusinessesByService
 })

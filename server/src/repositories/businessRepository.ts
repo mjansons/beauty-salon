@@ -140,7 +140,9 @@ export function businessRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
-    async get_business_by_title(searchTerm: string): Promise<BusinessSchema[]> {
+    async get_businesses_by_title(
+      searchTerm: string
+    ): Promise<BusinessSchema[]> {
       return await db
         .selectFrom('businesses')
         .selectAll()
@@ -152,6 +154,47 @@ export function businessRepository(db: Database) {
             eb('email', 'ilike', `%${searchTerm}%`),
             eb('phoneNumber', 'ilike', `%${searchTerm}%`),
             eb('postalCode', 'ilike', `%${searchTerm}%`),
+          ])
+        )
+        .limit(10)
+        .execute()
+    },
+
+    async get_businesses_by_service(
+      searchTerm: string
+    ): Promise<BusinessSchema[]> {
+      return await db
+        .selectFrom('businesses')
+        .select([
+          'businesses.address',
+          'businesses.city',
+          'businesses.createdAt',
+          'businesses.email',
+          'businesses.id',
+          'businesses.name',
+          'businesses.ownerId',
+          'businesses.phoneNumber',
+          'businesses.postalCode',
+        ])
+        .leftJoin(
+          'businessSpecialities',
+          'businessSpecialities.businessId',
+          'businesses.id'
+        )
+        .leftJoin(
+          'specialities',
+          'businessSpecialities.specialityId',
+          'specialities.id'
+        )
+        .where((eb) =>
+          eb.or([
+            eb('specialities.speciality', 'ilike', `%${searchTerm}%`),
+            eb('businesses.name', 'ilike', `%${searchTerm}%`),
+            eb('businesses.address', 'ilike', `%${searchTerm}%`),
+            eb('businesses.city', 'ilike', `%${searchTerm}%`),
+            eb('businesses.email', 'ilike', `%${searchTerm}%`),
+            eb('businesses.phoneNumber', 'ilike', `%${searchTerm}%`),
+            eb('businesses.postalCode', 'ilike', `%${searchTerm}%`),
           ])
         )
         .limit(10)

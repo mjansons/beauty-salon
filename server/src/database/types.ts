@@ -41,6 +41,11 @@ export interface BusinessSpecialities {
   specialityId: number
 }
 
+export interface Specialities {
+  id: Generated<number>
+  speciality: string
+}
+
 export interface RegisteredUsers {
   createdAt: Generated<Timestamp>
   email: string
@@ -70,10 +75,7 @@ export interface Specialists {
   specialityId: number
 }
 
-export interface Specialities {
-  id: Generated<number>
-  speciality: string
-}
+
 
 export interface UserAppointments {
   appointmentEndTime: Timestamp
