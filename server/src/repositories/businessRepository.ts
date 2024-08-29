@@ -77,7 +77,7 @@ export function businessRepository(db: Database) {
       postalCode: string,
       email: string,
       phoneNumber: string
-    ): Promise<BusinessSchema[]> {
+    ): Promise<BusinessSchema> {
       return await db
         .insertInto('businesses')
         .values({
@@ -90,7 +90,7 @@ export function businessRepository(db: Database) {
           phoneNumber: phoneNumber,
         })
         .returningAll()
-        .execute()
+        .executeTakeFirstOrThrow()
     },
 
     async get_businesses_by_registered_user_id(
@@ -138,6 +138,24 @@ export function businessRepository(db: Database) {
         })
         .returningAll()
         .executeTakeFirstOrThrow()
+    },
+
+    async get_business_by_title(searchTerm: string): Promise<BusinessSchema[]> {
+      return await db
+        .selectFrom('businesses')
+        .selectAll()
+        .where((eb) =>
+          eb.or([
+            eb('name', 'ilike', `%${searchTerm}%`),
+            eb('address', 'ilike', `%${searchTerm}%`),
+            eb('city', 'ilike', `%${searchTerm}%`),
+            eb('email', 'ilike', `%${searchTerm}%`),
+            eb('phoneNumber', 'ilike', `%${searchTerm}%`),
+            eb('postalCode', 'ilike', `%${searchTerm}%`),
+          ])
+        )
+        .limit(10)
+        .execute()
     },
   }
 }
