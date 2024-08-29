@@ -25,6 +25,7 @@ export async function up(db: Kysely<any>) {
     .addColumn('last_name', 'text', (c) => c.notNull())
     .addColumn('email', 'text', (c) => c.notNull())
     .addColumn('phone_number', 'text', (c) => c.notNull())
+    .addColumn('comment', 'text', (c) => c)
 
     .addColumn('created_at', 'timestamptz', (column) =>
       column.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()

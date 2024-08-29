@@ -16,10 +16,10 @@ export interface BusinessAvailability {
 }
 
 export interface BusinessEmployees {
-  id: Generated<number>
   businessId: number
-  employeeId: number
   createdAt: Generated<Timestamp>
+  employeeId: number
+  id: Generated<number>
 }
 
 export interface Businesses {
@@ -41,11 +41,6 @@ export interface BusinessSpecialities {
   specialityId: number
 }
 
-export interface Specialities {
-  id: Generated<number>
-  speciality: string
-}
-
 export interface RegisteredUsers {
   createdAt: Generated<Timestamp>
   email: string
@@ -62,11 +57,11 @@ export interface RoleTypes {
 }
 
 export interface SpecialistAvailability {
+  dayOfWeek: number
+  endTime: string
   id: Generated<number>
   specialistId: number
-  dayOfWeek: number
   startTime: string
-  endTime: string
 }
 
 export interface Specialists {
@@ -75,7 +70,10 @@ export interface Specialists {
   specialityId: number
 }
 
-
+export interface Specialities {
+  id: Generated<number>
+  speciality: string
+}
 
 export interface UserAppointments {
   appointmentEndTime: Timestamp
@@ -83,6 +81,7 @@ export interface UserAppointments {
   businessId: number
   businessSpecialityId: number
   clientId: number | null
+  comment: string | null
   createdAt: Generated<Timestamp>
   email: string
   firstName: string

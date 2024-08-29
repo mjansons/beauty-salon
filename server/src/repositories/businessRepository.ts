@@ -47,7 +47,8 @@ export function businessRepository(db: Database) {
       businessSpecialityId: number,
       specialistId: number,
       appointmentStartTime: Date,
-      appointmentEndTime: Date
+      appointmentEndTime: Date,
+      comment: string | undefined,
     ): Promise<Selectable<UserAppointments>[]> {
       const appointments = await db
         .insertInto('userAppointments')
@@ -62,6 +63,7 @@ export function businessRepository(db: Database) {
           lastName: lastName,
           phoneNumber: phoneNumber,
           specialistId: specialistId,
+          comment: comment
         })
         .returningAll()
         .execute()

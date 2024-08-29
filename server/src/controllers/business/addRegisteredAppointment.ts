@@ -28,6 +28,7 @@ export default authenticatedProcedure
         specialistId,
         appointmentStartTime,
         appointmentEndTime,
+        comment
       },
       ctx: { repositories, authUser },
     }) => {
@@ -181,7 +182,8 @@ export default authenticatedProcedure
             businessSpecialityId,
             specialistId,
             appointmentStartTime,
-            appointmentEndTime
+            appointmentEndTime,
+            comment
           )
 
         return newAppointment

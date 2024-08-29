@@ -14,6 +14,7 @@ export const userAppointmentsSchema = z.object({
   lastName: z.string().trim().toLowerCase().min(1).max(100),
   email: z.string().trim().toLowerCase().email(),
   phoneNumber: z.string().min(8).max(15),
+  comment: z.string().max(300).optional(),
   createdAt: z.date(),
 })
 
@@ -29,6 +30,7 @@ export const RegisteredAppointmentsSchema = userAppointmentsSchema.pick({
   businessId: true,
   businessSpecialityId: true,
   specialistId: true,
+  comment: true
 })
 export type RegisteredAppointments = z.infer<
   typeof RegisteredAppointmentsSchema

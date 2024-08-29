@@ -132,6 +132,54 @@ it('adds a new appointment', async () => {
   // expect(newEntry).toMatchObject({})
 })
 
+it('adds a new appointment with comment', async () => {
+  const user = {
+    email: 'newusere@test.com',
+    firstName: 'user',
+    lastName: 'surname',
+    password: 'verystrongpasswordthatishashed',
+    phoneNumber: '12345678',
+  }
+  const [createdUser] = await insertAll(db, 'registeredUsers', user)
+  const futureTimestamp = getNextWeekDayAtHour(7, 14)
+  const futureTimestampPlus1h = addHoursToDate(futureTimestamp, 1)
+
+  const validTokenCaller = createCaller({
+    db,
+    authUser: {
+      id: createdUser.id,
+      email: 'newusere@test.com',
+      firstName: 'user',
+      lastName: 'surname',
+      phoneNumber: '12345678',
+    },
+  })
+
+  const [business] = await selectAll(db, 'businesses', (eb) =>
+    eb('name', '=', 'the place')
+  )
+
+  const [speciality] = await selectAll(db, 'businessSpecialities', (eb) =>
+    eb('businessId', '=', business.id)
+  )
+
+  const [specialist] = await selectAll(db, 'registeredUsers', (eb) =>
+    eb('firstName', '=', 'user2')
+  )
+
+  const [newEntry] = await validTokenCaller.addRegisteredUserAppointment({
+    businessId: business.id,
+    businessSpecialityId: speciality.id,
+    specialistId: specialist.id,
+    appointmentStartTime: futureTimestamp,
+    appointmentEndTime: futureTimestampPlus1h,
+    comment: "not too short"
+  })
+
+  // expect(newEntry).toBeDefined()
+  expect(newEntry.comment).toBe("not too short")
+})
+
 it('should throw an error for unauthenticated change', async () => {
   const user = {
     email: 'newusere@test.com',
