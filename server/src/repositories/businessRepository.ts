@@ -140,6 +140,23 @@ export function businessRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
+    async delete_emplyee(
+      businessId: number,
+      employeeId: number
+    ): Promise<{
+      id: number
+      businessId: number
+      employeeId: number
+      createdAt: Date
+    }> {
+      return await db
+        .deleteFrom('businessEmployees')
+        .where("businessId", "=", businessId)
+        .where("employeeId", "=", employeeId)
+        .returningAll()
+        .executeTakeFirstOrThrow()
+    },
+
     async get_businesses_by_title(
       searchTerm: string
     ): Promise<BusinessSchema[]> {

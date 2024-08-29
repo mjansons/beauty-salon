@@ -8,7 +8,7 @@ export async function up(db: Kysely<any>) {
     )
     .addColumn('name', 'text', (column) => column.notNull().unique())
     .addColumn('owner_id', 'integer', (column) =>
-      column.references('registered_users.id').notNull()
+      column.references('registered_users.id').notNull().onDelete('cascade')
     )
     .addColumn('address', 'text', (column) => column.notNull())
     .addColumn('city', 'text', (column) => column.notNull())
