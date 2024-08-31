@@ -34,7 +34,7 @@ export default t.procedure
     }
 
     const userCreated = await repositories.userRepository
-      .create_registered_user({
+      .createRegisteredUser({
         ...updatedUser,
       })
       .catch((error: unknown) => {
@@ -51,7 +51,7 @@ export default t.procedure
       })
 
     try {
-      await repositories.roleRepository.add_role_to_user(userCreated.id, 1)
+      await repositories.roleRepository.addRoleToUser(userCreated.id, 1)
     } catch(error) {
       throw new TRPCError({
         code: 'BAD_REQUEST',

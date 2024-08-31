@@ -11,11 +11,11 @@ export default authenticatedProcedure
   )
   .use(async ({ ctx: { repositories, authUser }, next }) => {
     // is user a specialist?
-    const userRoles = await repositories.roleRepository.get_user_assigned_roles(
-      authUser.id
+    const userRole = await repositories.roleRepository.getUserAssignedRoleByRoleId(
+      authUser.id,
+      2
     )
 
-    const userRole = userRoles.find((r) => r.roleId === 2)
     if (!userRole) {
       throw new TRPCError({
         code: 'NOT_FOUND',

@@ -19,7 +19,7 @@ export default authenticatedProcedure
   )
   .mutation(
     async ({ input: { password }, ctx: { repositories, authUser } }) => {
-      const user = await repositories.userRepository.find_registered_user_by_id(
+      const user = await repositories.userRepository.findRegisteredUserById(
         authUser.id
       )
 
@@ -33,7 +33,7 @@ export default authenticatedProcedure
       const passwordHash = await hash(password, config.auth.passwordCost)
 
       try {
-        await repositories.userRepository.update_registered_user_row(
+        await repositories.userRepository.updateRegisteredUserRow(
           authUser.id,
           'password',
           passwordHash

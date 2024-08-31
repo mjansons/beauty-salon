@@ -4,7 +4,7 @@ import { userRepository } from '@server/repositories/userRepository'
 import { specialityRepository } from '@server/repositories/specialityRepository'
 import { businessRepository } from '@server/repositories/businessRepository'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure/index'
-import { RegisteredAppointmentsSchema } from '@server/schemas/appointmentSchema'
+import { registeredAppointmentsSchema } from '@server/schemas/appointmentSchema'
 import {
   isValidFutureDate,
   isWithinTimeRange,
@@ -19,7 +19,7 @@ export default authenticatedProcedure
       businessRepository,
     })
   )
-  .input(RegisteredAppointmentsSchema)
+  .input(registeredAppointmentsSchema)
   .mutation(
     async ({
       input: {
@@ -34,7 +34,7 @@ export default authenticatedProcedure
     }) => {
       // throw error if the business doesnt offer such a service
       const businessSpeciality =
-        await repositories.specialityRepository.get_business_specality_by_id(
+        await repositories.specialityRepository.getBusinessSpecalityById(
           businessSpecialityId
         )
       if (!businessSpeciality) {
@@ -45,13 +45,12 @@ export default authenticatedProcedure
       }
 
       // throw error if the specialist is not part of the business
-      const businessEmployees =
-        await repositories.businessRepository.get_business_employees_by_business_id(
-          businessId
+      const employee =
+        await repositories.businessRepository.getBusinessEmployeeByUserId(
+          businessId,
+          specialistId
         )
-      const employee = businessEmployees.find(
-        (e) => e.employeeId === specialistId
-      )
+
       if (!employee) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
@@ -60,13 +59,12 @@ export default authenticatedProcedure
       }
 
       // throw error if specialist is not specialised in this service
-      const specialistSpecialisations =
-        await repositories.specialityRepository.get_users_specalities(
-          specialistId
+      const userSpeciality =
+        await repositories.specialityRepository.getUsersSpecalityBySpecialitytId(
+          specialistId,
+          businessSpeciality.specialityId
         )
-      const userSpeciality = specialistSpecialisations.find(
-        (s) => s.id === businessSpeciality.specialityId
-      )
+        
       if (!userSpeciality) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
@@ -84,7 +82,7 @@ export default authenticatedProcedure
 
       // throw error if not within business working time, i.e.:
       const businessAvailability =
-        await repositories.businessRepository.get_business_availability_by_id(
+        await repositories.businessRepository.getBusinessAvailabilityById(
           businessId
         )
 
@@ -121,7 +119,7 @@ export default authenticatedProcedure
 
       // throw error if not within specialists working time, i.e:
       const specialistAvailability =
-        await repositories.specialityRepository.get_specialist_availability_by_id(
+        await repositories.specialityRepository.getSpecialistAvailabilityById(
           specialistId
         )
 
@@ -157,7 +155,7 @@ export default authenticatedProcedure
 
       // throw error if overlaps with specialists appointments
       const userAppointments =
-        await repositories.specialityRepository.get_specialist_appointments_by_time(
+        await repositories.specialityRepository.getSpecialistAppointmentsByTime(
           specialistId,
           appointmentStartTime,
           appointmentEndTime
@@ -172,7 +170,7 @@ export default authenticatedProcedure
 
       try {
         const newAppointment =
-          await repositories.businessRepository.add_appointment(
+          await repositories.businessRepository.addAppointment(
             authUser.id,
             authUser.firstName,
             authUser.lastName,

@@ -16,37 +16,32 @@ export default authenticatedProcedure
   .mutation(
     async ({ input: { speciality }, ctx: { repositories, authUser } }) => {
       // check if that is a real speciality
-      const specialities =
-        await repositories.specialityRepository.get_all_specialities()
-      const foundSpecialities = specialities.find(
-        (s) => s.speciality === speciality
-      )
 
-      if (foundSpecialities === undefined) {
-        const specialityNames = specialities.map((s) => s.speciality)
+      const foundSpeciality =
+        await repositories.specialityRepository.getSpecialityByName(speciality)
+
+      if (!foundSpeciality) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: `Invalid. Speciality must be one of: ${specialityNames}`,
+          message: `Invalid speciality`,
         })
       }
 
       // check if user already has this speciality assigned
-      const userSpecialities =
-        await repositories.specialityRepository.get_users_specalities(
-          authUser.id
+      const foundUserSpeciality =
+        await repositories.specialityRepository.getUsersSpecalityByName(
+          authUser.id,
+          speciality
         )
-      const foundUserSpeciality = userSpecialities.find(
-        (s) => s.id === foundSpecialities.id
-      )
 
-      if (foundUserSpeciality !== undefined) {
+      if (foundUserSpeciality) {
         return { message: 'User already has this speciality assigned.' }
       }
 
       try {
-        await repositories.specialityRepository.add_specialist(
+        await repositories.specialityRepository.addSpecialist(
           authUser.id,
-          foundSpecialities.id
+          foundSpeciality.id
         )
         return { message: 'success' }
       } catch (error) {

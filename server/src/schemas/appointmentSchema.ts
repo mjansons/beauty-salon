@@ -24,7 +24,7 @@ export const appointmentKeysAll = Object.keys(
   userAppointmentsSchema.shape
 ) as (keyof UserAppointments)[]
 
-export const RegisteredAppointmentsSchema = userAppointmentsSchema.pick({
+export const registeredAppointmentsSchema = userAppointmentsSchema.pick({
   appointmentStartTime: true,
   appointmentEndTime: true,
   businessId: true,
@@ -33,10 +33,10 @@ export const RegisteredAppointmentsSchema = userAppointmentsSchema.pick({
   comment: true
 })
 export type RegisteredAppointments = z.infer<
-  typeof RegisteredAppointmentsSchema
+  typeof registeredAppointmentsSchema
 >
 
-export const PublicAppointmentSchema = userAppointmentsSchema.omit({
+export const publicAppointmentSchema = userAppointmentsSchema.omit({
   id: true,
   clientId: true,
   createdAt: true,

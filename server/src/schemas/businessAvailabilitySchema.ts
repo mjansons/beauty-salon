@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { idSchema } from './shared'
 
-export const BusinessDaySchema = z.object({
+export const businessDaySchema = z.object({
   id: idSchema,
   businessId: idSchema,
   dayOfWeek: z.number().min(0).max(6),
@@ -9,6 +9,6 @@ export const BusinessDaySchema = z.object({
   endTime: z.string().time(),
 })
 
-export const NewBusinessDaySchema = BusinessDaySchema.omit({ id: true })
+export const newBusinessDaySchema = businessDaySchema.omit({ id: true })
 
-export type BusinessDaySchema = z.infer<typeof BusinessDaySchema>
+export type BusinessDaySchema = z.infer<typeof businessDaySchema>

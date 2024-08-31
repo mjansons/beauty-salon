@@ -19,37 +19,31 @@ export default authenticatedOwnerProcedure
       ctx: { repositories },
     }) => {
       // is that a real speciality?
-      const allSpecialities =
-        await repositories.specialityRepository.get_all_specialities()
-
-      const foundSpeciality = allSpecialities.find(
-        (s) => s.speciality === specialityName
-      )
+      const foundSpeciality =
+        await repositories.specialityRepository.getSpecialityByName(
+          specialityName
+        )
 
       if (!foundSpeciality) {
-        const specialityNames = allSpecialities.map((s) => s.speciality)
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: `Invalid. Speciality must be one of: ${specialityNames}`,
+          message: `Invalid speciality.`,
         })
       }
 
       // is speciality already assigned to business?
-      const businessSpecialities =
-        await repositories.specialityRepository.get_business_specalities_by_business_id(
-          businessId
+      const businessSpeciality =
+        await repositories.specialityRepository.getBusinessSpecalitiesByBusinessIdAndSpecialityId(
+          businessId,
+          foundSpeciality.id
         )
 
-      const assignedSpeciality = businessSpecialities.find(
-        (s) => s.specialityId === foundSpeciality.id
-      )
-
-      if (assignedSpeciality) {
+      if (businessSpeciality) {
         return { message: 'Speciality already assigned to business' }
       }
 
       const newSpeciality =
-        await repositories.specialityRepository.add_business_speciality(
+        await repositories.specialityRepository.addBusinessSpeciality(
           businessId,
           foundSpeciality.id,
           price

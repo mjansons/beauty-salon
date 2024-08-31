@@ -12,7 +12,7 @@ export default t.procedure
   .input(z.object({ searchTerm: z.string().trim().toLowerCase().min(3).max(50) }))
   .query(async ({ input: { searchTerm }, ctx: { repositories } }) => {
     const businesses =
-      await repositories.businessRepository.get_businesses_by_service(searchTerm)
+      await repositories.businessRepository.getBusinessesByService(searchTerm)
 
     return businesses
   })

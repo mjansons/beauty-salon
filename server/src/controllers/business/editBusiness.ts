@@ -1,10 +1,8 @@
-import { TRPCError } from '@trpc/server'
 import provideRepos from '@server/trpc/provideRepos'
 import { businessRepository } from '@server/repositories/businessRepository'
 import authenticatedOwnerProcedure from '@server/trpc/authenticatedOwnerProcedure'
-import { BusinessUpdatingSchema } from '@server/schemas/businessSchema'
+import { businessUpdatingSchema } from '@server/schemas/businessSchema'
 import { userRepository } from '@server/repositories/userRepository'
-import { assertError } from '@server/utils/errors'
 import { roleRepository } from '@server/repositories/roleRepository'
 
 export default authenticatedOwnerProcedure
@@ -15,7 +13,7 @@ export default authenticatedOwnerProcedure
       roleRepository,
     })
   )
-  .input(BusinessUpdatingSchema)
+  .input(businessUpdatingSchema)
   .mutation(
     async ({
       input: {
@@ -30,7 +28,7 @@ export default authenticatedOwnerProcedure
       ctx: { repositories, authUser },
     }) => {
       const updatedBusiness =
-        await repositories.businessRepository.edit_business(
+        await repositories.businessRepository.editBusiness(
           businessId,
           name,
           authUser.id,

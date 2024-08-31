@@ -9,7 +9,7 @@ import type { Insertable, Selectable } from 'kysely'
 
 export function userRepository(db: Database) {
   return {
-    async create_registered_user(
+    async createRegisteredUser(
       user: Insertable<RegisteredUsers>
     ): Promise<UserPublic> {
       return db
@@ -19,7 +19,7 @@ export function userRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
-    async find_registered_user_by_email(
+    async findRegisteredUserByEmail(
       email: string
     ): Promise<Selectable<RegisteredUsers> | undefined> {
       return db
@@ -29,7 +29,7 @@ export function userRepository(db: Database) {
         .executeTakeFirst()
     },
 
-    async find_registered_user_by_id(
+    async findRegisteredUserById(
       id: number
     ): Promise<Selectable<RegisteredUsers> | undefined> {
       return db
@@ -39,7 +39,7 @@ export function userRepository(db: Database) {
         .executeTakeFirst()
     },
 
-    async update_registered_user_row(
+    async updateRegisteredUserRow(
       id: number,
       row: string,
       newValue: string
@@ -51,7 +51,7 @@ export function userRepository(db: Database) {
         })
         .where('id', '=', id)
         .returning(userKeysPublic)
-        .executeTakeFirstOrThrow()
+        .executeTakeFirst()
     },
   }
 }

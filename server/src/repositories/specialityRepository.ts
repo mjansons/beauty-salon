@@ -5,13 +5,21 @@ import { type Selectable } from 'kysely'
 
 export function specialityRepository(db: Database) {
   return {
-    async get_all_specialities(): Promise<
-      { id: number; speciality: string }[]
-    > {
+    async getAllSpecialities(): Promise<{ id: number; speciality: string }[]> {
       return db.selectFrom('specialities').selectAll().execute()
     },
 
-    async add_specialist(
+    async getSpecialityByName(
+      speciality: string
+    ): Promise<{ id: number; speciality: string } | undefined> {
+      return db
+        .selectFrom('specialities')
+        .selectAll()
+        .where('speciality', '=', speciality)
+        .executeTakeFirst()
+    },
+
+    async addSpecialist(
       registeredUserId: number,
       specialityId: number
     ): Promise<{ registeredUserId: number; specialityId: number } | undefined> {
@@ -22,11 +30,11 @@ export function specialityRepository(db: Database) {
           specialityId: specialityId,
         })
         .returning(['registeredUserId', 'specialityId'])
-        .executeTakeFirstOrThrow()
+        .executeTakeFirst()
     },
 
     // get all specialities for a specific user
-    async get_users_specalities(
+    async getUsersSpecalities(
       registeredUserId: number
     ): Promise<{ id: number; speciality: string }[]> {
       return db
@@ -41,7 +49,41 @@ export function specialityRepository(db: Database) {
         .execute()
     },
 
-    async get_specialist_by_email(
+    async getUsersSpecalityBySpecialitytId(
+      registeredUserId: number,
+      specialityId: number
+    ): Promise<{ id: number; speciality: string } | undefined> {
+      return db
+        .selectFrom('specialists')
+        .innerJoin(
+          'specialities',
+          'specialities.id',
+          'specialists.specialityId'
+        )
+        .select(['specialities.id', 'specialities.speciality'])
+        .where('specialists.registeredUserId', '=', registeredUserId)
+        .where('specialities.id', '=', specialityId)
+        .executeTakeFirst()
+    },
+
+    async getUsersSpecalityByName(
+      registeredUserId: number,
+      speciality: string
+    ): Promise<{ id: number; speciality: string } | undefined> {
+      return db
+        .selectFrom('specialists')
+        .innerJoin(
+          'specialities',
+          'specialities.id',
+          'specialists.specialityId'
+        )
+        .select(['specialities.id', 'specialities.speciality'])
+        .where('specialists.registeredUserId', '=', registeredUserId)
+        .where('specialities.speciality', '=', speciality)
+        .executeTakeFirst()
+    },
+
+    async getSpecialistByEmail(
       email: string
     ): Promise<{ registeredUserId: number; specialityId: number } | undefined> {
       return db
@@ -56,7 +98,7 @@ export function specialityRepository(db: Database) {
         .executeTakeFirst()
     },
 
-    async get_business_specality_by_id(
+    async getBusinessSpecalityById(
       businessSpecialityId: number
     ): Promise<
       | { id: number; businessId: number; price: number; specialityId: number }
@@ -69,7 +111,7 @@ export function specialityRepository(db: Database) {
         .executeTakeFirst()
     },
 
-    async get_business_specalities_by_business_id(
+    async getBusinessSpecalitiesByBusinessId(
       businessId: number
     ): Promise<
       { id: number; businessId: number; price: number; specialityId: number }[]
@@ -81,7 +123,22 @@ export function specialityRepository(db: Database) {
         .execute()
     },
 
-    async add_business_speciality(
+    async getBusinessSpecalitiesByBusinessIdAndSpecialityId(
+      businessId: number,
+      specialityId: number
+    ): Promise<
+      | { id: number; businessId: number; price: number; specialityId: number }
+      | undefined
+    > {
+      return db
+        .selectFrom('businessSpecialities')
+        .selectAll()
+        .where('businessId', '=', businessId)
+        .where('specialityId', '=', specialityId)
+        .executeTakeFirst()
+    },
+
+    async addBusinessSpeciality(
       businessId: number,
       specialityId: number,
       price: number
@@ -102,7 +159,7 @@ export function specialityRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
-    async add_specialist_hours_to_day(
+    async addSpecialistHoursToDay(
       specialistId: number,
       dayOfWeek: number,
       startTime: string,
@@ -120,7 +177,7 @@ export function specialityRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
-    async get_specialist_availability_by_id(specialistId: number): Promise<
+    async getSpecialistAvailabilityById(specialistId: number): Promise<
       {
         id: number
         specialistId: number
@@ -136,7 +193,7 @@ export function specialityRepository(db: Database) {
         .execute()
     },
 
-    async get_specialist_appointments_by_time(
+    async getSpecialistAppointmentsByTime(
       specialistId: number,
       startTime: Date,
       endTime: Date

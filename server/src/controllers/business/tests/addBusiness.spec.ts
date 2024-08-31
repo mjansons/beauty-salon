@@ -38,7 +38,14 @@ it('creates a business', async () => {
     phoneNumber: '12345678',
   })
 
-  expect(newEntry).toBeDefined()
+  expect(newEntry).toMatchObject({
+    name: 'newbusiness',
+    city: 'vilnus',
+    address: 'some streetd',
+    postalCode: 'some code 1234',
+    email: 'business@emai.com',
+    phoneNumber: '12345678',
+  })
 })
 
 it('should throw an error for unauthenticated change', async () => {

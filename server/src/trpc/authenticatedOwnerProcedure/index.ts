@@ -10,7 +10,7 @@ export default authenticatedProcedure
       businessRepository,
     })
   )
-  .input(z.object({businessId: z.number().int().positive()}))
+  .input(z.object({ businessId: z.number().int().positive() }))
   .use(
     async ({
       input: { businessId },
@@ -18,14 +18,12 @@ export default authenticatedProcedure
       next,
     }) => {
       // is business of user?
-      const userBusinesses =
-        await repositories.businessRepository.get_businesses_by_registered_user_id(
-          authUser.id
+      const userBusiness =
+        await repositories.businessRepository.getUserBusinessesByBusinessId(
+          authUser.id,
+          businessId
         )
 
-      const userBusiness = userBusinesses.find(
-        (business) => business.id === businessId
-      )
       if (!userBusiness) {
         throw new TRPCError({
           code: 'NOT_FOUND',

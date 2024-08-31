@@ -2,7 +2,7 @@ import type { Database } from '@server/database'
 
 export function roleRepository(db: Database) {
   return {
-    async add_role_to_user(
+    async addRoleToUser(
       userId: number,
       roleId: number
     ): Promise<{ registeredUserId: number; roleId: number } | undefined> {
@@ -13,11 +13,21 @@ export function roleRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
-    async get_role_types(): Promise<{ id: number; role: string }[]> {
+    async getAllRoleTypes(): Promise<{ id: number; role: string }[]> {
       return db.selectFrom('roleTypes').selectAll().execute()
     },
 
-    async get_user_assigned_roles(
+    async getRoleByName(
+      role: string
+    ): Promise<{ id: number; role: string } | undefined> {
+      return db
+        .selectFrom('roleTypes')
+        .where('role', '=', role)
+        .selectAll()
+        .executeTakeFirst()
+    },
+
+    async getUserAllAssignedRoles(
       userId: number
     ): Promise<{ registeredUserId: number; roleId: number }[]> {
       return db
@@ -25,6 +35,31 @@ export function roleRepository(db: Database) {
         .selectAll()
         .where('registeredUserId', '=', userId)
         .execute()
+    },
+
+    async getUserAssignedRoleByRoleId(
+      userId: number,
+      roleId: number
+    ): Promise<{ registeredUserId: number; roleId: number } | undefined> {
+      return db
+        .selectFrom('userRoles')
+        .selectAll()
+        .where('registeredUserId', '=', userId)
+        .where('roleId', '=', roleId)
+        .executeTakeFirst()
+    },
+
+
+    async getRoleByUserIdAndRoleId(
+      userId: number,
+      roleId: number
+    ): Promise<{ registeredUserId: number; roleId: number } | undefined> {
+      return db
+        .selectFrom('userRoles')
+        .selectAll()
+        .where('registeredUserId', '=', userId)
+        .where('roleId', '=', roleId)
+        .executeTakeFirst()
     },
   }
 }

@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server'
 import provideRepos from '@server/trpc/provideRepos'
 import authenticatedSpecialistProcedure from '@server/trpc/authenticatedSpecialistProcedure'
-import { NewSpecialistDaySchema } from '@server/schemas/specialistAvailabilitySchema'
+import { newSpecialistDaySchema } from '@server/schemas/specialistAvailabilitySchema'
 import { specialityRepository } from '@server/repositories/specialityRepository'
 
 export default authenticatedSpecialistProcedure
@@ -10,7 +10,7 @@ export default authenticatedSpecialistProcedure
       specialityRepository,
     })
   )
-  .input(NewSpecialistDaySchema)
+  .input(newSpecialistDaySchema)
   .mutation(
     async ({
       input: { dayOfWeek, startTime, endTime },
@@ -28,7 +28,7 @@ export default authenticatedSpecialistProcedure
 
       // has the specialist any specialities?
       const userSpecialities =
-        await repositories.specialityRepository.get_users_specalities(
+        await repositories.specialityRepository.getUsersSpecalities(
           authUser.id
         )
 
@@ -41,7 +41,7 @@ export default authenticatedSpecialistProcedure
 
       try {
         const newDay =
-          await repositories.specialityRepository.add_specialist_hours_to_day(
+          await repositories.specialityRepository.addSpecialistHoursToDay(
             authUser.id,
             dayOfWeek,
             startTime,

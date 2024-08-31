@@ -128,8 +128,14 @@ it('adds a new appointment', async () => {
     appointmentEndTime: futureTimestampPlus1h,
   })
 
-  expect(newEntry).toBeDefined()
-  // expect(newEntry).toMatchObject({})
+  // expect(newEntry).toBeDefined()
+  expect(newEntry).toMatchObject([{
+    businessId: business.id,
+    businessSpecialityId: speciality.id,
+    specialistId: specialist.id,
+    appointmentStartTime: futureTimestamp,
+    appointmentEndTime: futureTimestampPlus1h,
+  }])
 })
 
 it('adds a new appointment with comment', async () => {

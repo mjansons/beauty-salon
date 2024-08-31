@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type { Businesses } from '@server/database/types'
 import { idSchema } from './shared'
 
-export const BusinessSchema = z.object({
+export const businessSchema = z.object({
   id: idSchema,
   name: z.string().trim().toLowerCase().min(3).max(50),
   ownerId: idSchema,
@@ -14,19 +14,19 @@ export const BusinessSchema = z.object({
   createdAt: z.date(),
 })
 
-export type BusinessSchema = z.infer<typeof BusinessSchema>
+export type BusinessSchema = z.infer<typeof businessSchema>
 
 export const businessKeysAll = Object.keys(
-  BusinessSchema.shape
+  businessSchema.shape
 ) as (keyof Businesses)[]
 
-export const BusinessRegistrationSchema = BusinessSchema.omit({
+export const businessRegistrationSchema = businessSchema.omit({
   id: true,
   createdAt: true,
   ownerId: true,
 })
 
-export const BusinessUpdatingSchema = z.object({
+export const businessUpdatingSchema = z.object({
   businessId: idSchema,
   name: z.string().trim().toLowerCase().min(3).max(50),
   city: z.string().trim().toLowerCase().min(3).max(50),

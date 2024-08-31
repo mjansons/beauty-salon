@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server'
 import provideRepos from '@server/trpc/provideRepos'
 import { businessRepository } from '@server/repositories/businessRepository'
 import { authenticatedProcedure } from '@server/trpc/authenticatedProcedure/index'
-import { BusinessRegistrationSchema } from '@server/schemas/businessSchema'
+import { businessRegistrationSchema } from '@server/schemas/businessSchema'
 import { userRepository } from '@server/repositories/userRepository'
 import { assertError } from '@server/utils/errors'
 import { roleRepository } from '@server/repositories/roleRepository'
@@ -15,13 +15,13 @@ export default authenticatedProcedure
       roleRepository,
     })
   )
-  .input(BusinessRegistrationSchema)
+  .input(businessRegistrationSchema)
   .mutation(
     async ({
       input: { name, city, address, postalCode, email, phoneNumber },
       ctx: { repositories, authUser },
     }) => {
-      const user = await repositories.userRepository.find_registered_user_by_id(
+      const user = await repositories.userRepository.findRegisteredUserById(
         authUser.id
       )
       if (!user) {
@@ -32,7 +32,7 @@ export default authenticatedProcedure
       }
 
       const businessCreated = await repositories.businessRepository
-        .add_business(
+        .addBusiness(
           name,
           authUser.id,
           city,
@@ -55,13 +55,15 @@ export default authenticatedProcedure
         })
 
       // should add owner role to user if he doesnt have it already
-      const userRoles =
-        await repositories.roleRepository.get_user_assigned_roles(authUser.id)
-      const foundUserRole = userRoles.find((r) => r.roleId === 3)
+      const foundUserRole =
+        await repositories.roleRepository.getUserAssignedRoleByRoleId(
+          authUser.id,
+          3
+        )
 
-      if (foundUserRole === undefined) {
+      if (!foundUserRole) {
         try {
-          await repositories.roleRepository.add_role_to_user(authUser.id, 3)
+          await repositories.roleRepository.addRoleToUser(authUser.id, 3)
         } catch (error) {
           throw new TRPCError({
             code: 'BAD_REQUEST',

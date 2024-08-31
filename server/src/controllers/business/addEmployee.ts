@@ -17,7 +17,7 @@ export default authenticatedOwnerProcedure
     async ({ input: { businessId, employeeEmail }, ctx: { repositories } }) => {
       // is it a real specialist?
       const employee =
-        await repositories.specialityRepository.get_specialist_by_email(
+        await repositories.specialityRepository.getSpecialistByEmail(
           employeeEmail
         )
 
@@ -29,7 +29,7 @@ export default authenticatedOwnerProcedure
       }
 
       try {
-        const newEmployee = await repositories.businessRepository.add_emplyee(
+        const newEmployee = await repositories.businessRepository.addEmplyee(
           businessId,
           employee.registeredUserId
         )

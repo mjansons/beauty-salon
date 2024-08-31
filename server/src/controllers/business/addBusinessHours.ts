@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server'
 import provideRepos from '@server/trpc/provideRepos'
 import { businessRepository } from '@server/repositories/businessRepository'
 import authenticatedOwnerProcedure from '@server/trpc/authenticatedOwnerProcedure'
-import { NewBusinessDaySchema } from '@server/schemas/businessAvailabilitySchema'
+import { newBusinessDaySchema } from '@server/schemas/businessAvailabilitySchema'
 
 export default authenticatedOwnerProcedure
   .use(
@@ -10,7 +10,7 @@ export default authenticatedOwnerProcedure
       businessRepository,
     })
   )
-  .input(NewBusinessDaySchema)
+  .input(newBusinessDaySchema)
   .mutation(
     async ({
       input: { businessId, dayOfWeek, startTime, endTime },
@@ -28,7 +28,7 @@ export default authenticatedOwnerProcedure
 
       try {
         const newDay =
-          await repositories.businessRepository.add_business_hours_to_day(
+          await repositories.businessRepository.addBusinessHoursToDay(
             businessId,
             dayOfWeek,
             startTime,

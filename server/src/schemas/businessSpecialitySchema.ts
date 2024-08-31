@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type { BusinessSpecialities } from '@server/database/types'
 import { idSchema } from './shared'
 
-export const BusinesSpecialitySchema = z.object({
+export const businesSpecialitySchema = z.object({
   id: idSchema,
   businessId: idSchema,
   specialityId: idSchema,
@@ -10,11 +10,11 @@ export const BusinesSpecialitySchema = z.object({
 })
 
 export type BusinessSpeciality = z.infer<
-  typeof BusinesSpecialitySchema
+  typeof businesSpecialitySchema
 >
 
 export const businessKeysAll = Object.keys(
-  BusinesSpecialitySchema.shape
+  businesSpecialitySchema.shape
 ) as (keyof BusinessSpecialities)[]
 
 

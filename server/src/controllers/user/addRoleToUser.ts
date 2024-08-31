@@ -15,33 +15,27 @@ export default authenticatedProcedure
   .input(z.object({ role: z.string().trim().toLowerCase().max(20) }))
   .mutation(async ({ input: { role }, ctx: { repositories, authUser } }) => {
     // check if that is a real role
-    const roles = await repositories.roleRepository.get_role_types()
+    const foundRole = await repositories.roleRepository.getRoleByName(role)
 
-    const foundRoleType = roles.find((r) => r.role === role)
-
-    if (foundRoleType === undefined) {
-      const roleNames = roles.map((r) => r.role)
+    if (!foundRole) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
-        message: `Invalid. Role must be one of: ${roleNames}`,
+        message: `Invalid role.`,
       })
     }
 
     // check if user already has this role assigned
-    const userRoles = await repositories.roleRepository.get_user_assigned_roles(
-      authUser.id
+    const userRole = await repositories.roleRepository.getRoleByUserIdAndRoleId(
+      authUser.id,
+      foundRole.id
     )
-    const foundUserRole = userRoles.find((r) => r.roleId === foundRoleType.id)
 
-    if (foundUserRole !== undefined) {
+    if (userRole) {
       return { message: 'Role already assigned' }
     }
 
     try {
-      await repositories.roleRepository.add_role_to_user(
-        authUser.id,
-        foundRoleType.id
-      )
+      await repositories.roleRepository.addRoleToUser(authUser.id, foundRole.id)
       return { message: 'success' }
     } catch (error) {
       throw new TRPCError({

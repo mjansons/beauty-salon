@@ -2,11 +2,11 @@ import type { Database } from '@server/database'
 import { type UserAppointments } from '@server/database'
 import { type Selectable } from 'kysely'
 import { type BusinessSchema } from '@server/schemas/businessSchema'
-import { BusinessDaySchema } from '@server/schemas/businessAvailabilitySchema'
+import { type BusinessDaySchema } from '@server/schemas/businessAvailabilitySchema'
 
 export function businessRepository(db: Database) {
   return {
-    async get_business_employees_by_business_id(businessId: number): Promise<
+    async getAllBusinessEmployeesByBusinessId(businessId: number): Promise<
       {
         businessId: number
         createdAt: Date
@@ -21,7 +21,27 @@ export function businessRepository(db: Database) {
         .execute()
     },
 
-    async get_business_availability_by_id(businessId: number): Promise<
+    async getBusinessEmployeeByUserId(
+      businessId: number,
+      regesteredUserId: number
+    ): Promise<
+      | {
+          businessId: number
+          createdAt: Date
+          employeeId: number
+          id: number
+        }
+      | undefined
+    > {
+      return db
+        .selectFrom('businessEmployees')
+        .selectAll()
+        .where('businessId', '=', businessId)
+        .where('employeeId', '=', regesteredUserId)
+        .executeTakeFirst()
+    },
+
+    async getBusinessAvailabilityById(businessId: number): Promise<
       {
         id: number
         businessId: number
@@ -37,7 +57,7 @@ export function businessRepository(db: Database) {
         .execute()
     },
 
-    async add_appointment(
+    async addAppointment(
       clientId: number | null,
       firstName: string,
       lastName: string,
@@ -48,7 +68,7 @@ export function businessRepository(db: Database) {
       specialistId: number,
       appointmentStartTime: Date,
       appointmentEndTime: Date,
-      comment: string | undefined,
+      comment: string | undefined
     ): Promise<Selectable<UserAppointments>[]> {
       const appointments = await db
         .insertInto('userAppointments')
@@ -63,7 +83,7 @@ export function businessRepository(db: Database) {
           lastName: lastName,
           phoneNumber: phoneNumber,
           specialistId: specialistId,
-          comment: comment
+          comment: comment,
         })
         .returningAll()
         .execute()
@@ -71,7 +91,7 @@ export function businessRepository(db: Database) {
       return appointments
     },
 
-    async add_business(
+    async addBusiness(
       name: string,
       ownerId: number,
       city: string,
@@ -95,7 +115,7 @@ export function businessRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
-    async edit_business(
+    async editBusiness(
       id: number,
       name: string,
       ownerId: number,
@@ -116,12 +136,12 @@ export function businessRepository(db: Database) {
           email: email,
           phoneNumber: phoneNumber,
         })
-        .where("id", "=", id)
+        .where('id', '=', id)
         .returningAll()
         .executeTakeFirstOrThrow()
     },
 
-    async get_businesses_by_registered_user_id(
+    async getBusinessesByRegisteredUserId(
       regesteredUserId: number
     ): Promise<BusinessSchema[]> {
       return await db
@@ -131,7 +151,19 @@ export function businessRepository(db: Database) {
         .execute()
     },
 
-    async add_business_hours_to_day(
+    async getUserBusinessesByBusinessId(
+      regesteredUserId: number,
+      businessId: number
+    ): Promise<BusinessSchema | undefined> {
+      return await db
+        .selectFrom('businesses')
+        .selectAll()
+        .where('ownerId', '=', regesteredUserId)
+        .where('id', '=', businessId)
+        .executeTakeFirst()
+    },
+
+    async addBusinessHoursToDay(
       businessId: number,
       dayOfWeek: number,
       startTime: string,
@@ -149,7 +181,7 @@ export function businessRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
-    async add_emplyee(
+    async addEmplyee(
       businessId: number,
       employeeId: number
     ): Promise<{
@@ -168,7 +200,7 @@ export function businessRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
-    async delete_emplyee(
+    async deleteEmplyee(
       businessId: number,
       employeeId: number
     ): Promise<{
@@ -179,15 +211,13 @@ export function businessRepository(db: Database) {
     }> {
       return await db
         .deleteFrom('businessEmployees')
-        .where("businessId", "=", businessId)
-        .where("employeeId", "=", employeeId)
+        .where('businessId', '=', businessId)
+        .where('employeeId', '=', employeeId)
         .returningAll()
         .executeTakeFirstOrThrow()
     },
 
-    async get_businesses_by_title(
-      searchTerm: string
-    ): Promise<BusinessSchema[]> {
+    async getBusinessesByTitle(searchTerm: string): Promise<BusinessSchema[]> {
       return await db
         .selectFrom('businesses')
         .selectAll()
@@ -205,7 +235,7 @@ export function businessRepository(db: Database) {
         .execute()
     },
 
-    async get_businesses_by_service(
+    async getBusinessesByService(
       searchTerm: string
     ): Promise<BusinessSchema[]> {
       return await db
