@@ -6,13 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "npx stylelint \"**/*.{scss,css,vue}\" --fix && eslint --fix"
   },
   "dependencies": {
     "vue": "^3.4.37"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.2",
+    "postcss-html": "^1.7.0",
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard-vue": "^1.0.0",
     "typescript": "^5.5.3",
     "vite": "^5.4.1",
     "vue-tsc": "^2.0.29"
