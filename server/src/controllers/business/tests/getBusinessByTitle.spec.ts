@@ -17,7 +17,7 @@ it('finds a business a business', async () => {
   }
   const [createdUser] = await insertAll(db, 'registeredUsers', user)
 
-  const [business] = await insertAll(db, 'businesses', {
+  await insertAll(db, 'businesses', {
     email: 'business@emai.com',
     phoneNumber: '12345678',
     name: 'newBusiness',

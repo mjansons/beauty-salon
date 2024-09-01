@@ -30,7 +30,7 @@ export const registeredAppointmentsSchema = userAppointmentsSchema.pick({
   businessId: true,
   businessSpecialityId: true,
   specialistId: true,
-  comment: true
+  comment: true,
 })
 export type RegisteredAppointments = z.infer<
   typeof registeredAppointmentsSchema

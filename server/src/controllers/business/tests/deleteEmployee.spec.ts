@@ -55,7 +55,7 @@ it('deletes an employee from the business', async () => {
     },
   })
 
-  const employeeDeleted = await validTokenCaller.deleteEmployee({
+  await validTokenCaller.deleteEmployee({
     businessId: createdBusiness.id,
     employeeEmail: user.email,
   })

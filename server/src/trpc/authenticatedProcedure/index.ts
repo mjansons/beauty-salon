@@ -16,7 +16,7 @@ function getUserFromToken(token: string) {
     const tokenParsed = parseTokenPayload(tokenVerified)
 
     return tokenParsed.user
-  } catch (error) {
+  } catch {
     return null
   }
 }

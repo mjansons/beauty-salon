@@ -12,7 +12,7 @@ export default t.procedure
   .use(
     provideRepos({
       userRepository,
-      roleRepository
+      roleRepository,
     })
   )
   .input(
@@ -52,7 +52,7 @@ export default t.procedure
 
     try {
       await repositories.roleRepository.addRoleToUser(userCreated.id, 1)
-    } catch(error) {
+    } catch (error) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: 'Failed to assign client role to the user.',

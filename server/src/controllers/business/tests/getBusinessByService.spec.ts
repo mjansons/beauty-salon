@@ -33,8 +33,8 @@ it('finds a business a business', async () => {
     specialityId: 3,
   })
 
-  const [allspec] = await selectAll(db, 'businessSpecialities')
-  const sp = await selectAll(db, 'specialities')
+  await selectAll(db, 'businessSpecialities')
+  await selectAll(db, 'specialities')
 
   const publicCaller = createCaller({
     db,

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import 'dotenv/config'
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'

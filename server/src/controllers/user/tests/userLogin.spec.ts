@@ -18,11 +18,11 @@ const theuser = {
 
 vi.mock('bcrypt', () => ({
   default: {
-    compare: (currentPass: string, storedPass: string) => {
+    compare: (currentPass: string) => {
       if (currentPass === 'verystrongpasswordthatishashed') {
         return true
       }
-      false
+      return false
     },
   },
 }))

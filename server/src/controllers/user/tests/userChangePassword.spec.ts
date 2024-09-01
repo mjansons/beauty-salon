@@ -99,14 +99,6 @@ it('should throw an error for unauthorised password change', async () => {
 })
 
 it('throws error if the user is not in db', async () => {
-  const user = {
-    email: 'newusere@test.com',
-    firstName: 'user',
-    lastName: 'surname',
-    password: 'verystrongpasswordthatishashed',
-    phoneNumber: '12345678',
-  }
-
   const validTokenCaller = createCaller({
     db,
     authUser: {
@@ -118,7 +110,9 @@ it('throws error if the user is not in db', async () => {
     },
   })
 
-  await expect(validTokenCaller.changePassword({
-    password: 'abracadabra',
-  })).rejects.toThrow(/resource/i)
+  await expect(
+    validTokenCaller.changePassword({
+      password: 'abracadabra',
+    })
+  ).rejects.toThrow(/resource/i)
 })

@@ -1,6 +1,6 @@
 import t from '@server/trpc'
 import { createTestDatabase } from '@tests/utils/database'
-import { insertAll, selectAll } from '@tests/utils/records'
+import { insertAll } from '@tests/utils/records'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { requestContext } from '@tests/utils/context'
 import authenticatedSpecialistProcedure from '.'

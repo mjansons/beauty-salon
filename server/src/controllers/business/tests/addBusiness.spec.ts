@@ -131,7 +131,7 @@ it('throws an error for duplicate business name', async () => {
     },
   })
 
-  const newEntry = await validTokenCaller.addBusiness({
+  await validTokenCaller.addBusiness({
     name: 'newBusiness',
     city: 'vilnus',
     address: 'some streetd',
@@ -140,12 +140,14 @@ it('throws an error for duplicate business name', async () => {
     phoneNumber: '12345678',
   })
 
-  await expect( validTokenCaller.addBusiness({
-    name: 'newBusiness',
-    city: 'vilnus',
-    address: 'some streetd',
-    postalCode: 'some code 1234',
-    email: 'business@emai.com',
-    phoneNumber: '12345678',
-  })).rejects.toThrow(/Business with this name already exists/)
+  await expect(
+    validTokenCaller.addBusiness({
+      name: 'newBusiness',
+      city: 'vilnus',
+      address: 'some streetd',
+      postalCode: 'some code 1234',
+      email: 'business@emai.com',
+      phoneNumber: '12345678',
+    })
+  ).rejects.toThrow(/Business with this name already exists/)
 })

@@ -49,7 +49,6 @@ export function roleRepository(db: Database) {
         .executeTakeFirst()
     },
 
-
     async getRoleByUserIdAndRoleId(
       userId: number,
       roleId: number

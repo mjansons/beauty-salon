@@ -124,7 +124,7 @@ it('should return if role already added', async () => {
 
   await validTokenCaller.addRoleToUser({ role: 'client' })
 
-  expect( await
-    validTokenCaller.addRoleToUser({ role: 'client' })
+  expect(
+    await validTokenCaller.addRoleToUser({ role: 'client' })
   ).toMatchObject({ message: 'Role already assigned' })
 })

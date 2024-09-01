@@ -9,10 +9,17 @@ export const specialistDaySchema = z.object({
   endTime: z.string().time(),
 })
 
-export const newSpecialistDaySchema = specialistDaySchema.omit({ id: true, specialistId: true })
+export const newSpecialistDaySchema = specialistDaySchema.omit({
+  id: true,
+  specialistId: true,
+})
 
-export const InsertableSpecialistDaySchema = specialistDaySchema.omit({ id: true})
+export const InsertableSpecialistDaySchema = specialistDaySchema.omit({
+  id: true,
+})
 
 export type SpecialistDaySchema = z.infer<typeof specialistDaySchema>
 
-export type InsertableSpecialistDaySchema = z.infer<typeof InsertableSpecialistDaySchema>
+export type InsertableSpecialistDaySchema = z.infer<
+  typeof InsertableSpecialistDaySchema
+>

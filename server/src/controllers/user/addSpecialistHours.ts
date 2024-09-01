@@ -28,9 +28,7 @@ export default authenticatedSpecialistProcedure
 
       // has the specialist any specialities?
       const userSpecialities =
-        await repositories.specialityRepository.getUsersSpecalities(
-          authUser.id
-        )
+        await repositories.specialityRepository.getUsersSpecalities(authUser.id)
 
       if (userSpecialities.length === 0) {
         throw new TRPCError({

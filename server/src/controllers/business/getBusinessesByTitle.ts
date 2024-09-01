@@ -9,7 +9,9 @@ export default t.procedure
       businessRepository,
     })
   )
-  .input(z.object({ searchTerm: z.string().trim().toLowerCase().min(3).max(50) }))
+  .input(
+    z.object({ searchTerm: z.string().trim().toLowerCase().min(3).max(50) })
+  )
   .query(async ({ input: { searchTerm }, ctx: { repositories } }) => {
     const businesses =
       await repositories.businessRepository.getBusinessesByTitle(searchTerm)

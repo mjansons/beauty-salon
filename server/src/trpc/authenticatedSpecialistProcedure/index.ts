@@ -11,10 +11,11 @@ export default authenticatedProcedure
   )
   .use(async ({ ctx: { repositories, authUser }, next }) => {
     // is user a specialist?
-    const userRole = await repositories.roleRepository.getUserAssignedRoleByRoleId(
-      authUser.id,
-      2
-    )
+    const userRole =
+      await repositories.roleRepository.getUserAssignedRoleByRoleId(
+        authUser.id,
+        2
+      )
 
     if (!userRole) {
       throw new TRPCError({

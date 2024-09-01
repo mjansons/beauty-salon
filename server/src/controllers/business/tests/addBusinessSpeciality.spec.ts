@@ -154,7 +154,7 @@ it('return if speciality already assigned to business', async () => {
     },
   })
 
-  const newSpeciality = await validTokenCaller.addBusinessSpeciality({
+  await validTokenCaller.addBusinessSpeciality({
     businessId: createdBusiness.id,
     specialityName: 'makeup',
     price: 30,

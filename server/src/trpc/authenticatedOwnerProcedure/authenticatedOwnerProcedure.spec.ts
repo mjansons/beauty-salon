@@ -115,7 +115,9 @@ it('throws an error if the user is not the business owner', async () => {
     },
   })
 
-  await expect(validTokenCaller.testCall({
-    businessId: createdBusiness.id,
-  })).rejects.toThrow(/business/i)
+  await expect(
+    validTokenCaller.testCall({
+      businessId: createdBusiness.id,
+    })
+  ).rejects.toThrow(/business/i)
 })

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // Usage: npm run migrate:new $migrationName
 
 import fs from 'node:fs/promises'

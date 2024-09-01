@@ -20,5 +20,5 @@ export default t.router({
   getBusinessesByTitle,
   getBusinessesByService,
   deleteEmployee,
-  editBusiness
+  editBusiness,
 })

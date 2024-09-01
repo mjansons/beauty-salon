@@ -28,7 +28,7 @@ export default authenticatedProcedure
         specialistId,
         appointmentStartTime,
         appointmentEndTime,
-        comment
+        comment,
       },
       ctx: { repositories, authUser },
     }) => {
@@ -64,7 +64,7 @@ export default authenticatedProcedure
           specialistId,
           businessSpeciality.specialityId
         )
-        
+
       if (!userSpeciality) {
         throw new TRPCError({
           code: 'BAD_REQUEST',

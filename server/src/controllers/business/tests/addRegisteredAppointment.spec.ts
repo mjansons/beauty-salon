@@ -129,13 +129,15 @@ it('adds a new appointment', async () => {
   })
 
   // expect(newEntry).toBeDefined()
-  expect(newEntry).toMatchObject([{
-    businessId: business.id,
-    businessSpecialityId: speciality.id,
-    specialistId: specialist.id,
-    appointmentStartTime: futureTimestamp,
-    appointmentEndTime: futureTimestampPlus1h,
-  }])
+  expect(newEntry).toMatchObject([
+    {
+      businessId: business.id,
+      businessSpecialityId: speciality.id,
+      specialistId: specialist.id,
+      appointmentStartTime: futureTimestamp,
+      appointmentEndTime: futureTimestampPlus1h,
+    },
+  ])
 })
 
 it('adds a new appointment with comment', async () => {
@@ -179,11 +181,11 @@ it('adds a new appointment with comment', async () => {
     specialistId: specialist.id,
     appointmentStartTime: futureTimestamp,
     appointmentEndTime: futureTimestampPlus1h,
-    comment: "not too short"
+    comment: 'not too short',
   })
 
   // expect(newEntry).toBeDefined()
-  expect(newEntry.comment).toBe("not too short")
+  expect(newEntry.comment).toBe('not too short')
 })
 
 it('should throw an error for unauthenticated change', async () => {

@@ -12,5 +12,5 @@ export default t.router({
   changePassword,
   addRoleToUser,
   addSpecialityToUser,
-  addSpecialistHours
+  addSpecialistHours,
 })
