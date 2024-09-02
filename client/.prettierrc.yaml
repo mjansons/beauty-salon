@@ -1,9 +1,0 @@
-printWidth: .nan
-tabWidth: .nan
-useTabs: false
-semi: false
-singleQuote: true
-trailingComma: es5
-bracketSpacing: true
-jsxBracketSameLine: true
-arrowParens: avoid

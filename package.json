@@ -1,10 +1,10 @@
 {
-  "name": "beauty-salon-mono",
-  "version": "1.0.0",
-  "description": "",
-  "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ]
+    "name": "wink-mono",
+    "version": "1.0.0",
+    "description": "",
+    "private": true,
+    "workspaces": [
+        "client",
+        "server"
+    ]
 }
