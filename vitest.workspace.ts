@@ -1,4 +1,1 @@
-export default [
-  'client/vitest.config.ts',
-  'server/vitest.config.js',
-]
+export default ["client/vitest.config.js", "server/vitest.config.js"];

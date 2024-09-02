@@ -11,7 +11,7 @@ export const businesSpecialitySchema = z.object({
 
 export type BusinessSpeciality = z.infer<typeof businesSpecialitySchema>
 
-export const businessKeysAll = Object.keys(
+export const businessSpecialityKeysAll = Object.keys(
   businesSpecialitySchema.shape
 ) as (keyof BusinessSpecialities)[]
 
