@@ -1,7 +1,9 @@
-import { isLoggedIn } from '@/stores/user'
+import useUserStore from '@/stores/user'
+
+const userStore = useUserStore()
 
 export const authenticate = () => {
-  if (!isLoggedIn.value) return { name: 'Login' }
+  if (!userStore.isLoggedIn) return { name: 'Login' }
 
   return true
 }
