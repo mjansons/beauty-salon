@@ -11,8 +11,6 @@ export type Context = {
   db: Database
   repositories?: Partial<Repositories>
   authUser?: AuthUser
-
-  // do I need these?
   req?: Request
   res?: Response
 }
