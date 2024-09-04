@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView/HomeView.vue'
-// import { authenticate } from './guards'
+import DashboardView from '@/views/DasbhoardView/DashboardView.vue'
+import { authenticate, redirectToDashboardIfLoggedIn } from './guards'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,16 +10,27 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
+      beforeEnter: [redirectToDashboardIfLoggedIn],
       component: HomeView,
     },
-    // {
-    //   path: '/dashboard',
-    //   component: MainLayout,
-    //   beforeEnter: [authenticate], // guard
-    //   children: [
-    //     // all routes here will be protected by the authenticate guard
-    //   ],
-    // },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      beforeEnter: [authenticate],
+      component: DashboardView,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      beforeEnter: [redirectToDashboardIfLoggedIn],
+      component: () => import('../views/LoginView/LoginView.vue'),
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      beforeEnter: [redirectToDashboardIfLoggedIn],
+      component: () => import('../views/SignupView/SignupView.vue'),
+    },
     {
       path: '/:catchAll(.*)',
       name: 'notFound',

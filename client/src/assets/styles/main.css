@@ -1,0 +1,41 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-synthesis: none;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+header {
+  padding: 16px 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & a{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  & .logo {
+    margin-right: 32px;
+  }
+
+  & .nav-container {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+
+  & .category-container {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+}
+
+body {
+  margin: 0;
+}

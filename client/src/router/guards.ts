@@ -1,9 +1,11 @@
-import useUserStore from '@/stores/user'
-
-const userStore = useUserStore()
+import { isLoggedIn } from '@/stores/user'
 
 export const authenticate = () => {
-  if (!userStore.isLoggedIn) return { name: 'Login' }
+  if (!isLoggedIn.value) return { name: 'login' };
+  return true;
+};
 
-  return true
-}
+export const redirectToDashboardIfLoggedIn = () => {
+  if (isLoggedIn.value) return { name: 'dashboard' };
+  return true;
+};

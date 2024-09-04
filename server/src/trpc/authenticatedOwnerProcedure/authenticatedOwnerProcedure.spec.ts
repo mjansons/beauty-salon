@@ -3,12 +3,12 @@ import { createTestDatabase } from '@tests/utils/database'
 import { insertAll } from '@tests/utils/records'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { requestContext } from '@tests/utils/context'
-import authenticatedProcedure from '.'
+import authenticatedOwnerProcedure from '.'
 
 const db = await wrapInRollbacks(createTestDatabase())
 
 const routes = t.router({
-  testCall: authenticatedProcedure.query(() => 'passed'),
+  testCall: authenticatedOwnerProcedure.query(() => 'passed'),
 })
 
 const createCaller = t.createCallerFactory(routes)
