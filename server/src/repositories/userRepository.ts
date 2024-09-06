@@ -5,24 +5,26 @@ import {
   userKeysAll,
   userKeysPublic,
 } from '@server/schemas/registeredUser'
-import type { Insertable, Selectable } from 'kysely'
+import type { Selectable } from 'kysely'
+import { type SignupFields } from '@server/schemas/registeredUser'
 
 export function userRepository(db: Database) {
   return {
     async createRegisteredUser(
-      user: Insertable<RegisteredUsers>
+      user: SignupFields
     ): Promise<UserPublic> {
-      return db
+      return await db
         .insertInto('registeredUsers')
         .values(user)
         .returning(userKeysPublic)
         .executeTakeFirstOrThrow()
     },
 
+
     async findRegisteredUserByEmail(
       email: string
     ): Promise<Selectable<RegisteredUsers> | undefined> {
-      return db
+      return await db
         .selectFrom('registeredUsers')
         .select(userKeysAll)
         .where('email', '=', email)
@@ -32,7 +34,7 @@ export function userRepository(db: Database) {
     async findRegisteredUserById(
       id: number
     ): Promise<Selectable<RegisteredUsers> | undefined> {
-      return db
+      return await db
         .selectFrom('registeredUsers')
         .select(userKeysAll)
         .where('id', '=', id)
@@ -44,7 +46,7 @@ export function userRepository(db: Database) {
       row: string,
       newValue: string
     ): Promise<UserPublic | undefined> {
-      return db
+      return await db
         .updateTable('registeredUsers')
         .set({
           [row]: newValue,

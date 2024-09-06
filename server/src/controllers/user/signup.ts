@@ -6,7 +6,7 @@ import provideRepos from '@server/trpc/provideRepos'
 import { userRepository } from '@server/repositories/userRepository'
 import { roleRepository } from '@server/repositories/roleRepository'
 import { assertError } from '@server/utils/errors'
-import { registeredUserSchema } from '@server/schemas/registeredUser'
+import { signupSchema } from '@server/schemas/registeredUser'
 
 export default t.procedure
   .use(
@@ -15,15 +15,7 @@ export default t.procedure
       roleRepository,
     })
   )
-  .input(
-    registeredUserSchema.pick({
-      email: true,
-      password: true,
-      firstName: true,
-      lastName: true,
-      phoneNumber: true,
-    })
-  )
+  .input(signupSchema)
   .mutation(async ({ input: user, ctx: { repositories } }) => {
     const passwordHash = await hash(user.password, config.auth.passwordCost)
 

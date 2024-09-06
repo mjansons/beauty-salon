@@ -32,6 +32,12 @@ const router = createRouter({
       component: () => import('../views/SignupView/SignupView.vue'),
     },
     {
+      path: '/onboarding',
+      name: 'onboarding',
+      beforeEnter: [authenticate],
+      component: () => import('../views/OnboardingView/OnboardingView.vue'),
+    },
+    {
       path: '/:catchAll(.*)',
       name: 'notFound',
       component: () => import('../views/NotFound.vue'),

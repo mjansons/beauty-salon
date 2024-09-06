@@ -10,11 +10,21 @@ export const registeredUserSchema = z.object({
     .string()
     .min(8, 'Password must be at least 8 characters long')
     .max(64, 'Password must be at most 64 characters long'),
-  firstName: z.string().trim().toLowerCase().min(1).max(100),
-  lastName: z.string().trim().toLowerCase().min(1).max(100),
-  phoneNumber: z.string().min(8).max(15),
+  firstName: z.string().trim().toLowerCase().max(100).optional(),
+  lastName: z.string().trim().toLowerCase().max(100).optional(),
+  phoneNumber: z.string().max(15).optional(),
   createdAt: z.date(),
 })
+
+export const signupSchema = registeredUserSchema.pick({
+  email: true,
+  firstName: true,
+  lastName: true,
+  phoneNumber: true,
+  password: true,
+})
+
+export type SignupFields = z.infer<typeof signupSchema>
 
 export const userKeysAll = Object.keys(
   registeredUserSchema.shape

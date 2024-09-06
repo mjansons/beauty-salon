@@ -44,11 +44,11 @@ export interface BusinessSpecialities {
 export interface RegisteredUsers {
   createdAt: Generated<Timestamp>
   email: string
-  firstName: string
+  firstName: string | null
   id: Generated<number>
-  lastName: string
+  lastName: string | null
   password: string
-  phoneNumber: string
+  phoneNumber: string | null
 }
 
 export interface RoleTypes {
