@@ -10,9 +10,7 @@ import { type SignupFields } from '@server/schemas/registeredUser'
 
 export function userRepository(db: Database) {
   return {
-    async createRegisteredUser(
-      user: SignupFields
-    ): Promise<UserPublic> {
+    async createRegisteredUser(user: SignupFields): Promise<UserPublic> {
       return await db
         .insertInto('registeredUsers')
         .values(user)
@@ -20,6 +18,20 @@ export function userRepository(db: Database) {
         .executeTakeFirstOrThrow()
     },
 
+    async updateRegisteredUserById(
+      id: number,
+      updatedUser: Partial<SignupFields>
+    ): Promise<UserPublic | undefined> {
+      const { ...updateData } = updatedUser
+      const result = await db
+        .updateTable('registeredUsers')
+        .set(updateData)
+        .where('id', '=', id)
+        .returning(userKeysPublic)
+        .executeTakeFirst()
+
+      return result
+    },
 
     async findRegisteredUserByEmail(
       email: string

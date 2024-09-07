@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { signup } from '@/stores/user'
+import { login, signup } from '@/stores/user'
 import { TRPCClientError } from '@trpc/client'
-import { login } from '@/stores/user'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

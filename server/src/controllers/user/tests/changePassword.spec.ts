@@ -17,11 +17,7 @@ it('changes the password to the new one, with authenticated user', async () => {
     phoneNumber: '12345678',
   }
 
-  await insertAll(db, 'registeredUsers', user)
-
-  const [createdUser] = await selectAll(db, 'registeredUsers', (eb) =>
-    eb('email', '=', user.email)
-  )
+  const [createdUser] = await insertAll(db, 'registeredUsers', user)
 
   const validTokenCaller = createCaller({
     db,

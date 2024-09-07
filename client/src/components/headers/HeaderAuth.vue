@@ -2,7 +2,7 @@
 
 <template>
   <header>
-    <RouterLink :to="{ name: 'home' }" tabindex="-1">
+    <RouterLink :to="{ name: 'dashboard' }" tabindex="-1">
       <img class="logo" alt="wink logo" src="../../assets/images/wink.svg" />
     </RouterLink>
     <div class="nav-container">

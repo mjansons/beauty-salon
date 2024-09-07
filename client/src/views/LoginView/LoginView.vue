@@ -55,7 +55,7 @@ async function submitLogin() {
     />
 
     <button type="submit" :disabled="password.length < 1 || email.length < 1">
-      Create Account
+      Sign in
     </button>
   </form>
 </template>

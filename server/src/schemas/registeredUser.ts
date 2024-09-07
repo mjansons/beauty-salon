@@ -24,6 +24,7 @@ export const signupSchema = registeredUserSchema.pick({
   password: true,
 })
 
+
 export type SignupFields = z.infer<typeof signupSchema>
 
 export const userKeysAll = Object.keys(
@@ -53,3 +54,7 @@ export const authUserSchema = registeredUserSchema.pick({
 })
 
 export type AuthUser = z.infer<typeof authUserSchema>
+
+export const updateUserSchema = signupSchema.partial()
+
+export type UpdateUserFields = z.infer<typeof updateUserSchema>
