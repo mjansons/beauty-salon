@@ -11,6 +11,7 @@ export async function up(db: Kysely<any>) {
     .addColumn('email', 'text', (column) => column.unique().notNull())
     .addColumn('password', 'text', (column) => column.notNull())
     .addColumn('phone_number', 'text', (column) => column)
+    .addColumn('is_onboarded', 'boolean', (column) => column.defaultTo(false))
     .addColumn('created_at', 'timestamptz', (column) =>
       column.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
     )

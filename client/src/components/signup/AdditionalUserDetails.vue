@@ -11,15 +11,19 @@ const name = ref('')
 const surname = ref('')
 const completePhoneNumber = computed(() => `${prefix.value}${number.value}`)
 
+const emit = defineEmits(['nextStep'])
+
 const submitAdditionalDetails = async () => {
   try {
     const updatedDetails = await updateUserDetails({
       phoneNumber: completePhoneNumber.value,
       firstName: name.value,
       lastName: surname.value,
+      isOnboarded: true,
     })
 
     console.log(updatedDetails)
+    emit('nextStep')
     router.push({ name: 'dashboard' })
   } catch (error) {
     console.log(error)

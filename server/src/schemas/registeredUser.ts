@@ -13,6 +13,7 @@ export const registeredUserSchema = z.object({
   firstName: z.string().trim().toLowerCase().max(100).optional(),
   lastName: z.string().trim().toLowerCase().max(100).optional(),
   phoneNumber: z.string().max(15).optional(),
+  isOnboarded: z.boolean(),
   createdAt: z.date(),
 })
 
@@ -24,6 +25,14 @@ export const signupSchema = registeredUserSchema.pick({
   password: true,
 })
 
+export const updateSchema = registeredUserSchema.pick({
+  email: true,
+  firstName: true,
+  lastName: true,
+  phoneNumber: true,
+  password: true,
+  isOnboarded: true,
+})
 
 export type SignupFields = z.infer<typeof signupSchema>
 
@@ -37,6 +46,7 @@ export const userKeysPublic = [
   'lastName',
   'email',
   'phoneNumber',
+  'isOnboarded',
   `createdAt`,
 ] as const
 
@@ -55,6 +65,6 @@ export const authUserSchema = registeredUserSchema.pick({
 
 export type AuthUser = z.infer<typeof authUserSchema>
 
-export const updateUserSchema = signupSchema.partial()
+export const updateUserSchema = updateSchema.partial()
 
 export type UpdateUserFields = z.infer<typeof updateUserSchema>

@@ -4,7 +4,9 @@ import { ref } from 'vue'
 const useBusinessStore = defineStore('business', () => {
   const allSpecialities = ref<{ id: number; speciality: string }[]>()
 
-  return { allSpecialities }
+  const userSpecialities = ref<string[]>()
+
+  return { allSpecialities, userSpecialities }
 })
 
 export default useBusinessStore

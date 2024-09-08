@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, ref } from 'vue'
 import { trpc } from '@/trpc'
-// import { setFallbackImage } from '@/utils/fallbackImages'
 import useBusinessStore from '@/stores/businessStore'
 
 const businessStore = useBusinessStore()
@@ -13,6 +12,7 @@ const imgLink = (img: string) => {
     import.meta.url
   ).href
 }
+
 const defaultImage = new URL(
   '../../assets/images/specialityImages/default.svg',
   import.meta.url
@@ -38,6 +38,9 @@ const toggleService = (index: number) => {
 }
 
 const emitValues = () => {
+  businessStore.userSpecialities = services.value
+    .filter((speciality) => speciality.selected)
+    .map((speciality) => speciality.name)
   emit('nextStep')
 }
 </script>
@@ -71,17 +74,18 @@ const emitValues = () => {
 <style scoped>
 .services-container {
   display: flex;
+  flex-wrap: wrap;
 }
 
-.service{
+.service {
   border: 1px solid black;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   padding: 16px;
   cursor: pointer;
 }
-div>.selected {
+div > .selected {
   border: 1px solid red;
 }
 </style>

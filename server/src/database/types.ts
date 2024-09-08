@@ -46,6 +46,7 @@ export interface RegisteredUsers {
   email: string
   firstName: string | null
   id: Generated<number>
+  isOnboarded: Generated<boolean | null>
   lastName: string | null
   password: string
   phoneNumber: string | null
