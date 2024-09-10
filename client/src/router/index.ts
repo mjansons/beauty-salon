@@ -3,7 +3,6 @@ import HomeView from '@/views/HomeView/HomeView.vue'
 import DashboardView from '@/views/DasbhoardView/DashboardView.vue'
 import { authenticate, redirectToDashboardIfLoggedIn } from './guards'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -14,6 +13,8 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      // to do anything authenticated user can do (thats not onboarding), you have to be logged in and
+      // have onboarded set to true
       path: '/dashboard',
       name: 'dashboard',
       beforeEnter: [authenticate],
@@ -32,6 +33,7 @@ const router = createRouter({
       component: () => import('../views/SignupView/SignupView.vue'),
     },
     {
+      // to go to onboarding you have to be logged in and onboarded has to be false
       path: '/onboarding',
       name: 'onboarding',
       beforeEnter: [authenticate],

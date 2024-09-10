@@ -63,6 +63,7 @@ export const authUserSchema = registeredUserSchema.pick({
   phoneNumber: true,
 })
 
+
 export type AuthUser = z.infer<typeof authUserSchema>
 
 export const updateUserSchema = updateSchema.partial()

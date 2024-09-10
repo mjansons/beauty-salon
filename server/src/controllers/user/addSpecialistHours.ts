@@ -33,7 +33,7 @@ export default authenticatedSpecialistProcedure
       if (userSpecialities.length === 0) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
-          message: `User hasnt specialised in anything yet.`,
+          message: `User has not specialised in anything yet.`,
         })
       }
 

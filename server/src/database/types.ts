@@ -23,15 +23,15 @@ export interface BusinessEmployees {
 }
 
 export interface Businesses {
-  address: string
-  city: string
-  createdAt: Generated<Timestamp>
-  email: string
   id: Generated<number>
   name: string
-  ownerId: number
-  phoneNumber: string
+  address: string
+  city: string
   postalCode: string
+  email: string
+  phoneNumber: string
+  ownerId: number
+  createdAt: Generated<Timestamp>
 }
 
 export interface BusinessSpecialities {

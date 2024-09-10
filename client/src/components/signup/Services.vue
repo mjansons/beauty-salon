@@ -4,7 +4,7 @@ import { trpc } from '@/trpc'
 import useBusinessStore from '@/stores/businessStore'
 
 const businessStore = useBusinessStore()
-const emit = defineEmits(['nextStep'])
+const emit = defineEmits(['nextStep', 'services'])
 
 const imgLink = (img: string) => {
   return new URL(
@@ -38,10 +38,11 @@ const toggleService = (index: number) => {
 }
 
 const emitValues = () => {
-  businessStore.userSpecialities = services.value
+  const offeredServices = services.value
     .filter((speciality) => speciality.selected)
     .map((speciality) => speciality.name)
   emit('nextStep')
+  emit('services', offeredServices)
 }
 </script>
 

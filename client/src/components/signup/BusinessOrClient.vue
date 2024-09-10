@@ -25,7 +25,7 @@ const emitValues = () => {
       :class="{ selected: !isClientAccount }"
       @click="isClientAccount = false"
     >
-      <p>Promote and manage my business</p>
+      <p>Work or manage my business</p>
     </div>
   </div>
 

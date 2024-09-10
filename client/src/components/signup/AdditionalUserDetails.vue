@@ -1,9 +1,5 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { updateUserDetails } from '@/stores/user'
-
-const router = useRouter()
 
 const prefix = ref('+371')
 const number = ref('')
@@ -11,30 +7,23 @@ const name = ref('')
 const surname = ref('')
 const completePhoneNumber = computed(() => `${prefix.value}${number.value}`)
 
-const emit = defineEmits(['nextStep'])
+const emit = defineEmits(['nextStep', 'userDetails'])
 
-const submitAdditionalDetails = async () => {
-  try {
-    const updatedDetails = await updateUserDetails({
-      phoneNumber: completePhoneNumber.value,
-      firstName: name.value,
-      lastName: surname.value,
-      isOnboarded: true,
-    })
-
-    console.log(updatedDetails)
-    emit('nextStep')
-    router.push({ name: 'dashboard' })
-  } catch (error) {
-    console.log(error)
-  }
+const emitDetails = async () => {
+  emit('nextStep')
+  emit('userDetails', {
+    phoneNumber: completePhoneNumber.value,
+    firstName: name.value,
+    lastName: surname.value,
+    isOnboarded: true,
+  })
 }
 </script>
 
 <template>
   <h1>Tell us about yourself</h1>
 
-  <form @submit.prevent="submitAdditionalDetails">
+  <form @submit.prevent="emitDetails">
     <label for="name">Name</label>
     <input
       type="text"
@@ -78,7 +67,7 @@ const submitAdditionalDetails = async () => {
       type="submit"
       :disabled="name.length < 1 || surname.length < 1 || number.length < 1"
     >
-      Finish
+      Continue
     </button>
   </form>
 </template>
