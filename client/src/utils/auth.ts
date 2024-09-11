@@ -23,3 +23,6 @@ export function getUserFromToken(token: string): AuthUser {
 export function getUserIdFromToken(token: string) {
   return getUserFromToken(token).id
 }
+export function getUserIsOnboardedFromToken(token: string) {
+  return getUserFromToken(token).isOnboarded
+}

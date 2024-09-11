@@ -3,6 +3,7 @@ import {
   getStoredAccessToken,
   getUserIdFromToken,
   storeAccessToken,
+  getUserIsOnboardedFromToken
 } from '@/utils/auth'
 import { trpc } from '@/trpc'
 import { computed, ref } from 'vue'
@@ -11,6 +12,10 @@ const authToken = ref<string | null>(getStoredAccessToken(localStorage))
 
 export const authUserId = computed(() =>
   authToken.value ? getUserIdFromToken(authToken.value) : null
+)
+
+export const isOnboarded = computed(() =>
+  authToken.value ? getUserIsOnboardedFromToken(authToken.value) : false
 )
 
 export const isLoggedIn = computed(() => !!authToken.value)

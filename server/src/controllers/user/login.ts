@@ -51,5 +51,6 @@ export default t.procedure
 
     return {
       accessToken,
+      isOnboarded: user.isOnboarded
     }
   })

@@ -23,15 +23,15 @@ export interface BusinessEmployees {
 }
 
 export interface Businesses {
-  id: Generated<number>
-  name: string
   address: string
   city: string
-  postalCode: string
-  email: string
-  phoneNumber: string
-  ownerId: number
   createdAt: Generated<Timestamp>
+  email: string
+  id: Generated<number>
+  name: string
+  ownerId: number
+  phoneNumber: string
+  postalCode: string
 }
 
 export interface BusinessSpecialities {
@@ -46,7 +46,7 @@ export interface RegisteredUsers {
   email: string
   firstName: string | null
   id: Generated<number>
-  isOnboarded: Generated<boolean | null>
+  isOnboarded: Generated<boolean>
   lastName: string | null
   password: string
   phoneNumber: string | null

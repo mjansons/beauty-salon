@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import BusinessOrClient from '@/components/signup/BusinessOrClient.vue'
 import AccountType from '@/components/signup/AccountType.vue'
 import AdditionalUserDetails from '@/components/signup/AdditionalUserDetails.vue'
@@ -9,6 +9,8 @@ import BusinessHours from '@/components/signup/WorkingHours.vue'
 import OnboardingSuccess from '@/components/signup/OnboardingSuccess.vue'
 import { watch } from 'vue'
 import { trpc } from '@/trpc'
+import { logout } from '@/stores/user'
+import router from '@/router'
 
 const onBoardingStep = ref(1)
 const isClientAccount = ref(null)
@@ -37,6 +39,8 @@ watch(onBoardingStep, async (newVal) => {
   if (newVal === 4 && isClientAccount.value === true) {
     // mark onboarding as complete for client
     await trpc.user.updateUserDetails.mutate(userDetails.value)
+    logout()
+    router.push({ name: 'login' })
   }
 
   // finish specialist onboarding
@@ -55,11 +59,13 @@ watch(onBoardingStep, async (newVal) => {
     }
     // add specialist working hours
     if (workingHours.value.length !== 0) {
-      alert("message")
+      alert('message')
       for (const day of workingHours.value) {
         await trpc.user.addSpecialistHours.mutate(day)
       }
     }
+    logout()
+    router.push({ name: 'login' })
   }
 
   // finish business owner onboarding
@@ -93,6 +99,9 @@ watch(onBoardingStep, async (newVal) => {
     await trpc.user.updateUserDetails.mutate({
       isOnboarded: true,
     })
+
+    logout()
+    router.push({ name: 'login' })
   }
 })
 </script>

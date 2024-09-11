@@ -10,10 +10,10 @@ export const registeredUserSchema = z.object({
     .string()
     .min(8, 'Password must be at least 8 characters long')
     .max(64, 'Password must be at most 64 characters long'),
-  firstName: z.string().trim().toLowerCase().max(100).optional(),
-  lastName: z.string().trim().toLowerCase().max(100).optional(),
-  phoneNumber: z.string().max(15).optional(),
-  isOnboarded: z.boolean(),
+  firstName: z.string().trim().toLowerCase().max(100).nullable(),
+  lastName: z.string().trim().toLowerCase().max(100).nullable(),
+  phoneNumber: z.string().max(15).nullable(),
+  isOnboarded: z.boolean().default(false),
   createdAt: z.date(),
 })
 
@@ -23,6 +23,7 @@ export const signupSchema = registeredUserSchema.pick({
   lastName: true,
   phoneNumber: true,
   password: true,
+  isOnboarded: true,
 })
 
 export const updateSchema = registeredUserSchema.pick({
@@ -61,6 +62,7 @@ export const authUserSchema = registeredUserSchema.pick({
   firstName: true,
   lastName: true,
   phoneNumber: true,
+  isOnboarded: true,
 })
 
 
