@@ -36,6 +36,7 @@ it('allows specialist to pass', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -65,6 +66,7 @@ it('throws an error if the user is does not have the role assigned', async () =>
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 

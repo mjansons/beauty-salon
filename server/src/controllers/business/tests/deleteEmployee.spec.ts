@@ -52,6 +52,7 @@ it('deletes an employee from the business', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -157,6 +158,7 @@ it('throws an error if the specialist doesnt exist', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 

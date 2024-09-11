@@ -105,6 +105,7 @@ it('adds a new appointment', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -160,6 +161,7 @@ it('adds a new appointment with comment', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -237,6 +239,7 @@ it('throw error if the speciality is not of the business', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -280,6 +283,7 @@ it('throw error if the specialist is not of the business', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -322,6 +326,7 @@ it('throw error if the specialist is not specialised', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -371,6 +376,7 @@ it('throw error if not within business working days', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -417,6 +423,7 @@ it('throw error if not within business working hours', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -463,6 +470,7 @@ it('throw error if not within specialists working days', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -511,6 +519,7 @@ it('throw error if not within specialists working hours', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -566,6 +575,7 @@ it('throw error if booking for a past date', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -611,6 +621,7 @@ it('throw error if overlaps with specialists appointments', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 

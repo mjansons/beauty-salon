@@ -36,6 +36,7 @@ it('adds business hours for a specific day', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -113,6 +114,7 @@ it('throw error if hours start before closing', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -154,6 +156,7 @@ it('returns if day has already assigned time', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 

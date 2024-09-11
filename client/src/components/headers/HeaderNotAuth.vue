@@ -17,7 +17,8 @@ import { RouterLink } from 'vue-router'
         <RouterLink :to="{ name: 'signup' }" tabindex="-1">
           <button type="button">Sign up</button></RouterLink
         >
-        <button type="button">Log in</button>
+        <RouterLink :to="{ name: 'login' }" tabindex="-1">
+        <button type="button">Log in</button> </RouterLink>
       </div>
     </div>
   </header>

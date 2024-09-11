@@ -41,6 +41,7 @@ it('allows business owner to pass', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -112,6 +113,7 @@ it('throws an error if the user is not the business owner', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 

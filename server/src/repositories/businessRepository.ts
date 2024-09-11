@@ -3,6 +3,8 @@ import { type UserAppointments } from '@server/database'
 import { type Selectable } from 'kysely'
 import { type BusinessSchema } from '@server/schemas/businessSchema'
 import { type BusinessDaySchema } from '@server/schemas/businessAvailabilitySchema'
+import { type CreateInvitation, type Invitation } from '@server/schemas/employeeInvitationSchema'
+
 
 export function businessRepository(db: Database) {
   return {
@@ -274,6 +276,16 @@ export function businessRepository(db: Database) {
         )
         .limit(10)
         .execute()
+    },
+
+    async createInvitation(
+      invite: CreateInvitation
+    ): Promise<Invitation> {
+      return await db
+        .insertInto('invitations')
+        .values(invite)
+        .returningAll()
+        .executeTakeFirstOrThrow()
     },
   }
 }

@@ -8,7 +8,7 @@ import { requestContext } from '@tests/utils/context'
 const db = await wrapInRollbacks(createTestDatabase())
 const createCaller = t.createCallerFactory(businessRouter)
 
-it('adds a business speciality', async () => {
+it('invites an employee to the business', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -28,6 +28,15 @@ it('adds a business speciality', async () => {
     phoneNumber: '12345678',
   })
 
+  await insertAll(db, 'specialists', {
+    registeredUserId: createdUser.id,
+    specialityId: 3,
+  })
+  await insertAll(db, 'userRoles', {
+    registeredUserId: createdUser.id,
+    roleId: 2,
+  })
+
   const validTokenCaller = createCaller({
     db,
     authUser: {
@@ -40,13 +49,15 @@ it('adds a business speciality', async () => {
     },
   })
 
-  const newSpeciality = await validTokenCaller.addBusinessSpeciality({
+  const employee = await validTokenCaller.inviteEmployee({
     businessId: createdBusiness.id,
-    specialityName: 'makeup',
-    price: 30,
+    employeeEmail: user.email,
   })
 
-  expect(newSpeciality).toBeDefined()
+  expect(employee).toMatchObject({
+    businessId: createdBusiness.id,
+    employeeId: createdUser.id,
+  })
 })
 
 it('should throw an error for unauthenticated change', async () => {
@@ -69,6 +80,15 @@ it('should throw an error for unauthenticated change', async () => {
     phoneNumber: '12345678',
   })
 
+  await insertAll(db, 'specialists', {
+    registeredUserId: createdUser.id,
+    specialityId: 3,
+  })
+  await insertAll(db, 'userRoles', {
+    registeredUserId: createdUser.id,
+    roleId: 2,
+  })
+
   const unauthenticatedCaller = createCaller(
     requestContext({
       db,
@@ -76,15 +96,14 @@ it('should throw an error for unauthenticated change', async () => {
   )
 
   await expect(
-    unauthenticatedCaller.addBusinessSpeciality({
+    unauthenticatedCaller.inviteEmployee({
       businessId: createdBusiness.id,
-      specialityName: 'makeup',
-      price: 30,
+      employeeEmail: user.email,
     })
   ).rejects.toThrow(/unauthenticated/i)
 })
 
-it('throw throw an error if the speciality is not existant', async () => {
+it('throws an error if the specialist doesnt exist', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -117,59 +136,9 @@ it('throw throw an error if the speciality is not existant', async () => {
   })
 
   await expect(
-    validTokenCaller.addBusinessSpeciality({
+    validTokenCaller.inviteEmployee({
       businessId: createdBusiness.id,
-      specialityName: 'something',
-      price: 30,
+      employeeEmail: user.email,
     })
-  ).rejects.toThrow(/invalid/i)
-})
-
-it('return if speciality already assigned to business', async () => {
-  const user = {
-    email: 'newusere@test.com',
-    firstName: 'user',
-    lastName: 'surname',
-    password: 'verystrongpasswordthatishashed',
-    phoneNumber: '12345678',
-  }
-  const [createdUser] = await insertAll(db, 'registeredUsers', user)
-
-  const [createdBusiness] = await insertAll(db, 'businesses', {
-    name: 'Whatever name',
-    ownerId: createdUser.id,
-    city: 'somewhere',
-    address: 'some street',
-    postalCode: 'ev123',
-    email: 'mail@mail.com',
-    phoneNumber: '12345678',
-  })
-
-  const validTokenCaller = createCaller({
-    db,
-    authUser: {
-      id: createdUser.id,
-      email: 'newusere@test.com',
-      firstName: 'user',
-      lastName: 'surname',
-      phoneNumber: '12345678',
-      isOnboarded: true,
-    },
-  })
-
-  await validTokenCaller.addBusinessSpeciality({
-    businessId: createdBusiness.id,
-    specialityName: 'makeup',
-    price: 30,
-  })
-
-  const newSpeciality2 = await validTokenCaller.addBusinessSpeciality({
-    businessId: createdBusiness.id,
-    specialityName: 'makeup',
-    price: 30,
-  })
-
-  expect(newSpeciality2).toMatchObject({
-    message: 'Speciality already assigned to business',
-  })
+  ).rejects.toThrow(/specialist/i)
 })

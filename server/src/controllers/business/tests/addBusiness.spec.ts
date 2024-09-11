@@ -15,6 +15,7 @@ it('creates a business', async () => {
     lastName: 'surname',
     password: 'verystrongpasswordthatishashed',
     phoneNumber: '12345678',
+    isOnboarded: true,
   }
   const [createdUser] = await insertAll(db, 'registeredUsers', user)
 
@@ -26,6 +27,7 @@ it('creates a business', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -95,6 +97,7 @@ it('throws error if user cannot be located', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 
@@ -128,6 +131,7 @@ it('throws an error for duplicate business name', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true,
     },
   })
 

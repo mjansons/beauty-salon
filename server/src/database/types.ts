@@ -41,6 +41,12 @@ export interface BusinessSpecialities {
   specialityId: number
 }
 
+export interface Invitations {
+  businessId: number
+  createdAt: Generated<Timestamp>
+  employeeId: number
+}
+
 export interface RegisteredUsers {
   createdAt: Generated<Timestamp>
   email: string
@@ -102,6 +108,7 @@ export interface DB {
   businessEmployees: BusinessEmployees
   businesses: Businesses
   businessSpecialities: BusinessSpecialities
+  invitations: Invitations
   registeredUsers: RegisteredUsers
   roleTypes: RoleTypes
   specialistAvailability: SpecialistAvailability
