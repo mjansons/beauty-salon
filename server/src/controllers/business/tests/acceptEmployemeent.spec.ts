@@ -37,6 +37,11 @@ it('adds an employee to the business', async () => {
     roleId: 2,
   })
 
+  await insertAll(db, 'invitations', {
+    businessId: createdBusiness.id,
+    employeeId: createdUser.id
+  })
+
   const validTokenCaller = createCaller({
     db,
     authUser: {
@@ -49,43 +54,17 @@ it('adds an employee to the business', async () => {
     },
   })
 
-  const employee = await validTokenCaller.addEmployee({
+  const employee = await validTokenCaller.acceptEmployment({
     businessId: createdBusiness.id,
-    employeeEmail: user.email,
   })
 
-  expect(employee).toBeDefined()
+  expect(employee).toMatchObject({
+    businessId: createdBusiness.id,
+    employeeId: createdUser.id,
+  })
 })
 
 it('should throw an error for unauthenticated change', async () => {
-  const user = {
-    email: 'newusere@test.com',
-    firstName: 'user',
-    lastName: 'surname',
-    password: 'verystrongpasswordthatishashed',
-    phoneNumber: '12345678',
-  }
-  const [createdUser] = await insertAll(db, 'registeredUsers', user)
-
-  const [createdBusiness] = await insertAll(db, 'businesses', {
-    name: 'Whatever name',
-    ownerId: createdUser.id,
-    city: 'somewhere',
-    address: 'some street',
-    postalCode: 'ev123',
-    email: 'mail@mail.com',
-    phoneNumber: '12345678',
-  })
-
-  await insertAll(db, 'specialists', {
-    registeredUserId: createdUser.id,
-    specialityId: 3,
-  })
-  await insertAll(db, 'userRoles', {
-    registeredUserId: createdUser.id,
-    roleId: 2,
-  })
-
   const unauthenticatedCaller = createCaller(
     requestContext({
       db,
@@ -93,9 +72,8 @@ it('should throw an error for unauthenticated change', async () => {
   )
 
   await expect(
-    unauthenticatedCaller.addEmployee({
-      businessId: createdBusiness.id,
-      employeeEmail: user.email,
+    unauthenticatedCaller.acceptEmployment({
+      businessId: 1234,
     })
   ).rejects.toThrow(/unauthenticated/i)
 })
@@ -133,9 +111,8 @@ it('throws an error if the specialist doesnt exist', async () => {
   })
 
   await expect(
-    validTokenCaller.addEmployee({
+    validTokenCaller.acceptEmployment({
       businessId: createdBusiness.id,
-      employeeEmail: user.email,
     })
   ).rejects.toThrow(/specialist/i)
 })

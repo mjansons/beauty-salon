@@ -4,13 +4,14 @@ import addPublicAppointment from './addPublicAppointment'
 import addBusiness from './addBusiness'
 import addBusinessSpeciality from './addBusinessSpeciality'
 import addBusinessHours from './addBusinessHours'
-import addEmployee from './addEmployee'
+import addEmployee from './acceptEmployment'
 import getBusinessesByTitle from './getBusinessesByTitle'
 import getBusinessesByService from './getBusinessesByService'
 import deleteEmployee from './deleteEmployee'
 import editBusiness from './editBusiness'
 import getAllSpecialities from './getAllSpecialities'
 import inviteEmployee from './inviteEmployee'
+import acceptEmployment from './acceptEmployment'
 
 export default t.router({
   addRegisteredUserAppointment,
@@ -24,5 +25,6 @@ export default t.router({
   getAllSpecialities,
   deleteEmployee,
   editBusiness,
-  inviteEmployee
+  inviteEmployee,
+  acceptEmployment
 })

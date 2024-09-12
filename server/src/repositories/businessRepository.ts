@@ -287,6 +287,28 @@ export function businessRepository(db: Database) {
         .returningAll()
         .executeTakeFirstOrThrow()
     },
+
+    async findInvitation(
+      invite: CreateInvitation
+    ): Promise<Invitation | undefined>  {
+      return await db
+        .selectFrom('invitations')
+        .selectAll()
+        .where('businessId', '=', invite.businessId)
+        .where('employeeId', '=', invite.employeeId)
+        .executeTakeFirst()
+    },
+
+    async deleteInvitation(
+      invite: CreateInvitation
+    ): Promise<Invitation | undefined>  {
+      return await db
+        .deleteFrom('invitations')
+        .where('businessId', '=', invite.businessId)
+        .where('employeeId', '=', invite.employeeId)
+        .returningAll()
+        .executeTakeFirst()
+    },
   }
 }
 
