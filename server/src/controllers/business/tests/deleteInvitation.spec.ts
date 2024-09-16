@@ -8,7 +8,7 @@ import { requestContext } from '@tests/utils/context'
 const db = await wrapInRollbacks(createTestDatabase())
 const createCaller = t.createCallerFactory(businessRouter)
 
-it('adds an employee to the business', async () => {
+it('deletes invitation', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -54,7 +54,7 @@ it('adds an employee to the business', async () => {
     },
   })
 
-  const employee = await validTokenCaller.acceptEmployment({
+  const employee = await validTokenCaller.deleteInvitation({
     businessId: createdBusiness.id,
   })
 
@@ -72,7 +72,7 @@ it('should throw an error for unauthenticated change', async () => {
   )
 
   await expect(
-    unauthenticatedCaller.acceptEmployment({
+    unauthenticatedCaller.acceptInvitation({
       businessId: 1234,
     })
   ).rejects.toThrow(/unauthenticated/i)
@@ -111,7 +111,7 @@ it('throws an error if the specialist doesnt exist', async () => {
   })
 
   await expect(
-    validTokenCaller.acceptEmployment({
+    validTokenCaller.acceptInvitation({
       businessId: createdBusiness.id,
     })
   ).rejects.toThrow(/specialist/i)

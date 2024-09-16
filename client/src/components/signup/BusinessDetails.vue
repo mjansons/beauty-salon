@@ -72,6 +72,13 @@ const emitDetails = async () => {
       />
     </div>
 
+    <label for="city">City</label>
+    <select name="city" id="city" required v-model="city">
+      <option value="riga">Riga</option>
+      <option value="liepaja">Liepaja</option>
+      <option value="ventspils">Ventspils</option>
+    </select>
+
     <label for="address">Address</label>
     <input
       type="text"
@@ -81,17 +88,6 @@ const emitDetails = async () => {
       minlength="2"
       maxlength="64"
       v-model="address"
-    />
-
-    <label for="city">City</label>
-    <input
-      type="text"
-      name="city"
-      id="city"
-      required
-      minlength="2"
-      maxlength="64"
-      v-model="city"
     />
 
     <label for="postal-code">Postal code</label>

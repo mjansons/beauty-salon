@@ -4,7 +4,7 @@ import { idSchema } from './shared'
 
 export const userAppointmentsSchema = z.object({
   id: idSchema,
-  clientId: idSchema,
+  clientId: idSchema.nullable(),
   businessId: idSchema,
   specialistId: idSchema,
   businessSpecialityId: idSchema,
@@ -14,7 +14,7 @@ export const userAppointmentsSchema = z.object({
   lastName: z.string().trim().toLowerCase().min(1).max(100),
   email: z.string().trim().toLowerCase().email(),
   phoneNumber: z.string().min(8).max(15),
-  comment: z.string().max(300).optional(),
+  comment: z.string().max(300).optional().nullable(),
   createdAt: z.date(),
 })
 
