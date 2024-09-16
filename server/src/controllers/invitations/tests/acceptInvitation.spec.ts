@@ -1,14 +1,14 @@
 import t from '@server/trpc'
 import { createTestDatabase } from '@tests/utils/database'
-import businessRouter from '..'
+import invitationRouter from '../../invitations'
 import { insertAll } from '@tests/utils/records'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { requestContext } from '@tests/utils/context'
 
 const db = await wrapInRollbacks(createTestDatabase())
-const createCaller = t.createCallerFactory(businessRouter)
+const createCaller = t.createCallerFactory(invitationRouter)
 
-it('deletes invitation', async () => {
+it('adds an employee to the business', async () => {
   const user = {
     email: 'newusere@test.com',
     firstName: 'user',
@@ -54,7 +54,7 @@ it('deletes invitation', async () => {
     },
   })
 
-  const employee = await validTokenCaller.deleteInvitation({
+  const employee = await validTokenCaller.acceptInvitation({
     businessId: createdBusiness.id,
   })
 

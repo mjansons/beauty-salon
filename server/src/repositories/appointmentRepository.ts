@@ -168,9 +168,7 @@ export function appointmentRepository(db: Database) {
       do {
         // I get 10 businessses
         potentialBusinesses = await getBusinesses()
-        console.log(
-          `raw businesses: ${JSON.stringify(potentialBusinesses, null, 2)}`
-        )
+
         if (potentialBusinesses.length < 1) continue
 
         // validate businesses
@@ -210,7 +208,6 @@ export function appointmentRepository(db: Database) {
         potentialBusinesses.length === 10
       )
 
-      console.log('found businessses', foundBusinesses, foundBusinesses.length)
       // if found businesses is less or equal than totalResults, I return []
       if (foundBusinesses.length <= outerOffset) return []
 
@@ -220,4 +217,4 @@ export function appointmentRepository(db: Database) {
   }
 }
 
-export type UserRepository = ReturnType<typeof appointmentRepository>
+export type AppointmentRepository = ReturnType<typeof appointmentRepository>
