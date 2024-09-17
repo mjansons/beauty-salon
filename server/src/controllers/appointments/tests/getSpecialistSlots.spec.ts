@@ -147,15 +147,22 @@ it('gets 1/2 businesses, because of employee work time', async () => {
     },
   })
 
-  const avaliableBusinesses =
-    await validTokenCaller.getBusinessesByServiceDateLocation({
+  const avaliableSpecialists =
+    await validTokenCaller.getSlotInfo({
       location: 'riga',
       service: 'haircut',
       date: '2022-11-28',
       page: 1,
     })
 
-  expect(avaliableBusinesses).toMatchObject([{ id: createdBusiness.id }])
+  expect(avaliableSpecialists).toMatchObject([{
+    postalCode: "ev123",
+    price: 30,
+    specialistFirstName: "user",
+    specialistId: createdUser.id,
+    specialistLastName: "surname",
+    specialityId: 1,
+   }])
 })
 
 it('gets 2/2 businesses, because of employee work time', async () => {
@@ -298,16 +305,28 @@ it('gets 2/2 businesses, because of employee work time', async () => {
     },
   })
 
-  const avaliableBusinesses =
-    await validTokenCaller.getBusinessesByServiceDateLocation({
+  const avaliableSpecialists =
+    await validTokenCaller.getSlotInfo({
       location: 'riga',
       service: 'haircut',
       date: '2022-11-28',
       page: 1,
     })
 
-  expect(avaliableBusinesses).toMatchObject([
-    { id: createdBusiness.id },
-    { id: createdBusiness2.id },
-  ])
+    expect(avaliableSpecialists).toMatchObject([{
+      postalCode: "ev123",
+      price: 30,
+      specialistFirstName: "user",
+      specialistId: createdUser.id,
+      specialistLastName: "surname",
+      specialityId: 1,
+     },
+     {
+      postalCode: "ev123",
+      price: 30,
+      specialistFirstName: "user2",
+      specialistId: createdUser2.id,
+      specialistLastName: "surname2",
+      specialityId: 1,
+     }])
 })

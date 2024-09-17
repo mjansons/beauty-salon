@@ -1,135 +1,151 @@
 import type { Database } from '@server/database'
 import { sql } from 'kysely'
-import { type BusinessSchema } from '@server/schemas/businessSchema'
-import type { Appointments } from '@server/schemas/appointmentSchema'
+import type { DBAppointment } from '@server/schemas/appointmentSchema'
 
 export function appointmentRepository(db: Database) {
   return {
-    async getBusinessesByServiceDateLocation(
+    async getSpecialistBookingsAndWorkSchedule(
       location: string,
       service: string,
       date: string, // YYYY-MM-DD
       page: number
-    ): Promise<BusinessSchema[]> {
+    ) {
       const limit: number = 10
       const outerOffset: number = limit * (page - 1)
       const totalResults: number = limit * page
       let innerOffset: number = 0
 
+      type PotentialSpecialists = {
+        businessId: number
+        address: string
+        city: string
+        businessEmail: string
+        businessPhoneNumber: string
+        postalCode: string
+        specialistId: number
+        specialityId: number
+        specialityName: string
+        price: number
+        specialistFirstName: string
+        specialistLastName: string
+        startTime: string
+        endTime: string
+      }
+
       const queryDate = new Date(date)
+      const endDate = new Date(queryDate) // Create a copy of startDate
+      endDate.setDate(endDate.getDate() + 7)
+
       const dayOfWeek = queryDate.getDay()
-      const foundBusinesses: BusinessSchema[] = []
-      let potentialBusinesses: BusinessSchema[]
-      async function getBusinesses() {
+      const foundSpecialists = []
+      let potentialSpecialists: PotentialSpecialists[]
+      async function getPotentialSpecialists() {
         return await db
-          .selectFrom('businesses')
+          .selectFrom('specialists')
           .innerJoin(
-            // business specialities
-            'businessSpecialities',
-            'businessSpecialities.businessId',
-            'businesses.id'
-          )
+            'registeredUsers',
+            'registeredUsers.id',
+            'specialists.registeredUserId'
+          ) // specialist personal details
           .innerJoin(
-            // speciality names
             'specialities',
             'specialities.id',
-            'businessSpecialities.specialityId'
-          )
+            'specialists.specialityId'
+          ) // speciality name
           .innerJoin(
-            // business work hours and days
-            'businessAvailability',
-            'businessAvailability.businessId',
-            'businesses.id'
-          )
-          // fist check if business is in the location
+            'businessEmployees',
+            'businessEmployees.employeeId',
+            'specialists.registeredUserId'
+          ) // which business
+          .innerJoin(
+            'businesses',
+            'businesses.id',
+            'businessEmployees.businessId'
+          ) // business details
+          .innerJoin('businessSpecialities', (join) =>
+            join
+              .onRef('businessSpecialities.businessId', '=', 'businesses.id')
+              .onRef(
+                'businessSpecialities.specialityId',
+                '=',
+                'specialities.id'
+              )
+          ) // business speciality details
+          .innerJoin(
+            'specialistAvailability',
+            'specialistAvailability.specialistId',
+            'specialists.registeredUserId'
+          ) // specialist work hours
           .where('businesses.city', '=', location)
-
-          // second if the business has the service
           .where('specialities.speciality', '=', service)
-
-          // third I need to check:
-          .where('businessAvailability.dayOfWeek', '=', dayOfWeek) // if business works on that day
+          .where('specialistAvailability.dayOfWeek', '=', dayOfWeek)
           .where(
-            // business has 60 mins between opening and closing hours
-            sql<boolean>`(business_availability.end_time - business_availability.start_time) >= INTERVAL '60 minutes'`
+            // specialist has 60 mins between opening and closing hours
+            sql<boolean>`(specialist_availability.end_time - specialist_availability.start_time) >= INTERVAL '60 minutes'`
           )
-          .distinct()
           .select([
-            `businesses.id`,
-            'businesses.name',
-            'businesses.ownerId',
-            'businesses.city',
+            'businesses.id as businessId',
             'businesses.address',
+            'businesses.city',
+            'businesses.email as businessEmail',
+            'businesses.phoneNumber as businessPhoneNumber',
             'businesses.postalCode',
-            'businesses.email',
-            'businesses.phoneNumber',
-            'businesses.createdAt',
+            'specialists.registeredUserId as specialistId',
+            'specialists.specialityId as specialityId',
+            'specialities.speciality as specialityName',
+            'businessSpecialities.price',
+            'registeredUsers.firstName as specialistFirstName',
+            'registeredUsers.lastName as specialistLastName',
+            'specialistAvailability.startTime',
+            'specialistAvailability.endTime',
           ])
+          .distinctOn('specialists.registeredUserId')
           .offset(innerOffset)
           .limit(limit)
           .execute()
       }
 
-      async function getEmployeesByBusinessId(businessId: number) {
+      async function getSpecialistSchedule(specialistId: number) {
         return await db
-          .selectFrom('businessEmployees') // I will need the employee Ids of the business
-          .innerJoin(
-            'registeredUsers',
-            'registeredUsers.id',
-            'businessEmployees.employeeId'
-          )
-          .innerJoin(
-            'specialists',
-            'specialists.registeredUserId',
-            'businessEmployees.employeeId'
-          )
-          .innerJoin(
-            'specialities',
-            'specialities.id',
-            'specialists.specialityId'
-          )
-          .innerJoin(
-            'specialistAvailability',
-            'specialistAvailability.specialistId',
-            'businessEmployees.employeeId'
-          )
-          .where('businessEmployees.businessId', '=', businessId)
-          .where('specialities.speciality', '=', service)
-          .where('specialistAvailability.dayOfWeek', '=', dayOfWeek)
-          .where(
-            sql<boolean>`(specialist_availability.end_time - specialist_availability.start_time) >= INTERVAL '60 minutes'`
-          )
-          .select([
-            'businessEmployees.employeeId',
-            'specialistAvailability.dayOfWeek',
-            'specialists.specialityId',
-            'specialistAvailability.startTime',
-            'specialistAvailability.endTime',
-          ])
+          .selectFrom('specialistAvailability')
+          .where('specialistId', '=', specialistId)
+          .selectAll()
           .execute()
       }
 
-      async function getEmployeeAppointmentsOnDay(
-        employeeId: number
-      ): Promise<Appointments[]> {
+      async function getSpecialistAppointments(
+        specialistId: number
+      ): Promise<DBAppointment[]> {
         return await db
           .selectFrom('userAppointments') // I will need the employee Ids of the business
-          .where('specialistId', '=', employeeId)
-          .where(sql`DATE(appointment_start_time)`, '=', date)
+          .where('specialistId', '=', specialistId)
+          .where(sql`DATE(appointment_start_time)`, '>=', date)
+          .where(sql`DATE(appointment_start_time)`, '<=', endDate)
           .orderBy('appointmentStartTime', `asc`)
           .selectAll()
           .execute()
       }
 
       function hasSixtyMinuteGap(
-        appointments: Appointments[],
+        appointments: DBAppointment[],
         availabilityStart: string,
         availabilityEnd: string
       ): boolean {
         const availabilityStartTime = new Date(`${date}T${availabilityStart}`)
         const availabilityEndTime = new Date(`${date}T${availabilityEnd}`)
 
-        const sortedAppointments = appointments.map((app) => ({
+        const filteredAppointments = appointments.filter((app) => {
+          const appointmentDate = new Date(app.appointmentStartTime)
+            .toISOString()
+            .split('T')[0]
+          return appointmentDate === date
+        })
+
+        if (filteredAppointments.length === 0) {
+          // I already checked 60min gap in db filter
+          return true
+        }
+        const sortedAppointments = filteredAppointments.map((app) => ({
           appointmentStartTime: new Date(app.appointmentStartTime),
           appointmentEndTime: new Date(app.appointmentEndTime),
         }))
@@ -166,55 +182,98 @@ export function appointmentRepository(db: Database) {
       }
 
       do {
-        // I get 10 businessses
-        potentialBusinesses = await getBusinesses()
+        // I get 10 specialists
+        potentialSpecialists = await getPotentialSpecialists()
+        console.log('potentialSpecialists', potentialSpecialists.length)
+        if (potentialSpecialists.length < 1) continue
 
-        if (potentialBusinesses.length < 1) continue
+        // validate specialist
+        for (const specialist of potentialSpecialists) {
+          console.log('specialist', specialist.specialityName)
+          const appointments = await getSpecialistAppointments(
+            specialist.specialistId
+          )
+          console.log('appointments', appointments)
 
-        // validate businesses
-        for (const business of potentialBusinesses) {
-          const employees = await getEmployeesByBusinessId(business.id)
-          if (employees.length < 1) continue
+          // here I need to now find if there is a 60 min gap between the appointments on the specified day
+          const hasGap = hasSixtyMinuteGap(
+            appointments,
+            specialist.startTime,
+            specialist.endTime
+          )
 
-          for (const employee of employees) {
-            const employeeAppointments = await getEmployeeAppointmentsOnDay(
-              employee.employeeId
+          if (hasGap) {
+            console.log('hasGap', hasGap)
+            const schedule = await getSpecialistSchedule(
+              specialist.specialistId
             )
-            if (employeeAppointments.length < 1) {
-              // Add the business to foundBusinesses
-              foundBusinesses.push(business)
-              break
+
+            // Construct workingHours object
+            const workingHours: Record<number, [string, string]> = {}
+            for (const s of schedule) {
+              workingHours[s.dayOfWeek] = [s.startTime, s.endTime]
             }
 
-            // here I need to now find if there is a 60 min gap between the appointments
-            const hasGap = hasSixtyMinuteGap(
-              employeeAppointments,
-              employee.startTime,
-              employee.endTime
-            )
+            // Construct bookings object
+            const bookings: Record<string, { start: string; end: string }[]> =
+              {}
 
-            if (hasGap) {
-              // Add the business to foundBusinesses
-              foundBusinesses.push(business)
-              break
+            for (const appointment of appointments) {
+              const appointmentDate = new Date(appointment.appointmentStartTime)
+                .toISOString()
+                .split('T')[0]
+
+              if (!bookings[appointmentDate]) {
+                bookings[appointmentDate] = []
+              }
+
+              bookings[appointmentDate].push({
+                start: new Date(appointment.appointmentStartTime)
+                  .toISOString()
+                  .split('T')[1]
+                  .slice(0, 8),
+                end: new Date(appointment.appointmentEndTime)
+                  .toISOString()
+                  .split('T')[1]
+                  .slice(0, 8),
+              })
             }
+
+            // Construct the specialist object
+            const specialistData = {
+              specialistId: specialist.specialistId,
+              businessId: specialist.businessId,
+              address: specialist.address,
+              city: specialist.city,
+              businessEmail: specialist.businessEmail,
+              businessPhoneNumber: specialist.businessPhoneNumber,
+              postalCode: specialist.postalCode,
+              specialityId: specialist.specialityId,
+              specialityName: specialist.specialityName,
+              price: specialist.price,
+              specialistFirstName: specialist.specialistFirstName,
+              specialistLastName: specialist.specialistLastName,
+              workingHours: workingHours,
+              bookings: bookings,
+            }
+
+            // Add the specialist data to foundSpecialists
+            foundSpecialists.push(specialistData)
           }
         }
-
-        // when the loop is over, I add innerOffset by 10
         innerOffset += 10
-      } while ( // I need to keep doing this until I get totalResults or less than 10 buisenesses are returned
-        foundBusinesses.length !== totalResults &&
-        potentialBusinesses.length === 10
+      } while ( // I need to keep doing this until I get totalResults or less than 10 specialists are returned
+        foundSpecialists.length !== totalResults &&
+        getPotentialSpecialists.length === 10
       )
 
-      // if found businesses is less or equal than totalResults, I return []
-      if (foundBusinesses.length <= outerOffset) return []
+      console.log('foundSpecialists', foundSpecialists)
+      // // if found specialists is less or equal than totalResults, I return []
+      if (foundSpecialists.length <= outerOffset) return []
 
-      // else I return foundBusinesses - outerOffset from the first foundBusinesses
-      return foundBusinesses.slice(outerOffset)
+      // else I return foundSpecialists - outerOffset from the first foundBusinesses
+      return foundSpecialists.slice(outerOffset)
     },
   }
 }
-
 export type AppointmentRepository = ReturnType<typeof appointmentRepository>

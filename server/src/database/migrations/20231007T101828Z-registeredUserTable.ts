@@ -6,11 +6,11 @@ export async function up(db: Kysely<any>) {
     .addColumn('id', 'integer', (c) =>
       c.primaryKey().generatedAlwaysAsIdentity()
     )
-    .addColumn('first_name', 'text', (column) => column)
-    .addColumn('last_name', 'text', (column) => column)
+    .addColumn('first_name', 'text', (column) => column.notNull())
+    .addColumn('last_name', 'text', (column) => column.notNull())
     .addColumn('email', 'text', (column) => column.unique().notNull())
     .addColumn('password', 'text', (column) => column.notNull())
-    .addColumn('phone_number', 'text', (column) => column)
+    .addColumn('phone_number', 'text', (column) => column.notNull())
     .addColumn('is_onboarded', 'boolean', (column) => column.defaultTo(false).notNull())
     .addColumn('created_at', 'timestamptz', (column) =>
       column.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()

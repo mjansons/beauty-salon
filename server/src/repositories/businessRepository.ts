@@ -3,11 +3,22 @@ import { type UserAppointments } from '@server/database'
 import { type Selectable } from 'kysely'
 import { type BusinessSchema } from '@server/schemas/businessSchema'
 import { type BusinessDaySchema } from '@server/schemas/businessAvailabilitySchema'
-import { type CreateInvitation, type Invitation } from '@server/schemas/employeeInvitationSchema'
-
+import {
+  type CreateInvitation,
+  type Invitation,
+} from '@server/schemas/employeeInvitationSchema'
 
 export function businessRepository(db: Database) {
   return {
+    async getAllCities(): Promise<string[]> {
+      const services = await db
+        .selectFrom('businesses')
+        .select(['city'])
+        .distinct()
+        .execute()
+
+      return services.map((business) => business.city)
+    },
     async getAllBusinessEmployeesByBusinessId(businessId: number): Promise<
       {
         businessId: number
@@ -278,9 +289,7 @@ export function businessRepository(db: Database) {
         .execute()
     },
 
-    async createInvitation(
-      invite: CreateInvitation
-    ): Promise<Invitation> {
+    async createInvitation(invite: CreateInvitation): Promise<Invitation> {
       return await db
         .insertInto('invitations')
         .values(invite)
@@ -290,7 +299,7 @@ export function businessRepository(db: Database) {
 
     async findInvitation(
       invite: CreateInvitation
-    ): Promise<Invitation | undefined>  {
+    ): Promise<Invitation | undefined> {
       return await db
         .selectFrom('invitations')
         .selectAll()
@@ -301,7 +310,7 @@ export function businessRepository(db: Database) {
 
     async deleteInvitation(
       invite: CreateInvitation
-    ): Promise<Invitation | undefined>  {
+    ): Promise<Invitation | undefined> {
       return await db
         .deleteFrom('invitations')
         .where('businessId', '=', invite.businessId)

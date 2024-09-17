@@ -1,4 +1,4 @@
-// import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
+
 import type { AppRouter } from '@server/shared/trpc'
 import { apiBase } from '@/config'
 import { getStoredAccessToken } from '@/utils/auth'
@@ -10,7 +10,7 @@ import {
 } from '@trpc/client'
 import { observable } from '@trpc/server/observable'
 import router from '@/router'
-import { logout } from '@/stores/user'
+import { clearStoredAccessToken} from '@/utils/auth'
 
 // custom link that logs out the user if the token is invalid/expired to redirect to login page
 const customLink: TRPCLink<AppRouter> = () => {
@@ -22,7 +22,7 @@ const customLink: TRPCLink<AppRouter> = () => {
         },
         error(err) {
           if (err.message.includes('Invalid token')) {
-            logout()
+            clearStoredAccessToken(localStorage)
             router.push({ name: 'login' })
           } else {
             observer.error(err)

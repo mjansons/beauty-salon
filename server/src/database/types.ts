@@ -50,12 +50,12 @@ export interface Invitations {
 export interface RegisteredUsers {
   createdAt: Generated<Timestamp>
   email: string
-  firstName: string | null
+  firstName: string
   id: Generated<number>
   isOnboarded: Generated<boolean>
-  lastName: string | null
+  lastName: string
   password: string
-  phoneNumber: string | null
+  phoneNumber: string
 }
 
 export interface RoleTypes {

@@ -14,7 +14,7 @@ export const userAppointmentsSchema = z.object({
   lastName: z.string().trim().toLowerCase().min(1).max(100),
   email: z.string().trim().toLowerCase().email(),
   phoneNumber: z.string().min(8).max(15),
-  comment: z.string().max(300).optional().nullable(),
+  comment: z.string().max(300).optional(),
   createdAt: z.date(),
 })
 
@@ -41,3 +41,21 @@ export const publicAppointmentSchema = userAppointmentsSchema.omit({
   clientId: true,
   createdAt: true,
 })
+
+export const dbUserAppointmentsSchema = z.object({
+  id: idSchema,
+  clientId: idSchema.nullable(),
+  businessId: idSchema,
+  specialistId: idSchema,
+  businessSpecialityId: idSchema,
+  appointmentStartTime: z.date(),
+  appointmentEndTime: z.date(),
+  firstName: z.string().trim().toLowerCase().min(1).max(100),
+  lastName: z.string().trim().toLowerCase().min(1).max(100),
+  email: z.string().trim().toLowerCase().email(),
+  phoneNumber: z.string().min(8).max(15),
+  comment: z.string().max(300).nullable(),
+  createdAt: z.date(),
+})
+
+export type DBAppointment = z.infer<typeof dbUserAppointmentsSchema>

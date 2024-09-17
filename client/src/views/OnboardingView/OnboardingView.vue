@@ -59,7 +59,6 @@ watch(onBoardingStep, async (newVal) => {
     }
     // add specialist working hours
     if (workingHours.value.length !== 0) {
-      alert('message')
       for (const day of workingHours.value) {
         await trpc.user.addSpecialistHours.mutate(day)
       }

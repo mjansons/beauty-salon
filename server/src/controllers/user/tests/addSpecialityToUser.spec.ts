@@ -31,6 +31,7 @@ it('adds a speciality', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true
     },
   })
 
@@ -88,6 +89,7 @@ it('should throw an error for invalid speciality type', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true
     },
   })
 
@@ -119,6 +121,7 @@ it('should throw an error if speciality already added', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true
     },
   })
 

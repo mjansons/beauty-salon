@@ -19,14 +19,14 @@ export default t.procedure
       page: z.number().default(1),
     })
   )
-  .mutation(
+  .query(
     async ({
       input: { location, service, date, page },
       ctx: { repositories },
     }) => {
       try {
         const businesses =
-          await repositories.appointmentRepository.getBusinessesByServiceDateLocation(
+          await repositories.appointmentRepository.getSpecialistBookingsAndWorkSchedule(
             location,
             service,
             date,

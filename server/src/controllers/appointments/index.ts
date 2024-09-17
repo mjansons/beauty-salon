@@ -1,10 +1,10 @@
 import t from '@server/trpc'
-import getBusinessesByServiceDateLocation from './getBusinessesByServiceDateLocation'
+import getSlotInfo from './getSpecialistSlots'
 import addRegisteredUserAppointment from '../appointments/addRegisteredAppointment'
 import addPublicAppointment from '../appointments/addPublicAppointment'
 
 export default t.router({
-  getBusinessesByServiceDateLocation,
+  getSlotInfo,
   addRegisteredUserAppointment,
   addPublicAppointment
 })

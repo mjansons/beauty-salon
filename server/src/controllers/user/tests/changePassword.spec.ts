@@ -27,6 +27,7 @@ it('changes the password to the new one, with authenticated user', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true
     },
   })
 
@@ -64,6 +65,7 @@ it('should throw an error for too short password', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true
     },
   })
 
@@ -103,6 +105,7 @@ it('throws error if the user is not in db', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
+      isOnboarded: true
     },
   })
 

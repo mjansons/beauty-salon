@@ -9,6 +9,7 @@ import getBusinessesByService from './getBusinessesByService'
 import deleteEmployee from './deleteEmployee'
 import editBusiness from './editBusiness'
 import getAllSpecialities from './getAllSpecialities'
+import getAllCities from './getAllCities'
 
 
 
@@ -21,5 +22,6 @@ export default t.router({
   getBusinessesByService,
   getAllSpecialities,
   deleteEmployee,
-  editBusiness
+  editBusiness,
+  getAllCities
 })
