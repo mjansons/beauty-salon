@@ -19,6 +19,7 @@ export function appointmentRepository(db: Database) {
         businessId: number
         address: string
         city: string
+        businessName: string
         businessEmail: string
         businessPhoneNumber: string
         postalCode: string
@@ -87,6 +88,7 @@ export function appointmentRepository(db: Database) {
             'businesses.id as businessId',
             'businesses.address',
             'businesses.city',
+            'businesses.name as businessName',
             'businesses.email as businessEmail',
             'businesses.phoneNumber as businessPhoneNumber',
             'businesses.postalCode',
@@ -120,10 +122,58 @@ export function appointmentRepository(db: Database) {
           .selectFrom('userAppointments') // I will need the employee Ids of the business
           .where('specialistId', '=', specialistId)
           .where(sql`DATE(appointment_start_time)`, '>=', date)
-          .where(sql`DATE(appointment_start_time)`, '<=', endDate)
           .orderBy('appointmentStartTime', `asc`)
           .selectAll()
           .execute()
+      }
+
+      function maxTime(time1: string, time2: string): string {
+        return time1 > time2 ? time1 : time2
+      }
+
+      function minTime(time1: string, time2: string): string {
+        return time1 < time2 ? time1 : time2
+      }
+
+      async function getBusinessOperationalHours(businessId: number): Promise<
+        {
+          id: number
+          businessId: number
+          dayOfWeek: number
+          endTime: string
+          startTime: string
+        }[]
+      > {
+        return await db
+          .selectFrom('businessAvailability')
+          .where('businessId', '=', businessId)
+          .selectAll()
+          .execute()
+      }
+
+      function computeOverlappingWorkingHours(
+        specialistSchedule: { dayOfWeek: number; startTime: string; endTime: string }[],
+        businessSchedule: { dayOfWeek: number; startTime: string; endTime: string }[]
+      ): Record<number, [string, string]> {
+        const workingHours: Record<number, [string, string]> = {}
+      
+        for (const specialistDay of specialistSchedule) {
+          const businessDay = businessSchedule.find(
+            (b) => b.dayOfWeek === specialistDay.dayOfWeek
+          )
+      
+          if (businessDay) {
+            // Compute the overlapping time
+            const startTime = maxTime(specialistDay.startTime, businessDay.startTime)
+            const endTime = minTime(specialistDay.endTime, businessDay.endTime)
+      
+            if (startTime < endTime) {
+              // There is an overlap
+              workingHours[specialistDay.dayOfWeek] = [startTime, endTime]
+            }
+          }
+        }
+        return workingHours
       }
 
       function hasSixtyMinuteGap(
@@ -184,16 +234,14 @@ export function appointmentRepository(db: Database) {
       do {
         // I get 10 specialists
         potentialSpecialists = await getPotentialSpecialists()
-        console.log('potentialSpecialists', potentialSpecialists.length)
+
         if (potentialSpecialists.length < 1) continue
 
         // validate specialist
         for (const specialist of potentialSpecialists) {
-          console.log('specialist', specialist.specialityName)
           const appointments = await getSpecialistAppointments(
             specialist.specialistId
           )
-          console.log('appointments', appointments)
 
           // here I need to now find if there is a 60 min gap between the appointments on the specified day
           const hasGap = hasSixtyMinuteGap(
@@ -203,16 +251,24 @@ export function appointmentRepository(db: Database) {
           )
 
           if (hasGap) {
-            console.log('hasGap', hasGap)
-            const schedule = await getSpecialistSchedule(
+            const specialistSchedule = await getSpecialistSchedule(
               specialist.specialistId
+            )
+            // Fetch business operational hours
+            const businessSchedule = await getBusinessOperationalHours(
+              specialist.businessId
+            )
+            // Compute overlapping working hours
+            const workingHours = computeOverlappingWorkingHours(
+              specialistSchedule,
+              businessSchedule
             )
 
             // Construct workingHours object
-            const workingHours: Record<number, [string, string]> = {}
-            for (const s of schedule) {
-              workingHours[s.dayOfWeek] = [s.startTime, s.endTime]
-            }
+            // const workingHours: Record<number, [string, string]> = {}
+            // for (const s of schedule) {
+            //   workingHours[s.dayOfWeek] = [s.startTime, s.endTime]
+            // }
 
             // Construct bookings object
             const bookings: Record<string, { start: string; end: string }[]> =
@@ -245,6 +301,7 @@ export function appointmentRepository(db: Database) {
               businessId: specialist.businessId,
               address: specialist.address,
               city: specialist.city,
+              businessName: specialist.businessName,
               businessEmail: specialist.businessEmail,
               businessPhoneNumber: specialist.businessPhoneNumber,
               postalCode: specialist.postalCode,
@@ -267,7 +324,6 @@ export function appointmentRepository(db: Database) {
         getPotentialSpecialists.length === 10
       )
 
-      console.log('foundSpecialists', foundSpecialists)
       // // if found specialists is less or equal than totalResults, I return []
       if (foundSpecialists.length <= outerOffset) return []
 
