@@ -25,7 +25,7 @@ jobs:
           # Postgres will create a database with the following credentials
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 1234
-          POSTGRES_DB: test_beauty_salons
+          POSTGRES_DB: beauty_salons
         ports:
           - 5432:5432
     steps:
@@ -40,6 +40,13 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Create required databases
+        run: |
+          psql -h localhost -U postgres -c "CREATE DATABASE beauty_salons;"
+          psql -h localhost -U postgres -c "CREATE DATABASE test_beauty_salons;"
+        env:
+          PGPASSWORD: 1234
 
       - name: Type check server
         run: npm run typecheck -w=server
