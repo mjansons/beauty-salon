@@ -18,10 +18,11 @@ export const authContext = (
   context: Partial<Context> & ContextMinimal,
   user: AuthUser = {
     id: 123,
-    email: "test@email.com",
-    firstName: "John",
-    lastName: "Smith",
-    phoneNumber: "+3712348"
+    email: 'test@email.com',
+    firstName: 'John',
+    lastName: 'Smith',
+    phoneNumber: '+3712348',
+    isOnboarded: true,
   }
 ): Context => ({
   authUser: authUserSchema.parse(user),
@@ -32,10 +33,11 @@ export const authRepoContext = (
   repositories: any, // Context['repositories'], but easier to work with any in tests
   user: AuthUser = {
     id: 123,
-    email: "test@email.com",
-    firstName: "John",
-    lastName: "Smith",
-    phoneNumber: "+3712348"
+    email: 'test@email.com',
+    firstName: 'John',
+    lastName: 'Smith',
+    phoneNumber: '+3712348',
+    isOnboarded: true,
   }
 ): Context => ({
   authUser: authUserSchema.parse(user),
