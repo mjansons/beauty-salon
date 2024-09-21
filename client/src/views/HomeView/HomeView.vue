@@ -13,4 +13,4 @@ import SpecialistSearch from '@/components/booking/SpecialistSearch.vue'
   <SpecialistSearch></SpecialistSearch>
 </template>
 
-<style scoped></style>
+<!-- <style scoped></style> -->

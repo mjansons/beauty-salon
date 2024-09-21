@@ -13,7 +13,7 @@ header {
   justify-content: space-between;
   align-items: center;
 
-  & a{
+  & a {
     display: flex;
     justify-content: center;
     align-items: center;

@@ -186,7 +186,7 @@ const exitModal = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgb(0 0 0 / 50%);
   backdrop-filter: blur(10px);
   z-index: 10;
 }
@@ -207,6 +207,7 @@ const exitModal = () => {
   max-width: 90%;
   width: 400px;
 }
+
 form {
   display: flex;
   flex-direction: column;

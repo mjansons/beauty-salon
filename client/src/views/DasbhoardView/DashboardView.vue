@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import HeaderAuth from '@/components/headers/HeaderAuth.vue';
+import HeaderAuth from '@/components/headers/HeaderAuth.vue'
 import SpecialistSearch from '@/components/booking/SpecialistSearch.vue'
-
 </script>
 
 <template>
@@ -10,4 +9,4 @@ import SpecialistSearch from '@/components/booking/SpecialistSearch.vue'
   <SpecialistSearch></SpecialistSearch>
 </template>
 
-<style scoped></style>
+<!-- <style scoped></style> -->

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 const emit = defineEmits(['nextStep'])
 const finishOnboarding = () => {
   emit('nextStep')
@@ -11,4 +10,4 @@ const finishOnboarding = () => {
   <button type="button" @click="finishOnboarding">Complete signup</button>
 </template>
 
-<style scoped></style>
+<!-- <style scoped></style> -->

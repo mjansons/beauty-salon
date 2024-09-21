@@ -1,7 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView/HomeView.vue'
 import DashboardView from '@/views/DasbhoardView/DashboardView.vue'
-import { authenticate, redirectToDashboardIfLoggedIn, checkIfOnboarded } from './guards'
+import {
+  authenticate,
+  redirectToDashboardIfLoggedIn,
+  checkIfOnboarded,
+} from './guards'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,7 +17,6 @@ const router = createRouter({
       component: HomeView,
     },
     {
-
       path: '/dashboard',
       name: 'dashboard',
       beforeEnter: [authenticate],

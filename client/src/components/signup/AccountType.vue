@@ -8,7 +8,6 @@ const emitValues = () => {
   emit('isSpecialistAccount', isSpecialistAccount.value)
   emit('nextStep')
 }
-
 </script>
 
 <template>
@@ -48,7 +47,7 @@ const emitValues = () => {
   }
 
   div.selected {
-    border-color: rgb(144, 53, 183);
+    border-color: rgb(144 53 183);
   }
 }
 </style>

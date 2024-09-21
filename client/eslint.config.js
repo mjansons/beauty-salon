@@ -24,29 +24,30 @@ export default [
       'react/no-unknown-property': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       'no-restricted-imports': [
-      'error',
-      {
-        patterns: [
-          {
-            // using gitignore syntax
-            group: [
-              'app',
-              'config',
-              'database',
-              'schemas',
-              'modules',
-              'repositories',
-              'trpc',
-              'utils',
-            ].flatMap(path => [
-              `@server/${path}`,
-              `@mono/server/src/${path}`,
-            ]),
-            message: 'Please only import from @server/shared or @mono/server/src/shared.',
-          },
-        ],
-      },
-    ]
+        'error',
+        {
+          patterns: [
+            {
+              // using gitignore syntax
+              group: [
+                'app',
+                'config',
+                'database',
+                'schemas',
+                'modules',
+                'repositories',
+                'trpc',
+                'utils',
+              ].flatMap((path) => [
+                `@server/${path}`,
+                `@mono/server/src/${path}`,
+              ]),
+              message:
+                'Please only import from @server/shared or @mono/server/src/shared.',
+            },
+          ],
+        },
+      ],
     },
   },
   eslintConfigPrettier,

@@ -86,6 +86,7 @@ const emitValues = () => {
   padding: 16px;
   cursor: pointer;
 }
+
 div > .selected {
   border: 1px solid red;
 }

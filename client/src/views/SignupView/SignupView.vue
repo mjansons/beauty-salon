@@ -47,7 +47,10 @@ function handleSignupError(error: any) {
 async function submitSignup() {
   try {
     await signup(userForm.value)
-    await login({email:userForm.value.email, password: userForm.value.password})
+    await login({
+      email: userForm.value.email,
+      password: userForm.value.password,
+    })
     errorMessage.value = null
     userEmailErrorMessage.value = null
 
@@ -67,7 +70,6 @@ async function submitSignup() {
   <p v-if="errorMessage">An unknown error occurred while signing up</p>
 
   <form @submit.prevent="submitSignup">
-
     <label for="email">Email Address</label>
     <p v-if="userEmailErrorMessage">{{ userEmailErrorMessage }}</p>
     <input

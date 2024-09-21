@@ -3,7 +3,7 @@ import {
   getStoredAccessToken,
   getUserIdFromToken,
   storeAccessToken,
-  getUserIsOnboardedFromToken
+  getUserIsOnboardedFromToken,
 } from '@/utils/auth'
 import { trpc } from '@/trpc'
 import { computed, ref } from 'vue'

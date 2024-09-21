@@ -53,6 +53,7 @@ async function findSpecialist() {
     date: selectedDate.value,
     location: selectedLoacation.value,
     service: selectedService.value,
+    page: 1,
   })
 }
 
@@ -385,11 +386,13 @@ function goForwardDays(days: number) {
 .specialist-info {
   margin-bottom: 16px;
 }
+
 .calendar-wrapper {
   display: flex;
   justify-content: center;
   align-items: flex-start;
 }
+
 .calendar {
   display: flex;
   flex-direction: column;
