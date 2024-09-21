@@ -25,7 +25,7 @@ jobs:
           # Postgres will create a database with the following credentials
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 1234
-          POSTGRES_DB: beauty_salons
+          POSTGRES_DB: postgres
         ports:
           - 5432:5432
     steps:
