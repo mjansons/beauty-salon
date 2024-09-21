@@ -12,7 +12,7 @@
     "test:e2e:ui": "npx playwright test --ui",
     "test:e2e": "npx playwright test",
     "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "npx stylelint \"**/*.{scss,css,vue}\" --fix && eslint --fix --ignore-path .gitignore",
+    "lint": "npx stylelint \"**/*.{scss,css,vue}\" --fix && eslint --fix",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,css,json}\""
   },
   "dependencies": {
