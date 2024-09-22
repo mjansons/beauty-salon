@@ -71,7 +71,7 @@ jobs:
 
       # Add more browsers here if you want to test on more/different browsers
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps
 
       # Testing the entire application with a running API server.
       # We must start the server first. & at the end of the command
