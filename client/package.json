@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "run-p typecheck build-only",
+    "build-only": "vite build",
     "preview": "vite preview",
     "test": "run-p test:unit test:e2e",
     "test:unit": "vitest",
