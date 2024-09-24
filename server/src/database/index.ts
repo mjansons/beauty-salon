@@ -7,7 +7,7 @@ import {
 import pg from 'pg'
 import type { DB } from './types'
 
-export function createDatabase(options: pg.PoolConfig): Kysely<DB> {
+export function createDatabase(options?: pg.PoolConfig): Kysely<DB> {
   return new Kysely<DB>({
     dialect: new PostgresDialect({
       pool: new pg.Pool(options),
