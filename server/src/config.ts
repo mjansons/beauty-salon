@@ -34,9 +34,11 @@ const schema = z
     database: z.object({
       connectionString: z.string().url(),
     }),
-    test_database: z.object({
-      connectionString: z.string().url(),
-    }),
+    test_database: z
+      .object({
+        connectionString: z.string().url().optional(),
+      })
+      .optional(),
   })
   .readonly()
 
@@ -54,9 +56,11 @@ const config = schema.parse({
   database: {
     connectionString: env.DATABASE_URL,
   },
-  test_database: {
-    connectionString: env.TEST_DATABASE_URL,
-  },
+  test_database: env.TEST_DATABASE_URL
+    ? {
+        connectionString: env.TEST_DATABASE_URL,
+      }
+    : undefined,
 })
 
 export default config

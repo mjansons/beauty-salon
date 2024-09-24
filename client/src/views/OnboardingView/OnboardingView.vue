@@ -63,7 +63,7 @@ watch(onBoardingStep, async (newVal) => {
         await trpc.user.addSpecialistHours.mutate(day)
       }
     }
-    await trpc.user.updateUserDetails.mutate({ isOnboarded: true })
+    await trpc.user.updateUserDetails.mutate(userDetails.value)
     logout()
     router.push({ name: 'login' })
   }

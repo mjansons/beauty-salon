@@ -65,8 +65,10 @@ if (isFileRunDirectly) {
   const db = createDatabase(config.database)
   await migrateLatest(db)
 
-  if (config.test_database) {
-    const testDb = createDatabase(config.test_database)
-    await migrateLatest(testDb)
+  if (config.env === 'development' || config.env === 'test') {
+    if (config.test_database) {
+      const testDb = createDatabase(config.test_database)
+      await migrateLatest(testDb)
+    }
   }
 }
