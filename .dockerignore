@@ -15,6 +15,8 @@
 
 # Environment files
 **/.env
+**/.env*
+**/.env.production
 
 # Development-specific files
 **/*.md

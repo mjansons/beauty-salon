@@ -17,5 +17,4 @@ coverage
 data/database*
 
 coverage
-.env
-.env.production
+.env*
