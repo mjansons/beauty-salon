@@ -18,3 +18,5 @@ data/database*
 
 coverage
 .env*
+public-endpoint.json
+containers.json

@@ -1,5 +1,5 @@
-import 'dotenv/config'
 import { z } from 'zod'
+import 'dotenv/config'
 
 const { env } = process
 

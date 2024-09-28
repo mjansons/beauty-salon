@@ -6,7 +6,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: beauty_salons
-      NODE_ENV: production
     ports:
       - "5432:5432"
     volumes:
@@ -18,8 +17,8 @@ services:
       context: .
       dockerfile: ./server/Dockerfile
     # If we would have some secrets that we want to pass:
-    env_file:
-      - ./server/.env.production
+    # env_file:
+    #   - ./server/.env
     environment:
       DATABASE_URL: postgres://postgres:1234@postgres:5432/beauty_salons
       PORT: 3000
