@@ -1,14 +1,27 @@
 import globals from 'globals'
 import pluginJs from '@eslint/js'
-import tseslint from 'typescript-eslint'
+import tseslint from '@typescript-eslint/eslint-plugin'
 import eslintConfigPrettier from 'eslint-config-prettier'
+import vue from 'eslint-plugin-vue'
 
 export default [
   { ignores: ['vitest.config.js'] },
-  { files: ['**/*.{js,mjs,cjs,ts,tsx,jsx}'] },
-  { languageOptions: { globals: globals.browser } },
+  { files: ['**/*.{js,mjs,cjs,ts,tsx,jsx,vue}'] },
+  {
+    languageOptions: {
+      globals: globals.browser,
+      parser: 'vue-eslint-parser', // Use vue-eslint-parser for .vue files
+      parserOptions: {
+        parser: '@typescript-eslint/parser', // Specify TypeScript parser
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        extraFileExtensions: ['.vue'], // Recognize .vue files
+      },
+    },
+  },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
+  vue.configs['vue3-recommended'],
   {
     rules: {
       'import/extensions': 'off',
@@ -22,6 +35,7 @@ export default [
       'no-console': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/no-unknown-property': 'off',
+      'vue/multi-word-component-names': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       'no-restricted-imports': [
         'error',

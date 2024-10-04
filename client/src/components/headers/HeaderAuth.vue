@@ -6,13 +6,11 @@
       <img class="logo" alt="wink logo" src="../../assets/images/wink.svg" />
     </RouterLink>
     <div class="nav-container">
-      <div class="category-container">
-        <div class="category">Hair</div>
-        <div class="category">Nails</div>
-        <div class="category">Makeup</div>
-      </div>
+      <div class="category-container"></div>
       <div class="auth-container">
-        <button type="button">Profile Settings</button>
+        <RouterLink :to="{ name: 'account' }" tabindex="-1">
+          <button type="button">Account</button>
+        </RouterLink>
       </div>
     </div>
   </header>

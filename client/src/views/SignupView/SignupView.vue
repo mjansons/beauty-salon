@@ -63,11 +63,8 @@ async function submitSignup() {
 
 <template>
   <RouterLink :to="{ name: 'home' }" tabindex="-1">
-    <button type="button">Return</button>
+    <button type="button">Back</button>
   </RouterLink>
-
-  <h1>Create an account</h1>
-  <p v-if="errorMessage">An unknown error occurred while signing up</p>
 
   <form @submit.prevent="submitSignup">
     <label for="email">Email Address</label>

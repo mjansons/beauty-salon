@@ -1,1 +1,3 @@
-{ "extends": ["stylelint-config-standard", "stylelint-config-standard-vue"] }
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-standard-vue"]
+}

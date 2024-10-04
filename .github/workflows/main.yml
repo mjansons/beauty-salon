@@ -147,6 +147,7 @@ jobs:
           -t $SERVER_IMAGE_TAG
           -f ./server/Dockerfile .
 
+
       - name: Build client image
         run: >-
           docker build

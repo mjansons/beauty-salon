@@ -36,15 +36,17 @@ const services = ref<string[]>([])
 
 watch(onBoardingStep, async (newVal) => {
   // finish client onboarding
-  if (newVal === 4 && isClientAccount.value === true) {
+  if (newVal === 3 && isClientAccount.value === true) {
     // mark onboarding as complete for client
     await trpc.user.updateUserDetails.mutate(userDetails.value)
+  }
+  if (newVal === 4 && isClientAccount.value === true) {
     logout()
     router.push({ name: 'login' })
   }
 
   // finish specialist onboarding
-  if (newVal === 7 && isSpecialistAccount.value === true) {
+  if (newVal === 6 && isSpecialistAccount.value === true) {
     // add spicalist role to the user
     await trpc.user.addRoleToUser.mutate({
       role: 'specialist',
@@ -64,6 +66,9 @@ watch(onBoardingStep, async (newVal) => {
       }
     }
     await trpc.user.updateUserDetails.mutate(userDetails.value)
+  }
+
+  if (newVal === 7 && isSpecialistAccount.value === true) {
     logout()
     router.push({ name: 'login' })
   }
@@ -96,10 +101,10 @@ watch(onBoardingStep, async (newVal) => {
     }
 
     // mark onboarding as complete for business owner
-    await trpc.user.updateUserDetails.mutate({
-      isOnboarded: true,
-    })
+    await trpc.user.updateUserDetails.mutate(userDetails.value)
+  }
 
+  if (newVal === 8 && isSpecialistAccount.value === false) {
     logout()
     router.push({ name: 'login' })
   }
@@ -115,10 +120,16 @@ watch(onBoardingStep, async (newVal) => {
   <p>{{ `Onboarding step: ${onBoardingStep}` }}</p>
   <p>{{ `isClientAccount: ${isClientAccount}` }}</p>
   <p>{{ `isSpecialistAccount: ${isSpecialistAccount}` }}</p>
-  <RouterLink :to="{ name: 'home' }" tabindex="-1"
-    ><button type="button" v-if="onBoardingStep === 1">Return</button>
-  </RouterLink>
-  <button type="button" v-if="onBoardingStep > 1" @click="onBoardingStep--">
+  <button
+    type="button"
+    v-if="
+      onBoardingStep > 1 &&
+      !(onBoardingStep === 3 && isClientAccount) &&
+      onBoardingStep !== 7 &&
+      !(onBoardingStep === 6 && isSpecialistAccount)
+    "
+    @click="onBoardingStep--"
+  >
     Back
   </button>
 
@@ -137,7 +148,8 @@ watch(onBoardingStep, async (newVal) => {
   <AdditionalUserDetails
     v-if="
       (onBoardingStep === 2 && isClientAccount) ||
-      (onBoardingStep === 5 && isSpecialistAccount)
+      (onBoardingStep === 5 && isSpecialistAccount) ||
+      (onBoardingStep === 6 && !isSpecialistAccount)
     "
     @next-step="() => onBoardingStep++"
     @user-details="(value) => (userDetails = value)"
@@ -165,7 +177,11 @@ watch(onBoardingStep, async (newVal) => {
   ></BusinessHours>
 
   <OnboardingSuccess
-    v-if="(onBoardingStep === 3 && isClientAccount) || onBoardingStep === 6"
+    v-if="
+      (onBoardingStep === 3 && isClientAccount) ||
+      onBoardingStep === 7 ||
+      (onBoardingStep === 6 && isSpecialistAccount)
+    "
     @next-step="() => onBoardingStep++"
   ></OnboardingSuccess>
 </template>

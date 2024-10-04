@@ -49,11 +49,11 @@ export interface Invitations {
 
 export interface RegisteredUsers {
   createdAt: Generated<Timestamp>
-  email: string
   firstName: string
+  lastName: string
+  email: string
   id: Generated<number>
   isOnboarded: Generated<boolean>
-  lastName: string
   password: string
   phoneNumber: string
 }

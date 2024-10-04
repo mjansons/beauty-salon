@@ -6,6 +6,10 @@ import addRoleToUser from './addRoleToUser'
 import addSpecialityToUser from './addSpecialityToUser'
 import addSpecialistHours from './addSpecialistHours'
 import updateUserDetails from './updateUserDetails'
+import getUserRoles from './getUserRoles'
+import getUserDetails from './getUserDetails'
+import getUsersSpecialities from './getUsersSpecialities'
+import removeSpecialityFromUser from './removeSpecialityFromUser'
 
 export default t.router({
   login,
@@ -13,6 +17,10 @@ export default t.router({
   changePassword,
   addRoleToUser,
   addSpecialityToUser,
+  removeSpecialityFromUser,
   addSpecialistHours,
-  updateUserDetails
+  updateUserDetails,
+  getUserRoles,
+  getUserDetails,
+  getUsersSpecialities
 })

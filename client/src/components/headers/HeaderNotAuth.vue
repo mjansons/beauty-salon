@@ -8,11 +8,6 @@ import { RouterLink } from 'vue-router'
       <img class="logo" alt="wink logo" src="../../assets/images/wink.svg" />
     </RouterLink>
     <div class="nav-container">
-      <div class="category-container">
-        <div class="category">Hair</div>
-        <div class="category">Nails</div>
-        <div class="category">Makeup</div>
-      </div>
       <div class="auth-container">
         <RouterLink :to="{ name: 'signup' }" tabindex="-1">
           <button type="button">Sign up</button></RouterLink

@@ -4,6 +4,22 @@ import type { DBAppointment } from '@server/schemas/appointmentSchema'
 
 export function appointmentRepository(db: Database) {
   return {
+
+    async getAppointmentsBySpecialistId(
+      date: Date,
+      specialistId: number
+    ){
+      return await db
+        .selectFrom('userAppointments')
+        .innerJoin('businessSpecialities', 'businessSpecialities.id', 'userAppointments.businessSpecialityId')
+        .innerJoin('specialities', 'businessSpecialities.specialityId', 'specialities.id')
+        .where('specialistId', '=', specialistId)
+        .where(sql`DATE(appointment_start_time)`, '>=', date)
+        .orderBy('appointmentStartTime', `asc`)
+        .select(['userAppointments.appointmentStartTime', 'userAppointments.appointmentEndTime', 'specialities.speciality', 'userAppointments.firstName', 'userAppointments.lastName', 'userAppointments.phoneNumber', 'userAppointments.comment'])
+        .execute()
+    },
+
     async getSpecialistBookingsAndWorkSchedule(
       location: string,
       service: string,
@@ -152,21 +168,32 @@ export function appointmentRepository(db: Database) {
       }
 
       function computeOverlappingWorkingHours(
-        specialistSchedule: { dayOfWeek: number; startTime: string; endTime: string }[],
-        businessSchedule: { dayOfWeek: number; startTime: string; endTime: string }[]
+        specialistSchedule: {
+          dayOfWeek: number
+          startTime: string
+          endTime: string
+        }[],
+        businessSchedule: {
+          dayOfWeek: number
+          startTime: string
+          endTime: string
+        }[]
       ): Record<number, [string, string]> {
         const workingHours: Record<number, [string, string]> = {}
-      
+
         for (const specialistDay of specialistSchedule) {
           const businessDay = businessSchedule.find(
             (b) => b.dayOfWeek === specialistDay.dayOfWeek
           )
-      
+
           if (businessDay) {
             // Compute the overlapping time
-            const startTime = maxTime(specialistDay.startTime, businessDay.startTime)
+            const startTime = maxTime(
+              specialistDay.startTime,
+              businessDay.startTime
+            )
             const endTime = minTime(specialistDay.endTime, businessDay.endTime)
-      
+
             if (startTime < endTime) {
               // There is an overlap
               workingHours[specialistDay.dayOfWeek] = [startTime, endTime]
@@ -263,13 +290,6 @@ export function appointmentRepository(db: Database) {
               specialistSchedule,
               businessSchedule
             )
-
-            // Construct workingHours object
-            // const workingHours: Record<number, [string, string]> = {}
-            // for (const s of schedule) {
-            //   workingHours[s.dayOfWeek] = [s.startTime, s.endTime]
-            // }
-
             // Construct bookings object
             const bookings: Record<string, { start: string; end: string }[]> =
               {}

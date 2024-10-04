@@ -23,6 +23,13 @@ const router = createRouter({
       component: DashboardView,
     },
     {
+      path: '/dashboard/account',
+      name: 'account',
+      beforeEnter: [authenticate],
+      component: () => import('../views/AccountView/AccountView.vue'),
+    },
+
+    {
       path: '/login',
       name: 'login',
       beforeEnter: [redirectToDashboardIfLoggedIn],

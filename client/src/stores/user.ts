@@ -37,6 +37,3 @@ export function logout() {
 }
 
 export const signup = trpc.user.signup.mutate
-
-export const getAllSpecialities = trpc.business.getAllSpecialities.query
-export const getAllLocations = trpc.business.getAllCities.query

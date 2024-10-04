@@ -308,6 +308,33 @@ export function businessRepository(db: Database) {
         .executeTakeFirst()
     },
 
+    async getUsersInvitations(
+      registeredUserId: number
+    ): Promise<
+      {
+        email: string
+        name: string
+        city: string
+        address: string
+        businessId: number
+        createdAt: Date
+      }[]
+    > {
+      return await db
+        .selectFrom('invitations')
+        .innerJoin('businesses', 'businesses.id', 'invitations.businessId')
+        .select([
+          'invitations.businessId',
+          'invitations.createdAt',
+          'businesses.name',
+          'businesses.city',
+          'businesses.address',
+          'businesses.email',
+        ])
+        .where('employeeId', '=', registeredUserId)
+        .execute()
+    },
+
     async deleteInvitation(
       invite: CreateInvitation
     ): Promise<Invitation | undefined> {

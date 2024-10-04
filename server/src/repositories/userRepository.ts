@@ -53,6 +53,32 @@ export function userRepository(db: Database) {
         .executeTakeFirst()
     },
 
+    async getUserRoles(id: number): Promise<string[]> {
+      const roles = await db
+        .selectFrom('userRoles')
+        .innerJoin('roleTypes', 'userRoles.roleId', 'roleTypes.id')
+        .where('userRoles.registeredUserId', '=', id)
+        .select('roleTypes.role')
+        .execute()
+
+      return roles.map((role) => role.role)
+    },
+    async getUserDetails(id: number): Promise<
+      | {
+          email: string
+          firstName: string
+          lastName: string
+          phoneNumber: string
+        }
+      | undefined
+    > {
+      return await db
+        .selectFrom('registeredUsers')
+        .where('id', '=', id)
+        .select(['firstName', 'lastName', 'email', 'phoneNumber'])
+        .executeTakeFirst()
+    },
+
     async updateRegisteredUserRow(
       id: number,
       row: string,

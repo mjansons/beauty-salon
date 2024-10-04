@@ -33,6 +33,18 @@ export function specialityRepository(db: Database) {
         .executeTakeFirst()
     },
 
+    async removeSpecialist(
+      registeredUserId: number,
+      specialityId: number
+    ): Promise<{ registeredUserId: number; specialityId: number } | undefined> {
+      return db
+        .deleteFrom('specialists')
+        .where('registeredUserId', '=', registeredUserId)
+        .where('specialityId', '=', specialityId)
+        .returning(['registeredUserId', 'specialityId'])
+        .executeTakeFirst()
+    },
+
     // get all specialities for a specific user
     async getUsersSpecalities(
       registeredUserId: number
