@@ -1,7 +1,7 @@
 import t from '@server/trpc'
+import addRegisteredUserAppointment from "./addRegisteredAppointment"
+import addPublicAppointment from "./addPublicAppointment"
 import getSlotInfo from './getSpecialistSlots'
-import addRegisteredUserAppointment from '../appointments/addRegisteredAppointment'
-import addPublicAppointment from '../appointments/addPublicAppointment'
 import getSpecialistAppointments from './getSpecialistAppointments'
 
 export default t.router({

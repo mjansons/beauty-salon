@@ -8,6 +8,7 @@ const app = createApp(database)
 
 afterAll(() => {
   database.destroy()
+  
 })
 
 it('can launch the app', async () => {

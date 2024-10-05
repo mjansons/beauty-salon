@@ -14,12 +14,12 @@ export const newSpecialistDaySchema = specialistDaySchema.omit({
   specialistId: true,
 })
 
-export const InsertableSpecialistDaySchema = specialistDaySchema.omit({
+export const InsertableSpecialistDayType = specialistDaySchema.omit({
   id: true,
 })
 
 export type SpecialistDaySchema = z.infer<typeof specialistDaySchema>
 
 export type InsertableSpecialistDaySchema = z.infer<
-  typeof InsertableSpecialistDaySchema
+  typeof InsertableSpecialistDayType
 >

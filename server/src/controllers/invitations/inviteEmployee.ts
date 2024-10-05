@@ -31,7 +31,7 @@ export default authenticatedOwnerProcedure
       try {
         const invitation =
           await repositories.businessRepository.createInvitation({
-            businessId: businessId,
+            businessId,
             employeeId: employee.registeredUserId,
           })
 

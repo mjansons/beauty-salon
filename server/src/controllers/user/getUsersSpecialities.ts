@@ -9,7 +9,9 @@ export default authenticatedSpecialistProcedure
     })
   )
   .query(async ({ ctx: { repositories, authUser } }) => {
-    return (
+    const specialities = (
       await repositories.specialityRepository.getUsersSpecalities(authUser.id)
     ).map((s) => s.speciality)
+
+    return specialities
   })

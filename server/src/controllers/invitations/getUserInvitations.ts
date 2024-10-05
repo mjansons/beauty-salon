@@ -11,7 +11,7 @@ export default authenticatedSpecialistProcedure
     })
   )
   .query(async ({ ctx: { repositories, authUser } }) => {
-    return await repositories.businessRepository.getUsersInvitations(
-      authUser.id
-    )
+    const invitations =
+      await repositories.businessRepository.getUsersInvitations(authUser.id)
+    return invitations
   })

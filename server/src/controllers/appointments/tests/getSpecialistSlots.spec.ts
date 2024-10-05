@@ -1,8 +1,8 @@
 import t from '@server/trpc'
 import { createTestDatabase } from '@tests/utils/database'
-import appointmentRouter from '..'
 import { insertAll } from '@tests/utils/records'
 import { wrapInRollbacks } from '@tests/utils/transactions'
+import appointmentRouter from '..'
 
 const db = await wrapInRollbacks(createTestDatabase())
 const createCaller = t.createCallerFactory(appointmentRouter)

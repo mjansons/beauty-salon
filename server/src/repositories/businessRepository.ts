@@ -1,5 +1,4 @@
-import type { Database } from '@server/database'
-import { type UserAppointments } from '@server/database'
+import type { Database, UserAppointments } from '@server/database'
 import { type Selectable } from 'kysely'
 import { type BusinessSchema } from '@server/schemas/businessSchema'
 import { type BusinessDaySchema } from '@server/schemas/businessAvailabilitySchema'
@@ -27,11 +26,12 @@ export function businessRepository(db: Database) {
         id: number
       }[]
     > {
-      return db
+      const value = await db
         .selectFrom('businessEmployees')
         .selectAll()
         .where('businessId', '=', businessId)
         .execute()
+      return value
     },
 
     async getBusinessEmployeeByUserId(
@@ -46,12 +46,13 @@ export function businessRepository(db: Database) {
         }
       | undefined
     > {
-      return db
+      const value = await db
         .selectFrom('businessEmployees')
         .selectAll()
         .where('businessId', '=', businessId)
         .where('employeeId', '=', regesteredUserId)
         .executeTakeFirst()
+      return value
     },
 
     async getBusinessAvailabilityById(businessId: number): Promise<
@@ -63,11 +64,12 @@ export function businessRepository(db: Database) {
         endTime: string
       }[]
     > {
-      return db
+      const value = await db
         .selectFrom('businessAvailability')
         .selectAll()
         .where('businessId', '=', businessId)
         .execute()
+      return value
     },
 
     async addAppointment(
@@ -83,25 +85,24 @@ export function businessRepository(db: Database) {
       appointmentEndTime: Date,
       comment: string | undefined
     ): Promise<Selectable<UserAppointments>[]> {
-      const appointments = await db
+      const value = await db
         .insertInto('userAppointments')
         .values({
-          appointmentEndTime: appointmentEndTime,
-          appointmentStartTime: appointmentStartTime,
-          businessId: businessId,
-          businessSpecialityId: businessSpecialityId,
-          clientId: clientId,
-          email: email,
-          firstName: firstName,
-          lastName: lastName,
-          phoneNumber: phoneNumber,
-          specialistId: specialistId,
-          comment: comment,
+          appointmentEndTime,
+          appointmentStartTime,
+          businessId,
+          businessSpecialityId,
+          clientId,
+          email,
+          firstName,
+          lastName,
+          phoneNumber,
+          specialistId,
+          comment,
         })
         .returningAll()
         .execute()
-
-      return appointments
+      return value
     },
 
     async addBusiness(
@@ -113,19 +114,20 @@ export function businessRepository(db: Database) {
       email: string,
       phoneNumber: string
     ): Promise<BusinessSchema> {
-      return await db
+      const value = await db
         .insertInto('businesses')
         .values({
-          name: name,
-          ownerId: ownerId,
-          city: city,
-          address: address,
-          postalCode: postalCode,
-          email: email,
-          phoneNumber: phoneNumber,
+          name,
+          ownerId,
+          city,
+          address,
+          postalCode,
+          email,
+          phoneNumber,
         })
         .returningAll()
         .executeTakeFirstOrThrow()
+      return value
     },
 
     async editBusiness(
@@ -138,42 +140,45 @@ export function businessRepository(db: Database) {
       email: string,
       phoneNumber: string
     ): Promise<BusinessSchema> {
-      return await db
+      const value = await db
         .updateTable('businesses')
         .set({
-          name: name,
-          ownerId: ownerId,
-          city: city,
-          address: address,
-          postalCode: postalCode,
-          email: email,
-          phoneNumber: phoneNumber,
+          name,
+          ownerId,
+          city,
+          address,
+          postalCode,
+          email,
+          phoneNumber,
         })
         .where('id', '=', id)
         .returningAll()
         .executeTakeFirstOrThrow()
+      return value
     },
 
     async getBusinessesByRegisteredUserId(
       regesteredUserId: number
     ): Promise<BusinessSchema[]> {
-      return await db
+      const value = await db
         .selectFrom('businesses')
         .selectAll()
         .where('ownerId', '=', regesteredUserId)
         .execute()
+      return value
     },
 
     async getUserBusinessesByBusinessId(
       regesteredUserId: number,
       businessId: number
     ): Promise<BusinessSchema | undefined> {
-      return await db
+      const value = await db
         .selectFrom('businesses')
         .selectAll()
         .where('ownerId', '=', regesteredUserId)
         .where('id', '=', businessId)
         .executeTakeFirst()
+      return value
     },
 
     async addBusinessHoursToDay(
@@ -182,7 +187,7 @@ export function businessRepository(db: Database) {
       startTime: string,
       endTime: string
     ): Promise<BusinessDaySchema> {
-      return await db
+      const value = await db
         .insertInto('businessAvailability')
         .values({
           businessId,
@@ -192,6 +197,7 @@ export function businessRepository(db: Database) {
         })
         .returningAll()
         .executeTakeFirstOrThrow()
+      return value
     },
 
     async addEmplyee(
@@ -203,7 +209,7 @@ export function businessRepository(db: Database) {
       employeeId: number
       createdAt: Date
     }> {
-      return await db
+      const value = await db
         .insertInto('businessEmployees')
         .values({
           businessId,
@@ -211,6 +217,7 @@ export function businessRepository(db: Database) {
         })
         .returningAll()
         .executeTakeFirstOrThrow()
+      return value
     },
 
     async deleteEmplyee(
@@ -222,16 +229,17 @@ export function businessRepository(db: Database) {
       employeeId: number
       createdAt: Date
     }> {
-      return await db
+      const value = await db
         .deleteFrom('businessEmployees')
         .where('businessId', '=', businessId)
         .where('employeeId', '=', employeeId)
         .returningAll()
         .executeTakeFirstOrThrow()
+      return value
     },
 
     async getBusinessesByTitle(searchTerm: string): Promise<BusinessSchema[]> {
-      return await db
+      const value = await db
         .selectFrom('businesses')
         .selectAll()
         .where((eb) =>
@@ -246,12 +254,13 @@ export function businessRepository(db: Database) {
         )
         .limit(10)
         .execute()
+      return value
     },
 
     async getBusinessesByService(
       searchTerm: string
     ): Promise<BusinessSchema[]> {
-      return await db
+      const value = await db
         .selectFrom('businesses')
         .select([
           'businesses.address',
@@ -287,25 +296,28 @@ export function businessRepository(db: Database) {
         )
         .limit(10)
         .execute()
+      return value
     },
 
     async createInvitation(invite: CreateInvitation): Promise<Invitation> {
-      return await db
+      const value = await db
         .insertInto('invitations')
         .values(invite)
         .returningAll()
         .executeTakeFirstOrThrow()
+      return value
     },
 
     async findInvitation(
       invite: CreateInvitation
     ): Promise<Invitation | undefined> {
-      return await db
+      const value = await db
         .selectFrom('invitations')
         .selectAll()
         .where('businessId', '=', invite.businessId)
         .where('employeeId', '=', invite.employeeId)
         .executeTakeFirst()
+      return value
     },
 
     async getUsersInvitations(registeredUserId: number): Promise<
@@ -318,7 +330,7 @@ export function businessRepository(db: Database) {
         createdAt: Date
       }[]
     > {
-      return await db
+      const value = await db
         .selectFrom('invitations')
         .innerJoin('businesses', 'businesses.id', 'invitations.businessId')
         .select([
@@ -331,17 +343,19 @@ export function businessRepository(db: Database) {
         ])
         .where('employeeId', '=', registeredUserId)
         .execute()
+      return value
     },
 
     async deleteInvitation(
       invite: CreateInvitation
     ): Promise<Invitation | undefined> {
-      return await db
+      const value = await db
         .deleteFrom('invitations')
         .where('businessId', '=', invite.businessId)
         .where('employeeId', '=', invite.employeeId)
         .returningAll()
         .executeTakeFirst()
+      return value
     },
   }
 }

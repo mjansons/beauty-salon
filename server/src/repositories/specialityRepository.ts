@@ -1,6 +1,5 @@
-import type { Database } from '@server/database'
+import type { Database, UserAppointments } from '@server/database'
 import type { InsertableSpecialistDaySchema } from '@server/schemas/specialistAvailabilitySchema'
-import { type UserAppointments } from '@server/database'
 import { type Selectable } from 'kysely'
 
 export function specialityRepository(db: Database) {
@@ -26,8 +25,8 @@ export function specialityRepository(db: Database) {
       return db
         .insertInto('specialists')
         .values({
-          registeredUserId: registeredUserId,
-          specialityId: specialityId,
+          registeredUserId,
+          specialityId,
         })
         .returning(['registeredUserId', 'specialityId'])
         .executeTakeFirst()
@@ -163,9 +162,9 @@ export function specialityRepository(db: Database) {
       return db
         .insertInto('businessSpecialities')
         .values({
-          businessId: businessId,
-          specialityId: specialityId,
-          price: price,
+          businessId,
+          specialityId,
+          price,
         })
         .returningAll()
         .executeTakeFirstOrThrow()
@@ -177,7 +176,7 @@ export function specialityRepository(db: Database) {
       startTime: string,
       endTime: string
     ): Promise<InsertableSpecialistDaySchema> {
-      return await db
+      const value = await db
         .insertInto('specialistAvailability')
         .values({
           specialistId,
@@ -187,6 +186,7 @@ export function specialityRepository(db: Database) {
         })
         .returningAll()
         .executeTakeFirstOrThrow()
+      return value
     },
 
     async getSpecialistAvailabilityById(specialistId: number): Promise<

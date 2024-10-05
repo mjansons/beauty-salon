@@ -1,8 +1,8 @@
 import { createTestDatabase } from '@tests/utils/database'
 import t from '@server/trpc'
-import userRouter from '..'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import { selectAll } from '@tests/utils/records'
+import userRouter from '..'
 
 const db = await wrapInRollbacks(createTestDatabase())
 

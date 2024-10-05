@@ -5,7 +5,7 @@ import type { DBAppointment } from '@server/schemas/appointmentSchema'
 export function appointmentRepository(db: Database) {
   return {
     async getAppointmentsBySpecialistId(date: Date, specialistId: number) {
-      return await db
+      const values = await db
         .selectFrom('userAppointments')
         .innerJoin(
           'businessSpecialities',
@@ -30,6 +30,7 @@ export function appointmentRepository(db: Database) {
           'userAppointments.comment',
         ])
         .execute()
+        return values
     },
 
     async getSpecialistBookingsAndWorkSchedule(
@@ -69,7 +70,7 @@ export function appointmentRepository(db: Database) {
       const foundSpecialists = []
       let potentialSpecialists: PotentialSpecialists[]
       async function getPotentialSpecialists() {
-        return await db
+        const values = await db
           .selectFrom('specialists')
           .innerJoin(
             'registeredUsers',
@@ -133,26 +134,30 @@ export function appointmentRepository(db: Database) {
           .offset(innerOffset)
           .limit(limit)
           .execute()
+
+          return values
       }
 
       async function getSpecialistSchedule(specialistId: number) {
-        return await db
+        const values =  await db
           .selectFrom('specialistAvailability')
           .where('specialistId', '=', specialistId)
           .selectAll()
           .execute()
+          return values
       }
 
       async function getSpecialistAppointments(
         specialistId: number
       ): Promise<DBAppointment[]> {
-        return await db
+        const values = await db
           .selectFrom('userAppointments') // I will need the employee Ids of the business
           .where('specialistId', '=', specialistId)
           .where(sql`DATE(appointment_start_time)`, '>=', date)
           .orderBy('appointmentStartTime', `asc`)
           .selectAll()
           .execute()
+          return values
       }
 
       function maxTime(time1: string, time2: string): string {
@@ -172,11 +177,13 @@ export function appointmentRepository(db: Database) {
           startTime: string
         }[]
       > {
-        return await db
+        const values = await db
           .selectFrom('businessAvailability')
           .where('businessId', '=', businessId)
           .selectAll()
           .execute()
+
+          return values
       }
 
       function computeOverlappingWorkingHours(
@@ -193,6 +200,7 @@ export function appointmentRepository(db: Database) {
       ): Record<number, [string, string]> {
         const workingHours: Record<number, [string, string]> = {}
 
+        // eslint-disable-next-line no-restricted-syntax
         for (const specialistDay of specialistSchedule) {
           const businessDay = businessSchedule.find(
             (b) => b.dayOfWeek === specialistDay.dayOfWeek
@@ -247,7 +255,7 @@ export function appointmentRepository(db: Database) {
           return true
         }
         // Check gaps between appointments
-        for (let i = 1; i < sortedAppointments.length; i++) {
+        for (let i = 1; i < sortedAppointments.length; i += 1) {
           const previousEnd =
             sortedAppointments[i - 1].appointmentEndTime.getTime()
           const currentStart =
@@ -272,12 +280,16 @@ export function appointmentRepository(db: Database) {
 
       do {
         // I get 10 specialists
+        // eslint-disable-next-line no-await-in-loop
         potentialSpecialists = await getPotentialSpecialists()
 
+        // eslint-disable-next-line no-continue
         if (potentialSpecialists.length < 1) continue
 
         // validate specialist
+        // eslint-disable-next-line no-restricted-syntax
         for (const specialist of potentialSpecialists) {
+          // eslint-disable-next-line no-await-in-loop
           const appointments = await getSpecialistAppointments(
             specialist.specialistId
           )
@@ -290,10 +302,12 @@ export function appointmentRepository(db: Database) {
           )
 
           if (hasGap) {
+            // eslint-disable-next-line no-await-in-loop
             const specialistSchedule = await getSpecialistSchedule(
               specialist.specialistId
             )
             // Fetch business operational hours
+            // eslint-disable-next-line no-await-in-loop
             const businessSchedule = await getBusinessOperationalHours(
               specialist.businessId
             )
@@ -306,6 +320,7 @@ export function appointmentRepository(db: Database) {
             const bookings: Record<string, { start: string; end: string }[]> =
               {}
 
+            // eslint-disable-next-line no-restricted-syntax
             for (const appointment of appointments) {
               const appointmentDate = new Date(appointment.appointmentStartTime)
                 .toISOString()
@@ -342,8 +357,8 @@ export function appointmentRepository(db: Database) {
               price: specialist.price,
               specialistFirstName: specialist.specialistFirstName,
               specialistLastName: specialist.specialistLastName,
-              workingHours: workingHours,
-              bookings: bookings,
+              workingHours,
+              bookings,
             }
 
             // Add the specialist data to foundSpecialists

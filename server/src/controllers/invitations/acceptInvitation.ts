@@ -18,7 +18,7 @@ export default authenticatedSpecialistProcedure
       // just need to check if the invite exists
 
       const invite = await repositories.businessRepository.findInvitation({
-        businessId: businessId,
+        businessId,
         employeeId: authUser.id,
       })
 
@@ -32,7 +32,7 @@ export default authenticatedSpecialistProcedure
       try {
         // if it does, delete it from invitations table
         await repositories.businessRepository.deleteInvitation({
-          businessId: businessId,
+          businessId,
           employeeId: authUser.id,
         })
 

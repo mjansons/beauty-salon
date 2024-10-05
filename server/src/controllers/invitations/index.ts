@@ -1,7 +1,7 @@
 import t from '@server/trpc'
-import acceptInvitation from '../invitations/acceptInvitation'
-import deleteInvitation from '../invitations/deleteInvitation'
-import inviteEmployee from '../invitations/inviteEmployee'
+import deleteInvitation from "./deleteInvitation"
+import inviteEmployee from "./inviteEmployee"
+import acceptInvitation from "./acceptInvitation"
 import getUserInvitations from './getUserInvitations'
 
 export default t.router({

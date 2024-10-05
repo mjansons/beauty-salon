@@ -49,7 +49,7 @@ export const insertAll = async <N extends keyof DB, T extends DatabaseTypes<N>>(
   tableName: N,
   records: Insertable<DB[N]> | Insertable<DB[N]>[]
 ) =>
-  await db
+  db
     .insertInto(tableName)
     .values(records as any)
     .returningAll()

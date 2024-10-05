@@ -1,6 +1,5 @@
 import t from '@server/trpc'
 import { createTestDatabase } from '@tests/utils/database'
-import appointmentRouter from '../../appointments'
 import { insertAll, selectAll, clearTables } from '@tests/utils/records'
 import { wrapInRollbacks } from '@tests/utils/transactions'
 import {
@@ -8,6 +7,7 @@ import {
   addHoursToDate,
   getNextWeekDayAtHour,
 } from '@tests/utils/timestamps'
+import appointmentRouter from '..'
 
 const db = await wrapInRollbacks(createTestDatabase())
 const createCaller = t.createCallerFactory(appointmentRouter)

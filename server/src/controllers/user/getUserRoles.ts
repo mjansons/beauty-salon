@@ -9,5 +9,6 @@ export default authenticatedProcedure
     })
   )
   .query(async ({ ctx: { repositories, authUser } }) => {
-    return await repositories.userRepository.getUserRoles(authUser.id)
+    const roles = await repositories.userRepository.getUserRoles(authUser.id)
+    return roles
   })

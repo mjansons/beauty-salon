@@ -4,18 +4,19 @@ import {
   type UserPublic,
   userKeysAll,
   userKeysPublic,
+  type SignupFields
 } from '@server/schemas/registeredUser'
 import type { Selectable } from 'kysely'
-import { type SignupFields } from '@server/schemas/registeredUser'
 
 export function userRepository(db: Database) {
   return {
     async createRegisteredUser(user: SignupFields): Promise<UserPublic> {
-      return await db
+      const value = await db
         .insertInto('registeredUsers')
         .values(user)
         .returning(userKeysPublic)
         .executeTakeFirstOrThrow()
+      return value
     },
 
     async updateRegisteredUserById(
@@ -23,34 +24,35 @@ export function userRepository(db: Database) {
       updatedUser: Partial<SignupFields>
     ): Promise<UserPublic | undefined> {
       const { ...updateData } = updatedUser
-      const result = await db
+      const value = await db
         .updateTable('registeredUsers')
         .set(updateData)
         .where('id', '=', id)
         .returning(userKeysPublic)
         .executeTakeFirst()
-
-      return result
+      return value
     },
 
     async findRegisteredUserByEmail(
       email: string
     ): Promise<Selectable<RegisteredUsers> | undefined> {
-      return await db
+      const value = await db
         .selectFrom('registeredUsers')
         .select(userKeysAll)
         .where('email', '=', email)
         .executeTakeFirst()
+      return value
     },
 
     async findRegisteredUserById(
       id: number
     ): Promise<Selectable<RegisteredUsers> | undefined> {
-      return await db
+      const value = await db
         .selectFrom('registeredUsers')
         .select(userKeysAll)
         .where('id', '=', id)
         .executeTakeFirst()
+      return value
     },
 
     async getUserRoles(id: number): Promise<string[]> {
@@ -60,9 +62,9 @@ export function userRepository(db: Database) {
         .where('userRoles.registeredUserId', '=', id)
         .select('roleTypes.role')
         .execute()
-
       return roles.map((role) => role.role)
     },
+
     async getUserDetails(id: number): Promise<
       | {
           email: string
@@ -72,11 +74,12 @@ export function userRepository(db: Database) {
         }
       | undefined
     > {
-      return await db
+      const value = await db
         .selectFrom('registeredUsers')
         .where('id', '=', id)
         .select(['firstName', 'lastName', 'email', 'phoneNumber'])
         .executeTakeFirst()
+      return value
     },
 
     async updateRegisteredUserRow(
@@ -84,7 +87,7 @@ export function userRepository(db: Database) {
       row: string,
       newValue: string
     ): Promise<UserPublic | undefined> {
-      return await db
+      const value = await db
         .updateTable('registeredUsers')
         .set({
           [row]: newValue,
@@ -92,6 +95,7 @@ export function userRepository(db: Database) {
         .where('id', '=', id)
         .returning(userKeysPublic)
         .executeTakeFirst()
+      return value
     },
   }
 }

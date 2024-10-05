@@ -8,7 +8,7 @@ export function roleRepository(db: Database) {
     ): Promise<{ registeredUserId: number; roleId: number } | undefined> {
       return db
         .insertInto('userRoles')
-        .values({ registeredUserId: userId, roleId: roleId })
+        .values({ registeredUserId: userId, roleId })
         .returning(['registeredUserId', 'roleId'])
         .executeTakeFirstOrThrow()
     },

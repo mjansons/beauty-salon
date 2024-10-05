@@ -9,5 +9,8 @@ export default authenticatedProcedure
     })
   )
   .query(async ({ ctx: { repositories, authUser } }) => {
-    return await repositories.userRepository.getUserDetails(authUser.id)
+    const details = await repositories.userRepository.getUserDetails(
+      authUser.id
+    )
+    return details
   })

@@ -10,8 +10,11 @@ export default authenticatedSpecialistProcedure
   )
   .query(async ({ ctx: { repositories, authUser } }) => {
     const now = new Date()
-    return await repositories.appointmentRepository.getAppointmentsBySpecialistId(
-      now,
-      authUser.id
-    )
+    const appointments =
+      await repositories.appointmentRepository.getAppointmentsBySpecialistId(
+        now,
+        authUser.id
+      )
+
+    return appointments
   })
