@@ -35,7 +35,7 @@ it('adds specialist hours for a specific day', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 
@@ -102,7 +102,7 @@ it('throw error if hours start before closing', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 
@@ -137,7 +137,7 @@ it('throw error if specialist role not assigned to user', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 
@@ -172,7 +172,7 @@ it('throw error if specialist has not specialised in anything yet', async () => 
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 
@@ -210,7 +210,7 @@ it('returns if day has already assigned time', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 

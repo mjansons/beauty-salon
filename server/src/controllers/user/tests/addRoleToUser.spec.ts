@@ -31,7 +31,7 @@ it('adds a new role', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 
@@ -89,7 +89,7 @@ it('should throw an error for invalid role type', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 
@@ -121,7 +121,7 @@ it('should return if role already added', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 

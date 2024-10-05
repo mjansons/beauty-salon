@@ -56,9 +56,7 @@ it('gets invitation', async () => {
 
   const invite = await validTokenCaller.getUserInvitations()
 
-  expect(invite).toMatchObject([
-    { businessId: createdBusiness.id},
-  ])
+  expect(invite).toMatchObject([{ businessId: createdBusiness.id }])
 })
 
 it('should throw an error for unauthenticated change', async () => {

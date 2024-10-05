@@ -14,7 +14,9 @@ export const invitationKeysAll = Object.keys(
   invitationSchema.shape
 ) as (keyof Invitations)[]
 
-
-export const createInvitationSchema = invitationSchema.pick({ businessId: true, employeeId: true })
+export const createInvitationSchema = invitationSchema.pick({
+  businessId: true,
+  employeeId: true,
+})
 
 export type CreateInvitation = z.infer<typeof createInvitationSchema>

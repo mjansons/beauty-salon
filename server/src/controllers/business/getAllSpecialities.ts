@@ -8,7 +8,7 @@ export default t.procedure
       specialityRepository,
     })
   )
-  .query(async ({ctx: { repositories } }) => {
+  .query(async ({ ctx: { repositories } }) => {
     const allSpecialities =
       await repositories.specialityRepository.getAllSpecialities()
 

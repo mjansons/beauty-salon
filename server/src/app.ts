@@ -13,7 +13,7 @@ import config from './config'
 export default function createApp(db: Database) {
   const app = express()
 
-  app.use(cors());
+  app.use(cors())
   app.use(express.json())
 
   // Endpoint for health checks - pinging the server to see if it's alive.

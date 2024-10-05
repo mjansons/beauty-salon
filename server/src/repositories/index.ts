@@ -12,7 +12,7 @@ const repositories = {
   roleRepository,
   specialityRepository,
   businessRepository,
-  appointmentRepository
+  appointmentRepository,
 }
 
 export type RepositoriesFactories = typeof repositories

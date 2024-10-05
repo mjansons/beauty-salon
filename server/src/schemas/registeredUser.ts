@@ -79,7 +79,6 @@ export const authUserSchema = registeredUserSchema.pick({
   isOnboarded: true,
 })
 
-
 export type AuthUser = z.infer<typeof authUserSchema>
 
 export const updateUserSchema = updateSchema.partial()

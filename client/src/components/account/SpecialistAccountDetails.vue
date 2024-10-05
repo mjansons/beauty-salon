@@ -69,7 +69,9 @@ async function saveChanges() {
     setTimeout(() => {
       showToast.value = false
     }, 1500)
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 async function accept(businessId: number) {
@@ -112,7 +114,7 @@ async function reject(businessId: number) {
   <div v-if="addableSpecialities.length > 0">
     <select name="prefix" v-model="selectedSpeciality">
       <option disabled value="">Select a speciality</option>
-      <option v-for="speciality in addableSpecialities" :value="speciality">
+      <option v-for="speciality in addableSpecialities" :key="speciality" :value="speciality">
         {{ speciality }}
       </option></select
     ><button

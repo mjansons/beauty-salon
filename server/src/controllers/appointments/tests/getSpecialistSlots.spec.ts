@@ -147,22 +147,23 @@ it('gets 1/2 businesses, because of employee work time', async () => {
     },
   })
 
-  const avaliableSpecialists =
-    await validTokenCaller.getSlotInfo({
-      location: 'riga',
-      service: 'haircut',
-      date: '2022-11-28',
-      page: 1,
-    })
+  const avaliableSpecialists = await validTokenCaller.getSlotInfo({
+    location: 'riga',
+    service: 'haircut',
+    date: '2022-11-28',
+    page: 1,
+  })
 
-  expect(avaliableSpecialists).toMatchObject([{
-    postalCode: "ev123",
-    price: 30,
-    specialistFirstName: "user",
-    specialistId: createdUser.id,
-    specialistLastName: "surname",
-    specialityId: 1,
-   }])
+  expect(avaliableSpecialists).toMatchObject([
+    {
+      postalCode: 'ev123',
+      price: 30,
+      specialistFirstName: 'user',
+      specialistId: createdUser.id,
+      specialistLastName: 'surname',
+      specialityId: 1,
+    },
+  ])
 })
 
 it('gets 2/2 businesses, because of employee work time', async () => {
@@ -305,28 +306,29 @@ it('gets 2/2 businesses, because of employee work time', async () => {
     },
   })
 
-  const avaliableSpecialists =
-    await validTokenCaller.getSlotInfo({
-      location: 'riga',
-      service: 'haircut',
-      date: '2022-11-28',
-      page: 1,
-    })
+  const avaliableSpecialists = await validTokenCaller.getSlotInfo({
+    location: 'riga',
+    service: 'haircut',
+    date: '2022-11-28',
+    page: 1,
+  })
 
-    expect(avaliableSpecialists).toMatchObject([{
-      postalCode: "ev123",
+  expect(avaliableSpecialists).toMatchObject([
+    {
+      postalCode: 'ev123',
       price: 30,
-      specialistFirstName: "user",
+      specialistFirstName: 'user',
       specialistId: createdUser.id,
-      specialistLastName: "surname",
+      specialistLastName: 'surname',
       specialityId: 1,
-     },
-     {
-      postalCode: "ev123",
+    },
+    {
+      postalCode: 'ev123',
       price: 30,
-      specialistFirstName: "user2",
+      specialistFirstName: 'user2',
       specialistId: createdUser2.id,
-      specialistLastName: "surname2",
+      specialistLastName: 'surname2',
       specialityId: 1,
-     }])
+    },
+  ])
 })

@@ -39,7 +39,7 @@ it('adds an employee to the business', async () => {
 
   await insertAll(db, 'invitations', {
     businessId: createdBusiness.id,
-    employeeId: createdUser.id
+    employeeId: createdUser.id,
   })
 
   const validTokenCaller = createCaller({

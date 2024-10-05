@@ -19,7 +19,6 @@ it('gets user details', async () => {
 
   const [createdUser] = await insertAll(db, 'registeredUsers', user)
 
-
   const validTokenCaller = createCaller({
     db,
     authUser: {

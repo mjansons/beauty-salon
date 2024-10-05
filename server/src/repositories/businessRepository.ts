@@ -308,9 +308,7 @@ export function businessRepository(db: Database) {
         .executeTakeFirst()
     },
 
-    async getUsersInvitations(
-      registeredUserId: number
-    ): Promise<
+    async getUsersInvitations(registeredUserId: number): Promise<
       {
         email: string
         name: string

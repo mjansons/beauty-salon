@@ -8,5 +8,5 @@ export default t.router({
   acceptInvitation,
   deleteInvitation,
   inviteEmployee,
-  getUserInvitations
+  getUserInvitations,
 })

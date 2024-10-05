@@ -8,7 +8,7 @@ export const appRouter = t.router({
   user,
   business,
   appointments,
-  invitations
+  invitations,
 })
 
 export type AppRouter = typeof appRouter

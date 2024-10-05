@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import HeaderAuth from '@/components/headers/HeaderAuth.vue'
 import OwnerAccountDetails from '@/components/account/OwnerAccountDetails.vue'
 import SpecialistAccountDetails from '@/components/account/SpecialistAccountDetails.vue'
 import PersonalAccountDetails from '@/components/account/PersonalAccountDetails.vue'

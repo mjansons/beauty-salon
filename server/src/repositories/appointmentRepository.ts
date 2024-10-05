@@ -4,19 +4,31 @@ import type { DBAppointment } from '@server/schemas/appointmentSchema'
 
 export function appointmentRepository(db: Database) {
   return {
-
-    async getAppointmentsBySpecialistId(
-      date: Date,
-      specialistId: number
-    ){
+    async getAppointmentsBySpecialistId(date: Date, specialistId: number) {
       return await db
         .selectFrom('userAppointments')
-        .innerJoin('businessSpecialities', 'businessSpecialities.id', 'userAppointments.businessSpecialityId')
-        .innerJoin('specialities', 'businessSpecialities.specialityId', 'specialities.id')
+        .innerJoin(
+          'businessSpecialities',
+          'businessSpecialities.id',
+          'userAppointments.businessSpecialityId'
+        )
+        .innerJoin(
+          'specialities',
+          'businessSpecialities.specialityId',
+          'specialities.id'
+        )
         .where('specialistId', '=', specialistId)
         .where(sql`DATE(appointment_start_time)`, '>=', date)
         .orderBy('appointmentStartTime', `asc`)
-        .select(['userAppointments.appointmentStartTime', 'userAppointments.appointmentEndTime', 'specialities.speciality', 'userAppointments.firstName', 'userAppointments.lastName', 'userAppointments.phoneNumber', 'userAppointments.comment'])
+        .select([
+          'userAppointments.appointmentStartTime',
+          'userAppointments.appointmentEndTime',
+          'specialities.speciality',
+          'userAppointments.firstName',
+          'userAppointments.lastName',
+          'userAppointments.phoneNumber',
+          'userAppointments.comment',
+        ])
         .execute()
     },
 

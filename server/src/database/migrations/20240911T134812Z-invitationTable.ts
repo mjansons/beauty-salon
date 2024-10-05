@@ -12,10 +12,7 @@ export async function up(db: Kysely<any>) {
     .addColumn('created_at', 'timestamptz', (column) =>
       column.defaultTo(sql`CURRENT_TIMESTAMP`).notNull()
     )
-    .addUniqueConstraint('unique_invitation_id', [
-        'employee_id',
-        'business_id',
-      ])
+    .addUniqueConstraint('unique_invitation_id', ['employee_id', 'business_id'])
     .execute()
 }
 

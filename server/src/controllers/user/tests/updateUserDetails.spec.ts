@@ -27,7 +27,7 @@ it('changes the name to the new one, with authenticated user', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 
@@ -57,7 +57,7 @@ it('changes the name and surname to the new one, with authenticated user', async
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 
@@ -91,7 +91,7 @@ it('changes ignores wrong field update attempt', async () => {
       firstName: 'user',
       lastName: 'surname',
       phoneNumber: '12345678',
-      isOnboarded: true
+      isOnboarded: true,
     },
   })
 

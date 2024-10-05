@@ -8,5 +8,5 @@ export default t.router({
   getSlotInfo,
   addRegisteredUserAppointment,
   addPublicAppointment,
-  getSpecialistAppointments
+  getSpecialistAppointments,
 })

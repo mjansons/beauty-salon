@@ -22,5 +22,5 @@ export default t.router({
   updateUserDetails,
   getUserRoles,
   getUserDetails,
-  getUsersSpecialities
+  getUsersSpecialities,
 })

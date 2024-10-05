@@ -19,11 +19,15 @@ it('gets users specialities', async () => {
 
   const [createdUser] = await insertAll(db, 'registeredUsers', user)
 
-  await insertAll(db, 'userRoles', { registeredUserId: createdUser.id,
-    roleId: 2})
+  await insertAll(db, 'userRoles', {
+    registeredUserId: createdUser.id,
+    roleId: 2,
+  })
 
-  await insertAll(db, 'specialists', { registeredUserId: createdUser.id,
-    specialityId: 1})
+  await insertAll(db, 'specialists', {
+    registeredUserId: createdUser.id,
+    specialityId: 1,
+  })
 
   const validTokenCaller = createCaller({
     db,
@@ -39,7 +43,7 @@ it('gets users specialities', async () => {
 
   const updatedUser = await validTokenCaller.getUsersSpecialities()
 
-  expect(updatedUser).toMatchObject(["haircut"])
+  expect(updatedUser).toMatchObject(['haircut'])
 })
 
 it('should throw an error for unauthorised change', async () => {
