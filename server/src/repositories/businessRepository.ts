@@ -257,6 +257,27 @@ export function businessRepository(db: Database) {
       return value
     },
 
+    async getBusinessByEmployeeId(registeredUserId: number) {
+      const value = await db
+        .selectFrom('businesses')
+        .innerJoin(
+          'businessEmployees',
+          'businessEmployees.businessId',
+          'businesses.id'
+        )
+        .where('businessEmployees.employeeId', '=', registeredUserId)
+        .select([
+          'email',
+          'phoneNumber',
+          'name',
+          'city',
+          'address',
+          'postalCode',
+        ])
+        .executeTakeFirst()
+      return value
+    },
+
     async getBusinessesByService(
       searchTerm: string
     ): Promise<BusinessSchema[]> {

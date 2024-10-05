@@ -18,6 +18,13 @@ const specialists = ref<any[]>([])
 const isUnregisteredModalOn = ref(false)
 const isRegisteredModalOn = ref(false)
 
+const showBackButton = computed(() => {
+  const selected = new Date(selectedDate.value)
+  const today = new Date()
+  today.setDate(today.getDate() + 3)
+  return selected > today
+})
+
 const signupForm = ref({
   businessName: '',
   address: '',
@@ -292,7 +299,7 @@ function goForwardDays(days: number) {
 
         <!-- Availability Calendar -->
         <div class="calendar-wrapper">
-          <button class="arrow" type="button" @click="goBackDays(3)">
+          <button class="arrow" type="button" @click="goBackDays(3)" :disabled="!showBackButton">
             &leftarrow;
           </button>
           <div class="calendar">

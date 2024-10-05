@@ -16,3 +16,8 @@ export const acceptInvitation = trpc.invitations.acceptInvitation.mutate
 export const rejectInvitation = trpc.invitations.deleteInvitation.mutate
 export const getSpecialistAppointments =
   trpc.appointments.getSpecialistAppointments.query
+export const getEmployerDetails = trpc.business.getEmployerDetails.query
+export const deleteAllSpecialistHours = trpc.user.deleteAllSpecialistHours.mutate
+export const addSpecialistHours = trpc.user.addSpecialistHours.mutate
+export const getSpecialistHours = trpc.user.getSpecialistHours.query
+

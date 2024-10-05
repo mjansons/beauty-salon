@@ -23,7 +23,13 @@ const router = createRouter({
       component: DashboardView,
     },
     {
-      path: '/dashboard/account',
+      path: '/appointments',
+      name: 'appointments',
+      beforeEnter: [authenticate],
+      component: () => import('../views/AppointmentView/AppointmentView.vue'),
+    },
+    {
+      path: '/account',
       name: 'account',
       beforeEnter: [authenticate],
       component: () => import('../views/AccountView/AccountView.vue'),

@@ -173,7 +173,7 @@ watch(onBoardingStep, async (newVal) => {
   <BusinessHours
     v-if="onBoardingStep === 4 && !isClientAccount"
     @next-step="() => onBoardingStep++"
-    @working-hours="(value) => (workingHours = value)"
+    @working-days="(value) => (workingHours = value)"
   ></BusinessHours>
 
   <OnboardingSuccess

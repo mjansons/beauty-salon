@@ -7,11 +7,28 @@ import {
   getUsersInvitations,
   acceptInvitation,
   rejectInvitation,
+  getEmployerDetails,
+  addSpecialistHours,
+  deleteAllSpecialistHours,
+  getSpecialistHours,
 } from '@/stores/trpcCalls'
 import { getAllSpecialities } from '@/stores/trpcCalls'
 import InfoToast from './InfoToast.vue'
+import WorkingHours from '../signup/WorkingHours.vue'
 
 const showToast = ref(false)
+
+const employer = ref<
+  | {
+      email: string
+      name: string
+      city: string
+      address: string
+      phoneNumber: string
+      postalCode: string
+    }
+  | undefined
+>()
 const usersSpecialities = ref<string[]>([])
 const updatedSpecialities = ref<string[]>([])
 const allSpecialities = ref<string[]>([])
@@ -25,6 +42,15 @@ const invitations = ref<
     createdAt: Date
   }[]
 >([])
+
+const defaultWorkingDays = ref<
+  { dayOfWeek: number; startTime: string; endTime: string }[] | undefined
+>(undefined)
+
+const workingDays = ref<
+  { dayOfWeek: number; startTime: string; endTime: string }[]
+>([])
+
 const addableSpecialities = computed(() =>
   allSpecialities.value.filter((s) => !updatedSpecialities.value.includes(s))
 )
@@ -35,6 +61,8 @@ onBeforeMount(async () => {
   usersSpecialities.value = await getUsersSpecialities()
   updatedSpecialities.value = [...usersSpecialities.value]
   invitations.value = await getUsersInvitations()
+  employer.value = await getEmployerDetails()
+  defaultWorkingDays.value = await getSpecialistHours()
 })
 
 const removeSpeciality = (speciality: string) => {
@@ -45,6 +73,11 @@ const removeSpeciality = (speciality: string) => {
 
 const addSpeciality = () => {
   updatedSpecialities.value.push(selectedSpeciality.value)
+}
+function handleWorkingDays(
+  value: { dayOfWeek: number; startTime: string; endTime: string }[]
+) {
+  workingDays.value = value
 }
 
 async function saveChanges() {
@@ -95,6 +128,25 @@ async function reject(businessId: number) {
     console.log(error)
   }
 }
+
+async function updateSchedule() {
+  try {
+    await deleteAllSpecialistHours()
+    console.log('trigger')
+
+    if (workingDays.value.length !== 0) {
+      for (const day of workingDays.value) {
+        await addSpecialistHours(day)
+      }
+    }
+    showToast.value = true
+    setTimeout(() => {
+      showToast.value = false
+    }, 1500)
+  } catch (error) {
+    console.log(error)
+  }
+}
 </script>
 
 <template>
@@ -114,7 +166,11 @@ async function reject(businessId: number) {
   <div v-if="addableSpecialities.length > 0">
     <select name="prefix" v-model="selectedSpeciality">
       <option disabled value="">Select a speciality</option>
-      <option v-for="speciality in addableSpecialities" :key="speciality" :value="speciality">
+      <option
+        v-for="speciality in addableSpecialities"
+        :key="speciality"
+        :value="speciality"
+      >
         {{ speciality }}
       </option></select
     ><button
@@ -144,11 +200,21 @@ async function reject(businessId: number) {
     </div>
   </div>
 
-  <!-- Appointments -->
-  <p>Appointments:</p>
-
   <!-- Company I work for details? -->
+  <div v-if="employer" class="employer-details-wrapper">
+    <p>Employer:</p>
+    <p>{{ employer.name }}</p>
+    <p>{{ employer.city }}</p>
+    <p>{{ employer.address }}</p>
+    <p>{{ employer.phoneNumber }}</p>
+    <p>{{ employer.email }}</p>
+  </div>
   <!-- Schedule -->
+  <WorkingHours
+    :defaultWorkingDays="defaultWorkingDays"
+    @working-days="handleWorkingDays"
+    @next-step="updateSchedule"
+  />
 </template>
 
 <style scoped>

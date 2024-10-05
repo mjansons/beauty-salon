@@ -1,7 +1,28 @@
 <script lang="ts" setup>
-import { reactive, computed } from 'vue'
+import { reactive, computed, watch } from 'vue'
 
-const workingHours = reactive([
+// Define the WorkingDay interface
+export interface WorkingDay {
+  isOperational: boolean
+  startTime: string
+  endTime: string
+  dayOfWeek: number
+  name: string
+}
+
+const props = defineProps<{
+  defaultWorkingDays?: Array<{
+    dayOfWeek: number
+    startTime: string
+    endTime: string
+  }>
+}>()
+
+const buttonText = computed(() => {
+  return props.defaultWorkingDays ? 'Save changes' : 'Continue'
+})
+
+const defaultDays: WorkingDay[] = [
   {
     isOperational: false,
     startTime: '',
@@ -51,12 +72,54 @@ const workingHours = reactive([
     dayOfWeek: 0,
     name: 'Sunday',
   },
-])
+]
 
-const emit = defineEmits(['nextStep', 'workingHours'])
+function initializeWorkingDays() {
+  const workingDays = defaultDays.map((defaultDay) => {
+    const matchingDay = props.defaultWorkingDays?.find(
+      (day) => day.dayOfWeek === defaultDay.dayOfWeek
+    )
+
+    if (matchingDay) {
+      return {
+        ...defaultDay,
+        isOperational: true,
+        startTime: matchingDay.startTime.slice(0, 5), // Ensure time format hh:mm
+        endTime: matchingDay.endTime.slice(0, 5),
+      }
+    }
+
+    return defaultDay
+  })
+
+  return reactive(workingDays)
+}
+
+// Watch for changes in defaultWorkingDays prop and update workingDays accordingly
+watch(
+  () => props.defaultWorkingDays,
+  (newVal) => {
+    if (newVal) {
+      newVal.forEach((day) => {
+        const index = workingDays.findIndex(
+          (wd) => wd.dayOfWeek === day.dayOfWeek
+        )
+        if (index !== -1) {
+          workingDays[index].isOperational = true
+          workingDays[index].startTime = day.startTime.slice(0, 5)
+          workingDays[index].endTime = day.endTime.slice(0, 5)
+        }
+      })
+    }
+  },
+  { immediate: true }
+)
+const workingDays = initializeWorkingDays()
+
+const emit = defineEmits(['nextStep', 'workingDays'])
 
 const isFormValid = computed(() => {
-  return workingHours.every((day) => {
+  return workingDays.every((day) => {
     if (day.isOperational) {
       return day.startTime && day.endTime
     }
@@ -64,8 +127,8 @@ const isFormValid = computed(() => {
   })
 })
 
-const emitDetails = async () => {
-  const parsedBusinessHours = workingHours
+const emitDetails = () => {
+  const parsedBusinessHours = workingDays
     .filter((day) => day.isOperational)
     .map((day) => {
       return {
@@ -75,7 +138,7 @@ const emitDetails = async () => {
       }
     })
 
-  emit('workingHours', parsedBusinessHours)
+  emit('workingDays', parsedBusinessHours)
   emit('nextStep')
 }
 </script>
@@ -83,32 +146,34 @@ const emitDetails = async () => {
 <template>
   <h1>Your working hours</h1>
   <form @submit.prevent="emitDetails">
-    <div v-for="day in workingHours" :key="day.name" class="day-container">
+    <div v-for="day in workingDays" :key="day.name" class="day-container">
       <div class="check-container">
         <input
           type="checkbox"
           v-model="day.isOperational"
-          :id="day + '-operational'"
+          :id="day.name + '-operational'"
         />
         <label :for="day.name">{{ day.name }}</label>
       </div>
       <div class="time-container">
         <input
           v-model="day.startTime"
-          :id="day + '-open'"
+          :id="day.name + '-open'"
           type="time"
           placeholder="Open"
+          :disabled="!day.isOperational"
         />
         <p>-</p>
         <input
           v-model="day.endTime"
-          :id="day + '-close'"
+          :id="day.name + '-close'"
           type="time"
           placeholder="Close"
+          :disabled="!day.isOperational"
         />
       </div>
     </div>
-    <button type="submit" :disabled="!isFormValid">Continue</button>
+    <button type="submit" :disabled="!isFormValid">{{ buttonText }}</button>
   </form>
 </template>
 
@@ -132,5 +197,9 @@ const emitDetails = async () => {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+button {
+  margin-top: 20px;
 }
 </style>

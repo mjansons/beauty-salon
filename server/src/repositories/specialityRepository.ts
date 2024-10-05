@@ -189,6 +189,26 @@ export function specialityRepository(db: Database) {
       return value
     },
 
+    async getSpecialistHours(
+      specialistId: number
+    ): Promise<InsertableSpecialistDaySchema[] | undefined> {
+      const value = await db
+        .selectFrom('specialistAvailability')
+        .where('specialistId', '=', specialistId)
+        .selectAll()
+        .execute()
+      return value.length > 0 ? value : undefined
+    },
+
+    async deleteAllSpecialistWorkDays(specialistId: number) {
+      const value = await db
+        .deleteFrom('specialistAvailability')
+        .where('specialistId', '=', specialistId)
+        .returningAll()
+        .execute()
+      return value
+    },
+
     async getSpecialistAvailabilityById(specialistId: number): Promise<
       {
         id: number

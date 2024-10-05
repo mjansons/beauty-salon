@@ -8,6 +8,9 @@
     <div class="nav-container">
       <div class="category-container"></div>
       <div class="auth-container">
+        <RouterLink :to="{ name: 'appointments' }" tabindex="-1">
+          <p>Appointments</p>
+        </RouterLink>
         <RouterLink :to="{ name: 'account' }" tabindex="-1">
           <button type="button">Account</button>
         </RouterLink>

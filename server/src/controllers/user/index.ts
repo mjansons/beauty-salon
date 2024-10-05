@@ -10,6 +10,8 @@ import getUserRoles from './getUserRoles'
 import getUserDetails from './getUserDetails'
 import getUsersSpecialities from './getUsersSpecialities'
 import removeSpecialityFromUser from './removeSpecialityFromUser'
+import deleteAllSpecialistHours from './deleteAllSpecialistHours'
+import getSpecialistHours from './getSpecialistHours'
 
 export default t.router({
   login,
@@ -23,4 +25,6 @@ export default t.router({
   getUserRoles,
   getUserDetails,
   getUsersSpecialities,
+  deleteAllSpecialistHours,
+  getSpecialistHours
 })

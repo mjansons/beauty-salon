@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import HeaderAuth from '@/components/headers/HeaderAuth.vue'
 import OwnerAccountDetails from '@/components/account/OwnerAccountDetails.vue'
 import SpecialistAccountDetails from '@/components/account/SpecialistAccountDetails.vue'
 import PersonalAccountDetails from '@/components/account/PersonalAccountDetails.vue'
@@ -20,6 +21,7 @@ const logoutUser = () => {
 </script>
 
 <template>
+    <HeaderAuth></HeaderAuth>
   <PersonalAccountDetails></PersonalAccountDetails>
   <SpecialistAccountDetails
     v-if="userRoles.includes('specialist')"
