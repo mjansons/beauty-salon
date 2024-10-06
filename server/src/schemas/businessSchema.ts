@@ -35,3 +35,5 @@ export const businessUpdatingSchema = z.object({
   email: z.string().trim().toLowerCase().email(),
   phoneNumber: z.string().min(8).max(15),
 })
+
+export const partialBusinessUpdateSchema = businessUpdatingSchema.partial()

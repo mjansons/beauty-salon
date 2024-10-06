@@ -157,6 +157,28 @@ export function businessRepository(db: Database) {
       return value
     },
 
+    async updateBusinessById(
+      id: number,
+      updatedBusinessDetails: Partial<{
+        address: string
+        city: string
+        email: string
+        name: string
+        ownerId: number
+        phoneNumber: string
+        postalCode: string
+      }>
+    ) {
+      const { ...updateData } = updatedBusinessDetails
+      const value = await db
+        .updateTable('businesses')
+        .set(updateData)
+        .where('id', '=', id)
+        .returningAll()
+        .executeTakeFirst()
+      return value
+    },
+
     async getBusinessesByRegisteredUserId(
       regesteredUserId: number
     ): Promise<BusinessSchema[]> {
@@ -378,6 +400,16 @@ export function businessRepository(db: Database) {
         .executeTakeFirst()
       return value
     },
+
+    async getOwnerBusinesses(ownerId: number): Promise<BusinessSchema[]> {
+      const value = await db
+        .selectFrom('businesses')
+        .selectAll()
+        .where('ownerId', '=', ownerId)
+        .orderBy('id', 'asc')
+        .execute()
+      return value
+    }
   }
 }
 

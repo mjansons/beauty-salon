@@ -34,7 +34,11 @@ const workingHours = ref<
 >([])
 const services = ref<string[]>([])
 
-watch(onBoardingStep, async (newVal) => {
+watch(onBoardingStep, async (newVal, oldValue) => {
+  if (oldValue === 2 && newVal === 1) {
+    isSpecialistAccount.value = false
+  }
+
   // finish client onboarding
   if (newVal === 3 && isClientAccount.value === true) {
     // mark onboarding as complete for client
@@ -112,14 +116,6 @@ watch(onBoardingStep, async (newVal) => {
 </script>
 
 <template>
-  <p>{{ userDetails }}</p>
-  <p>{{ services }}</p>
-  <p>{{ onBoardingStep }}</p>
-  <p>{{ workingHours }}</p>
-  <p>{{ businessDetails }}</p>
-  <p>{{ `Onboarding step: ${onBoardingStep}` }}</p>
-  <p>{{ `isClientAccount: ${isClientAccount}` }}</p>
-  <p>{{ `isSpecialistAccount: ${isSpecialistAccount}` }}</p>
   <button
     type="button"
     v-if="

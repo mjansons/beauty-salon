@@ -58,7 +58,7 @@ it('gets appointments', async () => {
     appointmentEndTime: twoHoursFromNow,
     businessId: createdBusiness.id,
     businessSpecialityId: businessSpeciality.id,
-    clientId: null,
+    clientId: createdUser.id,
     comment: 'Appointment comment',
     email: 'user@example.com',
     firstName: 'John',
@@ -79,16 +79,17 @@ it('gets appointments', async () => {
     },
   })
 
-  const appointments =
-    await validTokenCaller.getSpecialistAppointments()
+  const appointments = await validTokenCaller.getPersonalAppointments()
+
 
   expect(appointments).toMatchObject([
     {
-      comment: 'Appointment comment',
-      firstName: 'John',
-      lastName: 'Doe',
-      phoneNumber: '1234567890',
+      specialistFirstName: 'user',
+      specialistLastName: 'surname',
+      phoneNumber: '12345678',
       speciality: 'haircut',
+      price: 30,
+      address: 'some street',
     },
   ])
 })

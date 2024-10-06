@@ -15,6 +15,7 @@ it('gets appointments', async () => {
     password: 'verystrongpasswordthatishashed',
     phoneNumber: '12345678',
   }
+
   const [createdUser] = await insertAll(db, 'registeredUsers', user)
 
   const [createdBusiness] = await insertAll(db, 'businesses', {
@@ -79,16 +80,19 @@ it('gets appointments', async () => {
     },
   })
 
-  const appointments =
-    await validTokenCaller.getSpecialistAppointments()
+  const appointments = await validTokenCaller.getBusinessAppointments({
+    businessId: createdBusiness.id,
+  })
 
   expect(appointments).toMatchObject([
     {
       comment: 'Appointment comment',
-      firstName: 'John',
-      lastName: 'Doe',
-      phoneNumber: '1234567890',
+      clientFirstName: 'John',
+      clientLastName: 'Doe',
+      clientPhoneNumber: '1234567890',
       speciality: 'haircut',
+      specialistFirstName: 'user',
+      specialistLastName: 'surname',
     },
   ])
 })

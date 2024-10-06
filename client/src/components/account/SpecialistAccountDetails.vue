@@ -11,8 +11,8 @@ import {
   addSpecialistHours,
   deleteAllSpecialistHours,
   getSpecialistHours,
+  getAllSpecialities
 } from '@/stores/trpcCalls'
-import { getAllSpecialities } from '@/stores/trpcCalls'
 import InfoToast from './InfoToast.vue'
 import WorkingHours from '../signup/WorkingHours.vue'
 
@@ -209,8 +209,10 @@ async function updateSchedule() {
     <p>{{ employer.phoneNumber }}</p>
     <p>{{ employer.email }}</p>
   </div>
+
   <!-- Schedule -->
   <WorkingHours
+    :buttonText="'Save changes'"
     :defaultWorkingDays="defaultWorkingDays"
     @working-days="handleWorkingDays"
     @next-step="updateSchedule"

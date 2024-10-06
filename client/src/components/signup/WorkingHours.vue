@@ -16,10 +16,11 @@ const props = defineProps<{
     startTime: string
     endTime: string
   }>
+  buttonText?: string
 }>()
 
 const buttonText = computed(() => {
-  return props.defaultWorkingDays ? 'Save changes' : 'Continue'
+  return props.buttonText? props.buttonText : 'Continue'
 })
 
 const defaultDays: WorkingDay[] = [
@@ -95,7 +96,6 @@ function initializeWorkingDays() {
   return reactive(workingDays)
 }
 
-// Watch for changes in defaultWorkingDays prop and update workingDays accordingly
 watch(
   () => props.defaultWorkingDays,
   (newVal) => {

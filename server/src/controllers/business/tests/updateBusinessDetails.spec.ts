@@ -39,7 +39,7 @@ it('edits an existing business', async () => {
     ownerId: createdUser.id,
   })
 
-  const newEntry = await validTokenCaller.editBusiness({
+  const newEntry = await validTokenCaller.updateBusinessDetails({
     businessId: addedBusiness.id,
     name: 'newBusinessName',
     city: 'vilnus',
@@ -48,6 +48,5 @@ it('edits an existing business', async () => {
     email: 'business@emai.com',
     phoneNumber: '12345678',
   })
-
-  expect(newEntry.name).toEqual('newbusinessname')
+  expect(newEntry).toMatchObject({ name: 'newbusinessname' })
 })

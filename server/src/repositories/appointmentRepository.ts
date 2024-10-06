@@ -33,6 +33,78 @@ export function appointmentRepository(db: Database) {
         return values
     },
 
+    async getPersonalAppointments(date: Date, registeredUserId: number) {
+      const values = await db
+        .selectFrom('userAppointments')
+        .innerJoin('businesses', 'businesses.id', 'userAppointments.businessId')
+        .innerJoin(
+          'businessSpecialities',
+          'businessSpecialities.id',
+          'userAppointments.businessSpecialityId'
+        )
+        .innerJoin(
+          'specialities',
+          'businessSpecialities.specialityId',
+          'specialities.id'
+        )
+        .innerJoin('registeredUsers', 'registeredUsers.id', 'userAppointments.specialistId')
+        .where('clientId', '=', registeredUserId)
+        .where(sql`DATE(appointment_start_time)`, '>=', date)
+        .orderBy('appointmentStartTime', `asc`)
+        .select([
+          'specialities.speciality',
+          'userAppointments.appointmentStartTime',
+          'userAppointments.appointmentEndTime',
+          'businessSpecialities.price',
+          'businesses.name',
+          'businesses.city',
+          'businesses.address',
+          'businesses.phoneNumber',
+          'businesses.postalCode',
+          'registeredUsers.firstName as SpecialistFirstName',
+          'registeredUsers.lastName as SpecialistLastName',
+        ])
+        .execute()
+        return values
+    },
+
+    async getBusinessAppointments(date: Date, businessId: number) {
+      const values = await db
+    .selectFrom('userAppointments')
+    .innerJoin(
+      'businessSpecialities',
+      'businessSpecialities.id',
+      'userAppointments.businessSpecialityId'
+    )
+    .innerJoin(
+      'specialities',
+      'businessSpecialities.specialityId',
+      'specialities.id'
+    )
+    .innerJoin(
+      'registeredUsers as specialists',
+      'specialists.id',
+      'userAppointments.specialistId'
+    )
+    .where('userAppointments.businessId', '=', businessId)
+    .where(sql`DATE(user_appointments.appointment_start_time)`, '>=', date)
+    .orderBy('userAppointments.appointmentStartTime', 'asc')
+    .select([
+      'specialities.speciality',
+      'userAppointments.appointmentStartTime as appointmentStartTime',
+      'userAppointments.appointmentEndTime as appointmentEndTime',
+      'userAppointments.firstName as clientFirstName',
+      'userAppointments.lastName as clientLastName',
+      'userAppointments.phoneNumber as clientPhoneNumber',
+      'userAppointments.comment as comment',
+      'specialists.firstName as specialistFirstName',
+      'specialists.lastName as specialistLastName',
+    ])
+    .execute()
+
+  return values
+    },
+
     async getSpecialistBookingsAndWorkSchedule(
       location: string,
       service: string,

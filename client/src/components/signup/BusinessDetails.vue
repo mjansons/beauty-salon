@@ -1,5 +1,22 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+
+const props = defineProps<{
+  defaultBusinessDetails?: {
+    id: number
+    name: string
+    address: string
+    city: string
+    postalCode: string
+    email: string
+    phoneNumber: string
+  }
+  buttonText?: string
+}>()
+
+const buttonText = computed(() => {
+  return props.buttonText ? props.buttonText : 'Continue'
+})
 
 const name = ref('')
 const address = ref('')
@@ -8,9 +25,11 @@ const postalCode = ref('')
 const email = ref('')
 const prefix = ref('+371')
 const number = ref('')
+const id = ref(0)
 const completePhoneNumber = computed(() => `${prefix.value}${number.value}`)
 
 const businessDetails = computed(() => ({
+  businessId: id.value,
   name: name.value,
   address: address.value,
   city: city.value,
@@ -25,10 +44,37 @@ const emitDetails = async () => {
   emit('businessDetails', businessDetails.value)
   emit('nextStep')
 }
+function parsePhoneNumber(phoneNumber: string) {
+  const match = phoneNumber.match(/^(\+\d{3})(\d{5,8})$/)
+  if (match) {
+    prefix.value = match[1]
+    number.value = match[2]
+  } else {
+    // Default values if parsing fails
+    prefix.value = '+371'
+    number.value = ''
+  }
+}
+
+watch(
+  () => props.defaultBusinessDetails,
+  (newVal) => {
+    if (newVal) {
+      id.value = newVal.id
+      name.value = newVal.name
+      address.value = newVal.address
+      city.value = newVal.city
+      postalCode.value = newVal.postalCode
+      email.value = newVal.email
+      parsePhoneNumber(newVal.phoneNumber)
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
-  <h1>Tell us about your Business</h1>
+  <h2>{{ props.defaultBusinessDetails ? props.defaultBusinessDetails.name : "Tell us about your Business"}}</h2>
 
   <form @submit.prevent="emitDetails">
     <label for="name">Business name</label>
@@ -112,7 +158,7 @@ const emitDetails = async () => {
         postalCode.length < 1
       "
     >
-      Continue
+      {{ buttonText }}
     </button>
   </form>
 </template>
