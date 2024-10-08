@@ -1,12 +1,19 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount } from 'vue'
-import { getOwnerBusinesses, updateBusinessDetails } from '@/stores/trpcCalls'
+import {
+  getOwnerBusinesses,
+  updateBusinessDetails,
+} from '@/stores/trpcCalls'
 import BusinessDetails from '../signup/BusinessDetails.vue'
 import InfoToast from './InfoToast.vue'
+import InviteSender from './InviteSender.vue'
+import EmployeeList from './EmployeeList.vue'
+import BusinessServices from './BusinessServices.vue'
+import BusinessHours from './BusinessHours.vue'
 
 const showToast = ref(false)
 
-const businesses = ref<
+const myBusinesses = ref<
   {
     address: string
     id: number
@@ -20,7 +27,7 @@ const businesses = ref<
   }[]
 >([])
 
-const updatedBusiness = ref<{
+const myUpdatedBusiness = ref<{
   businessId: number
   address: string
   email: string
@@ -31,10 +38,7 @@ const updatedBusiness = ref<{
 }>()
 
 onBeforeMount(async () => {
-  businesses.value = await getOwnerBusinesses()
-  // get owner businesses
-  // get owner schedule
-  // get owner specialities
+  myBusinesses.value = await getOwnerBusinesses()
 })
 
 function receiveBusinessDetails(value: {
@@ -46,15 +50,15 @@ function receiveBusinessDetails(value: {
   email: string
   phoneNumber: string
 }) {
-  updatedBusiness.value = value
+  myUpdatedBusiness.value = value
 }
 
 async function updateBusiness() {
-  if (updatedBusiness.value) {
+  if (myUpdatedBusiness.value) {
     try {
-      await updateBusinessDetails(updatedBusiness.value)
+      await updateBusinessDetails(myUpdatedBusiness.value)
 
-      businesses.value = await getOwnerBusinesses()
+      myBusinesses.value = await getOwnerBusinesses()
 
       showToast.value = true
       setTimeout(() => {
@@ -69,8 +73,8 @@ async function updateBusiness() {
 
 <template>
   <InfoToast :showToast="showToast" />
-  <h1>owner account details</h1>
-  <div v-for="business in businesses" :key="business.id">
+  <!-- <h1>owner account details</h1> -->
+  <div v-for="business in myBusinesses" :key="business.id">
     <BusinessDetails
       :buttonText="'Save changes'"
       :defaultBusinessDetails="{
@@ -85,11 +89,12 @@ async function updateBusiness() {
       @business-details="receiveBusinessDetails"
       @next-step="updateBusiness"
     />
+    <EmployeeList :businessId="business.id" />
+    <InviteSender :businessId="business.id" />
+    <BusinessServices :businessId="business.id" />
+    <BusinessHours :businessId="business.id" />
+
   </div>
-  <!-- Company details? -->
-  <!-- Invitation sending -->
-  <!-- Schedule -->
-  <!-- Specialities and their price-->
 </template>
 
 <!-- <style scoped></style> -->

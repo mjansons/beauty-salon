@@ -32,12 +32,14 @@ export default authenticatedProcedure
       },
       ctx: { repositories, authUser },
     }) => {
+
       // throw error if the business doesnt offer such a service
-      const businessSpeciality =
+      const businessSpecialityObj =
         await repositories.specialityRepository.getBusinessSpecalityById(
           businessSpecialityId
         )
-      if (!businessSpeciality) {
+
+      if (!businessSpecialityObj) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: `Invalid business speciality`,
@@ -62,7 +64,7 @@ export default authenticatedProcedure
       const userSpeciality =
         await repositories.specialityRepository.getUsersSpecalityBySpecialitytId(
           specialistId,
-          businessSpeciality.specialityId
+          businessSpecialityObj.specialityId
         )
 
       if (!userSpeciality) {
@@ -186,6 +188,7 @@ export default authenticatedProcedure
 
         return newAppointment
       } catch (error) {
+        console.log(error)
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'An error occurred while updating the userAppointments.',

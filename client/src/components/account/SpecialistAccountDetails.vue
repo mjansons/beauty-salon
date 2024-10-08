@@ -132,7 +132,6 @@ async function reject(businessId: number) {
 async function updateSchedule() {
   try {
     await deleteAllSpecialistHours()
-    console.log('trigger')
 
     if (workingDays.value.length !== 0) {
       for (const day of workingDays.value) {

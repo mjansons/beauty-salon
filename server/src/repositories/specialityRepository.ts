@@ -110,7 +110,7 @@ export function specialityRepository(db: Database) {
     },
 
     async getBusinessSpecalityById(
-      businessSpecialityId: number
+      businessSpecialityId: number,
     ): Promise<
       | { id: number; businessId: number; price: number; specialityId: number }
       | undefined
@@ -168,6 +168,41 @@ export function specialityRepository(db: Database) {
         })
         .returningAll()
         .executeTakeFirstOrThrow()
+    },
+
+    async deleteBusinessSpeciality(
+      businessId: number,
+      specialityId: number
+    ): Promise<
+      { id: number; businessId: number; price: number; specialityId: number }
+    > {
+      return db
+        .deleteFrom('businessSpecialities')
+        .where('businessId', '=', businessId)
+        .where('specialityId', '=', specialityId)
+        .returningAll()
+        .executeTakeFirstOrThrow()
+    },
+
+    async getAllBusinessSpecialities(businessId: number): Promise<
+      {
+        price: number
+        speciality: string
+        businessId: number
+      }[]
+    > {
+      const specialities = await db
+        .selectFrom('businessSpecialities')
+        .innerJoin(
+          'specialities',
+          'specialities.id',
+          'businessSpecialities.specialityId'
+        )
+        .where('businessId', '=', businessId)
+        .select(['specialities.speciality', 'businessSpecialities.price', 'businessId'])
+        .execute()
+
+      return specialities
     },
 
     async addSpecialistHoursToDay(

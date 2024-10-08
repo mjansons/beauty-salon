@@ -347,7 +347,7 @@ function goForwardDays(days: number) {
                           specialist.price,
                           specialist.specialityName,
                           specialist.businessId,
-                          specialist.specialityId,
+                          specialist.businessSpecialityId,
                           specialist.specialistId,
                           slot.slotDateObj
                         )

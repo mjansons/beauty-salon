@@ -68,7 +68,6 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <OwnerAccountDetails />
   <InfoToast :showToast="showToast" />
   <h1>Personal details</h1>
   <form @submit.prevent="updateDetails">

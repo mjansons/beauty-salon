@@ -161,10 +161,11 @@ it('gets 1/2 businesses, because of employee work time', async () => {
       specialistFirstName: 'user',
       specialistId: createdUser.id,
       specialistLastName: 'surname',
-      specialityId: 1,
+      businessSpecialityId: businessSpeciality.id,
     },
   ])
 })
+
 
 it('gets 2/2 businesses, because of employee work time', async () => {
   const user = {
@@ -320,7 +321,7 @@ it('gets 2/2 businesses, because of employee work time', async () => {
       specialistFirstName: 'user',
       specialistId: createdUser.id,
       specialistLastName: 'surname',
-      specialityId: 1,
+      businessSpecialityId: businessSpeciality.id,
     },
     {
       postalCode: 'ev123',
@@ -328,7 +329,7 @@ it('gets 2/2 businesses, because of employee work time', async () => {
       specialistFirstName: 'user2',
       specialistId: createdUser2.id,
       specialistLastName: 'surname2',
-      specialityId: 1,
+      businessSpecialityId: businessSpeciality2.id,
     },
   ])
 })

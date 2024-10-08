@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import HeaderAuth from '@/components/headers/HeaderAuth.vue'
-// import OwnerAccountDetails from '@/components/account/OwnerAccountDetails.vue'
+import OwnerAccountDetails from '@/components/account/OwnerAccountDetails.vue'
 import SpecialistAccountDetails from '@/components/account/SpecialistAccountDetails.vue'
 import PersonalAccountDetails from '@/components/account/PersonalAccountDetails.vue'
 import { logout } from '@/stores/user'
@@ -26,7 +26,7 @@ const logoutUser = () => {
   <SpecialistAccountDetails
     v-if="userRoles.includes('specialist')"
   ></SpecialistAccountDetails>
-  <!-- <OwnerAccountDetails v-if="userRoles.includes('owner')"></OwnerAccountDetails> -->
+  <OwnerAccountDetails v-if="userRoles.includes('owner')"></OwnerAccountDetails>
   <button type="button" @click="logoutUser">Logout</button>
 </template>
 

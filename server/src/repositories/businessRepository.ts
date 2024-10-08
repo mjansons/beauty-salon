@@ -401,6 +401,27 @@ export function businessRepository(db: Database) {
       return value
     },
 
+    async getAllEmployees(businessId: number) {
+      const value = await db
+        .selectFrom('businessEmployees')
+        .innerJoin(
+          'registeredUsers',
+          'registeredUsers.id',
+          'businessEmployees.employeeId'
+        )
+        .where('businessId', '=', businessId)
+        .select([
+          'registeredUsers.email',
+          'registeredUsers.firstName',
+          'registeredUsers.lastName',
+          'registeredUsers.email',
+          'registeredUsers.phoneNumber',
+        ])
+        .orderBy('registeredUsers.firstName', 'asc')
+        .execute()
+      return value
+    },
+
     async getOwnerBusinesses(ownerId: number): Promise<BusinessSchema[]> {
       const value = await db
         .selectFrom('businesses')
@@ -409,7 +430,25 @@ export function businessRepository(db: Database) {
         .orderBy('id', 'asc')
         .execute()
       return value
-    }
+    },
+
+    async getAllBusinessHours(businessId: number) {
+      const value = await db
+        .selectFrom('businessAvailability')
+        .where('businessId', '=', businessId)
+        .select(['dayOfWeek', 'startTime', 'endTime', 'businessId'])
+        .execute()
+      return value
+    },
+
+    async deleteAllBusinessHours(businessId: number) {
+      const value = await db
+        .deleteFrom('businessAvailability')
+        .where('businessId', '=', businessId)
+        .returningAll()
+        .execute()
+      return value
+    },
   }
 }
 

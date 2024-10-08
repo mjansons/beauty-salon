@@ -125,7 +125,7 @@ export function appointmentRepository(db: Database) {
         businessPhoneNumber: string
         postalCode: string
         specialistId: number
-        specialityId: number
+        businessSpecialityId: number
         specialityName: string
         price: number
         specialistFirstName: string
@@ -194,7 +194,7 @@ export function appointmentRepository(db: Database) {
             'businesses.phoneNumber as businessPhoneNumber',
             'businesses.postalCode',
             'specialists.registeredUserId as specialistId',
-            'specialists.specialityId as specialityId',
+            'businessSpecialities.id as businessSpecialityId',
             'specialities.speciality as specialityName',
             'businessSpecialities.price',
             'registeredUsers.firstName as specialistFirstName',
@@ -424,7 +424,7 @@ export function appointmentRepository(db: Database) {
               businessEmail: specialist.businessEmail,
               businessPhoneNumber: specialist.businessPhoneNumber,
               postalCode: specialist.postalCode,
-              specialityId: specialist.specialityId,
+              businessSpecialityId: specialist.businessSpecialityId,
               specialityName: specialist.specialityName,
               price: specialist.price,
               specialistFirstName: specialist.specialistFirstName,

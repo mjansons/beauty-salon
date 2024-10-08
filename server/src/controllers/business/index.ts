@@ -11,6 +11,11 @@ import getAllCities from './getAllCities'
 import getEmployerDetails from './getEmployerDetails'
 import getOwnerBusinesses from './getOwnerBusinesses'
 import updateBusinessDetails from './updateBusinessDetails'
+import getAllEmployees from './getAllEmployees'
+import deleteBusinessSpeciality from './deleteBusinessSpeciality'
+import getAllBusinessSpecialities from './getAllBusinessSpecialities'
+import deleteAllBusinessHours from './deleteAllBusinessHours'
+import getAllBusinessHours from './getAllBusinessHours'
 
 export default t.router({
   addBusiness,
@@ -24,5 +29,10 @@ export default t.router({
   getAllCities,
   getEmployerDetails,
   getOwnerBusinesses,
-  updateBusinessDetails
+  updateBusinessDetails,
+  getAllEmployees,
+  deleteBusinessSpeciality,
+  getAllBusinessSpecialities,
+  deleteAllBusinessHours,
+  getAllBusinessHours
 })

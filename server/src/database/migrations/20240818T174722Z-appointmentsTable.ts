@@ -16,7 +16,7 @@ export async function up(db: Kysely<any>) {
       column.references('registered_users.id').notNull()
     )
     .addColumn('business_speciality_id', 'integer', (column) =>
-      column.references('business_specialities.id').notNull()
+      column.references('business_specialities.id').onDelete('cascade').notNull()
     )
     .addColumn('appointment_start_time', 'timestamptz', (c) => c.notNull())
     .addColumn('appointment_end_time', 'timestamptz', (c) => c.notNull())

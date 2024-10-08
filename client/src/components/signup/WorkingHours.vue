@@ -1,15 +1,6 @@
 <script lang="ts" setup>
 import { reactive, computed, watch } from 'vue'
 
-// Define the WorkingDay interface
-export interface WorkingDay {
-  isOperational: boolean
-  startTime: string
-  endTime: string
-  dayOfWeek: number
-  name: string
-}
-
 const props = defineProps<{
   defaultWorkingDays?: Array<{
     dayOfWeek: number
@@ -18,6 +9,14 @@ const props = defineProps<{
   }>
   buttonText?: string
 }>()
+
+export interface WorkingDay {
+  isOperational: boolean
+  startTime: string
+  endTime: string
+  dayOfWeek: number
+  name: string
+}
 
 const buttonText = computed(() => {
   return props.buttonText? props.buttonText : 'Continue'
@@ -96,6 +95,7 @@ function initializeWorkingDays() {
   return reactive(workingDays)
 }
 
+// Watch for changes in defaultWorkingDays prop and update workingDays accordingly
 watch(
   () => props.defaultWorkingDays,
   (newVal) => {
@@ -144,7 +144,9 @@ const emitDetails = () => {
 </script>
 
 <template>
-  <h1>Your working hours</h1>
+  <slot>
+    <h1>Your working hours</h1>
+  </slot>
   <form @submit.prevent="emitDetails">
     <div v-for="day in workingDays" :key="day.name" class="day-container">
       <div class="check-container">

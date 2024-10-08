@@ -3,6 +3,7 @@ import provideRepos from '@server/trpc/provideRepos'
 import { businessRepository } from '@server/repositories/businessRepository'
 import { specialityRepository } from '@server/repositories/specialityRepository'
 import authenticatedOwnerProcedure from '@server/trpc/authenticatedOwnerProcedure'
+
 import z from 'zod'
 
 export default authenticatedOwnerProcedure
@@ -16,10 +17,18 @@ export default authenticatedOwnerProcedure
   .mutation(
     async ({ input: { businessId, employeeEmail }, ctx: { repositories } }) => {
       // is it a real specialist?
-      const employee =
-        await repositories.specialityRepository.getSpecialistByEmail(
-          employeeEmail
-        )
+      let employee
+      try {
+        employee =
+          await repositories.specialityRepository.getSpecialistByEmail(
+            employeeEmail
+          )
+      } catch (error) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `Invalid. Specialist with the provided email, not found. ${error}`,
+        })
+      }
 
       if (!employee) {
         throw new TRPCError({
@@ -38,12 +47,15 @@ export default authenticatedOwnerProcedure
         return invitation
       } catch (error) {
         if ((error as Error).message.includes('duplicate key')) {
-          return {
-            message: `Invitation already extended to this employee.`,
-          }
-        }
-        return {
-          message: `Unknown Error occurred. ${error}`,
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: `Invitation already exists for this specialist.`,
+          })
+        } else {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `An unexpected error occurred. ${error}`,
+          })
         }
       }
     }

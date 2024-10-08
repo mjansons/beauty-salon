@@ -39,62 +39,103 @@ const specialistAppointments = ref<
   }[]
 >([])
 
-const businessAppointments = ref<
+
+const businessAppointmentsList = ref<
   {
-    speciality: string
-    appointmentStartTime: Date
-    appointmentEndTime: Date
-    clientFirstName: string
-    clientLastName: string
-    clientPhoneNumber: string
-    comment: string | null
-    specialistFirstName: string
-    specialistLastName: string
+    business: {
+      id: number
+      name: string
+    }
+    appointments: {
+      speciality: string
+      appointmentStartTime: Date
+      appointmentEndTime: Date
+      clientFirstName: string
+      clientLastName: string
+      clientPhoneNumber: string
+      comment: string | null
+      specialistFirstName: string
+      specialistLastName: string
+    }[]
   }[]
 >([])
 
 onBeforeMount(async () => {
   userRoles.value = await getUserRoles()
 
-  // business appointments
-  // specialist appointments
+  // Fetch personal appointments
   personalAppointments.value = await getPesronalAppointments()
 
   if (userRoles.value.includes('owner')) {
     const businesses = await getOwnerBusinesses()
     if (businesses.length > 0) {
-      businessAppointments.value = await getBusinessAppointments({
-        businessId: businesses[0].id,
+      // Fetch appointments for each business
+      const appointmentsPromises = businesses.map(async (business) => {
+        const appointments = await getBusinessAppointments({
+          businessId: business.id,
+        })
+        return {
+          business: {
+            id: business.id,
+            name: business.name,
+          },
+          appointments,
+        }
       })
+      businessAppointmentsList.value = await Promise.all(appointmentsPromises)
     }
   }
+
   if (userRoles.value.includes('specialist')) {
     specialistAppointments.value = await getSpecialistAppointments()
   }
 })
 </script>
 
+
 <template>
   <HeaderAuth></HeaderAuth>
+  <!-- Business Appointments Section -->
   <div v-if="userRoles.includes('owner')" class="appointment-wrapper">
-    <h4>Upcoming owner appointments:</h4>
-    <p v-if="businessAppointments.length === 0">No upcoming appointments</p>
-    <div
-      v-for="appointment in businessAppointments"
-      :key="appointment.appointmentStartTime.toISOString()"
-    >
-      <p>{{ appointment.speciality }}</p>
-      <p>{{ appointment.appointmentStartTime }}</p>
-      <p>{{ appointment.appointmentEndTime }}</p>
-      <p>
-        {{ appointment.specialistFirstName }}
-        {{ appointment.specialistLastName }}
-      </p>
-      <p>{{ appointment.clientFirstName }} {{ appointment.clientLastName }}</p>
-      <p>{{ appointment.clientPhoneNumber }}</p>
-      <p>{{ appointment.comment }}</p>
+    <h4>Upcoming business appointments:</h4>
+    <div v-if="businessAppointmentsList.length === 0">
+      <p>No upcoming appointments</p>
+    </div>
+    <div v-else>
+      <!-- Loop through each business and its appointments -->
+      <div
+        v-for="businessData in businessAppointmentsList"
+        :key="businessData.business.id"
+        class="business-section"
+      >
+        <!-- Business Name -->
+        <h3>{{ businessData.business.name }}</h3>
+        <!-- Check if the business has appointments -->
+        <div v-if="businessData.appointments.length === 0">
+          <p>No appointments for this business</p>
+        </div>
+        <div v-else>
+          <!-- Loop through appointments for this business -->
+          <div
+            v-for="appointment in businessData.appointments"
+            :key="appointment.appointmentStartTime.toISOString() + '-' + appointment.clientPhoneNumber"
+          >
+            <p>{{ appointment.speciality }}</p>
+            <p>{{ appointment.appointmentStartTime }}</p>
+            <p>{{ appointment.appointmentEndTime }}</p>
+            <p>
+              {{ appointment.specialistFirstName }}
+              {{ appointment.specialistLastName }}
+            </p>
+            <p>{{ appointment.clientFirstName }} {{ appointment.clientLastName }}</p>
+            <p>{{ appointment.clientPhoneNumber }}</p>
+            <p>{{ appointment.comment }}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  <!-- Specialist Appointments Section -->
   <div v-if="userRoles.includes('specialist')" class="appointment-wrapper">
     <h4>Upcoming specialist appointments:</h4>
     <p v-if="specialistAppointments.length === 0">No upcoming appointments</p>
@@ -111,6 +152,7 @@ onBeforeMount(async () => {
     </div>
   </div>
 
+  <!-- Personal Appointments Section -->
   <div class="appointment-wrapper">
     <h4>Upcoming personal appointments:</h4>
     <p v-if="personalAppointments.length === 0">No upcoming appointments</p>
@@ -127,3 +169,4 @@ onBeforeMount(async () => {
     </div>
   </div>
 </template>
+

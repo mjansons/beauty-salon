@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
-// Define a prop to control the visibility of the toast
-const props = defineProps({
-  showToast: {
-    type: Boolean,
-    required: true,
-  },
+const props = defineProps<{
+  showToast: boolean
+  buttonText?: string
+}>()
+
+const buttonText = computed(() => {
+  return props.buttonText ? props.buttonText : 'Changes saved successfully!'
 })
+
 const isDisplayed = ref(props.showToast)
 
 watch(
@@ -20,7 +22,7 @@ watch(
 
 <template>
   <div v-if="isDisplayed" class="info-toast">
-    <p>Changes saved successfully!</p>
+    <p>{{ buttonText }}</p>
     <button type="button" @click="isDisplayed = false">x</button>
   </div>
 </template>

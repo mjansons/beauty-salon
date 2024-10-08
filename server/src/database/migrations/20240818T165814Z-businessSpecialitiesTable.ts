@@ -7,10 +7,10 @@ export async function up(db: Kysely<any>) {
       c.primaryKey().generatedAlwaysAsIdentity()
     )
     .addColumn('business_id', 'integer', (column) =>
-      column.references('businesses.id').notNull()
+      column.references('businesses.id').onDelete('cascade').notNull()
     )
     .addColumn('speciality_id', 'integer', (column) =>
-      column.references('specialities.id').notNull()
+      column.references('specialities.id').onDelete('cascade').notNull()
     )
     .addColumn('price', 'integer', (column) => column.notNull())
     .execute()
