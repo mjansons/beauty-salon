@@ -9,6 +9,7 @@ import UnregisteredModal from './UnregisteredModal.vue'
 import RegisteredModal from './RegisteredModal.vue'
 import { isLoggedIn } from '@/stores/user'
 
+
 const services = ref<{ id: number; speciality: string }[]>([])
 const locations = ref<string[]>([])
 const selectedService = ref('')
@@ -55,13 +56,24 @@ const currentDate = computed(() => {
   return new Date().toISOString().split('T')[0]
 })
 
+const page = ref(1)
+const lastFetchCount = ref(0)
+
 async function findSpecialist() {
-  specialists.value = await getSpecialistSlots({
+  const fetchedSpecialists = await getSpecialistSlots({
     date: selectedDate.value,
     location: selectedLoacation.value,
     service: selectedService.value,
-    page: 1,
+    page: page.value,
   })
+
+  specialists.value.push(...fetchedSpecialists)
+  lastFetchCount.value = fetchedSpecialists.length
+}
+
+async function loadMore() {
+  page.value++
+  await findSpecialist()
 }
 
 // const specialistExample = [
@@ -369,6 +381,8 @@ function goForwardDays(days: number) {
         </div>
       </div>
     </div>
+
+    <button type="button" v-if="lastFetchCount === 10" @click="loadMore">Load More</button>
   </div>
   <!-- Modals -->
   <UnregisteredModal

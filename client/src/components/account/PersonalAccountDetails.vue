@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import OwnerAccountDetails from './OwnerAccountDetails.vue'
 import InfoToast from './InfoToast.vue'
 import { ref, computed, onBeforeMount } from 'vue'
 import { TRPCClientError } from '@trpc/client'

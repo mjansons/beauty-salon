@@ -33,9 +33,9 @@ module.exports = {
               'utils',
             ].flatMap(path => [
               `@server/${path}`,
-              `@mono/server/src/${path}`,
+              `@wink-mono/server/src/${path}`,
             ]),
-            message: 'Please only import from @server/shared or @mono/server/src/shared.',
+            message: 'Please only import from @server/shared or @wink-mono/server/src/shared.',
           },
         ],
       },
