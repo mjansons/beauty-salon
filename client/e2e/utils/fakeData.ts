@@ -16,5 +16,27 @@ export const fakeUser = () => ({
   firstName: random.first(),
   lastName: random.last(),
   password: 'password.123',
-  phoneNumber: `+371${random.string({ length: 8, pool: '0123456789' })}`,
+  phoneNumber: `${random.string({ length: 8, pool: '0123456789' })}`,
+  isOnboarded: true,
 })
+
+export const fakeBusiness = () => ({
+  name: random.company(),
+  email: random.email(),
+  phoneNumber: `${random.string({ length: 8, pool: '0123456789' })}`,
+  city: "riga",
+  address: random.address(),
+  postalCode: random.zip(),
+})
+
+export const workingHours = () => ([
+  { dayOfWeek: 1, startTime: '08:00:00', endTime: '17:00:00' },
+  { dayOfWeek: 2, startTime: '08:00:00', endTime: '17:00:00' },
+  { dayOfWeek: 3, startTime: '08:00:00', endTime: '17:00:00' },
+  { dayOfWeek: 4, startTime: '08:00:00', endTime: '17:00:00' },
+  { dayOfWeek: 5, startTime: '08:00:00', endTime: '17:00:00' },
+  { dayOfWeek: 6, startTime: '08:00:00', endTime: '17:00:00' },
+  { dayOfWeek: 0, startTime: '08:00:00', endTime: '17:00:00' },
+])
+
+export const specialities = () => ['haircut', 'nails', 'makeup'];

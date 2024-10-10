@@ -30,7 +30,7 @@ export function appointmentRepository(db: Database) {
           'userAppointments.comment',
         ])
         .execute()
-        return values
+      return values
     },
 
     async getPersonalAppointments(date: Date, registeredUserId: number) {
@@ -47,7 +47,11 @@ export function appointmentRepository(db: Database) {
           'businessSpecialities.specialityId',
           'specialities.id'
         )
-        .innerJoin('registeredUsers', 'registeredUsers.id', 'userAppointments.specialistId')
+        .innerJoin(
+          'registeredUsers',
+          'registeredUsers.id',
+          'userAppointments.specialistId'
+        )
         .where('clientId', '=', registeredUserId)
         .where(sql`DATE(appointment_start_time)`, '>=', date)
         .orderBy('appointmentStartTime', `asc`)
@@ -65,44 +69,44 @@ export function appointmentRepository(db: Database) {
           'registeredUsers.lastName as SpecialistLastName',
         ])
         .execute()
-        return values
+      return values
     },
 
     async getBusinessAppointments(date: Date, businessId: number) {
       const values = await db
-    .selectFrom('userAppointments')
-    .innerJoin(
-      'businessSpecialities',
-      'businessSpecialities.id',
-      'userAppointments.businessSpecialityId'
-    )
-    .innerJoin(
-      'specialities',
-      'businessSpecialities.specialityId',
-      'specialities.id'
-    )
-    .innerJoin(
-      'registeredUsers as specialists',
-      'specialists.id',
-      'userAppointments.specialistId'
-    )
-    .where('userAppointments.businessId', '=', businessId)
-    .where(sql`DATE(user_appointments.appointment_start_time)`, '>=', date)
-    .orderBy('userAppointments.appointmentStartTime', 'asc')
-    .select([
-      'specialities.speciality',
-      'userAppointments.appointmentStartTime as appointmentStartTime',
-      'userAppointments.appointmentEndTime as appointmentEndTime',
-      'userAppointments.firstName as clientFirstName',
-      'userAppointments.lastName as clientLastName',
-      'userAppointments.phoneNumber as clientPhoneNumber',
-      'userAppointments.comment as comment',
-      'specialists.firstName as specialistFirstName',
-      'specialists.lastName as specialistLastName',
-    ])
-    .execute()
+        .selectFrom('userAppointments')
+        .innerJoin(
+          'businessSpecialities',
+          'businessSpecialities.id',
+          'userAppointments.businessSpecialityId'
+        )
+        .innerJoin(
+          'specialities',
+          'businessSpecialities.specialityId',
+          'specialities.id'
+        )
+        .innerJoin(
+          'registeredUsers as specialists',
+          'specialists.id',
+          'userAppointments.specialistId'
+        )
+        .where('userAppointments.businessId', '=', businessId)
+        .where(sql`DATE(user_appointments.appointment_start_time)`, '>=', date)
+        .orderBy('userAppointments.appointmentStartTime', 'asc')
+        .select([
+          'specialities.speciality',
+          'userAppointments.appointmentStartTime as appointmentStartTime',
+          'userAppointments.appointmentEndTime as appointmentEndTime',
+          'userAppointments.firstName as clientFirstName',
+          'userAppointments.lastName as clientLastName',
+          'userAppointments.phoneNumber as clientPhoneNumber',
+          'userAppointments.comment as comment',
+          'specialists.firstName as specialistFirstName',
+          'specialists.lastName as specialistLastName',
+        ])
+        .execute()
 
-  return values
+      return values
     },
 
     async getSpecialistBookingsAndWorkSchedule(
@@ -203,20 +207,22 @@ export function appointmentRepository(db: Database) {
             'specialistAvailability.endTime',
           ])
           .distinctOn('specialists.registeredUserId')
+          .orderBy('specialists.registeredUserId')
+          .orderBy('specialists.createdAt', 'desc')
           .offset(innerOffset)
           .limit(limit)
           .execute()
 
-          return values
+        return values
       }
 
       async function getSpecialistSchedule(specialistId: number) {
-        const values =  await db
+        const values = await db
           .selectFrom('specialistAvailability')
           .where('specialistId', '=', specialistId)
           .selectAll()
           .execute()
-          return values
+        return values
       }
 
       async function getSpecialistAppointments(
@@ -229,7 +235,7 @@ export function appointmentRepository(db: Database) {
           .orderBy('appointmentStartTime', `asc`)
           .selectAll()
           .execute()
-          return values
+        return values
       }
 
       function maxTime(time1: string, time2: string): string {
@@ -255,7 +261,7 @@ export function appointmentRepository(db: Database) {
           .selectAll()
           .execute()
 
-          return values
+        return values
       }
 
       function computeOverlappingWorkingHours(
