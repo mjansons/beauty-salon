@@ -1,7 +1,7 @@
 import { apiOrigin, apiPath } from './config'
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
 import type { AppRouter } from '@server/shared/trpc'
-import { fakeUser, fakeBusiness, workingHours, specialities } from './fakeData'
+import { fakeBusiness, workingHours, specialities } from './fakeData'
 import type { Page } from '@playwright/test'
 import superjson from 'superjson'
 
@@ -30,8 +30,8 @@ type UserLoginAuthed = UserLogin & { accessToken: string }
  * Logs in a new user by signing them up and logging them in with the provided
  * user login information.
  */
-export async function loginNewClient(
-  userLogin: UserLogin = fakeUser()
+export async function loginNewUser(
+  userLogin: UserLogin
 ): Promise<UserLoginAuthed> {
   try {
     await trpc.user.signup.mutate(userLogin)
@@ -48,7 +48,7 @@ export async function loginNewClient(
 }
 
 export async function loginNewSpecialist(
-  userLogin: UserLogin = fakeUser()
+  userLogin: UserLogin
 ): Promise<UserLoginAuthed> {
   try {
     await trpc.user.signup.mutate(userLogin)
@@ -69,7 +69,15 @@ export async function loginNewSpecialist(
       await trpc.user.addSpecialistHours.mutate(day)
     }
     // Update user details
-    await trpc.user.updateUserDetails.mutate(userLogin)
+    if (userLogin) {
+      await trpc.user.updateUserDetails.mutate({
+        email: userLogin.email,
+        firstName: userLogin.firstName,
+        lastName: userLogin.lastName,
+        phoneNumber: userLogin.phoneNumber,
+        isOnboarded: userLogin.isOnboarded,
+      })
+    }
     accessToken = null
 
     return {
@@ -88,7 +96,7 @@ export async function loginNewSpecialist(
   }
 }
 
-export async function loginNewOwner(userLogin: UserLogin = fakeUser()) {
+export async function loginNewOwner(userLogin: UserLogin) {
   try {
     await trpc.user.signup.mutate(userLogin)
     const loginResponse = await trpc.user.login.mutate(userLogin)
@@ -118,7 +126,15 @@ export async function loginNewOwner(userLogin: UserLogin = fakeUser()) {
       })
     }
 
-    await trpc.user.updateUserDetails.mutate(userLogin)
+    if (userLogin) {
+      await trpc.user.updateUserDetails.mutate({
+        email: userLogin.email,
+        firstName: userLogin.firstName,
+        lastName: userLogin.lastName,
+        phoneNumber: userLogin.phoneNumber,
+        isOnboarded: userLogin.isOnboarded,
+      })
+    }
 
     accessToken = null
 
@@ -131,7 +147,6 @@ export async function loginNewOwner(userLogin: UserLogin = fakeUser()) {
   }
 
   const loginResponse = await trpc.user.login.mutate(userLogin)
-  accessToken = loginResponse.accessToken
 
   return {
     ...userLogin,
@@ -209,14 +224,14 @@ export async function asSpecialist<T extends any>(
   return callbackResult
 }
 
-export async function asClient<T extends any>(
+export async function asUser<T extends any>(
   page: Page,
   userLogin: UserLogin,
   callback: (user: UserLoginAuthed) => Promise<T>
 ): Promise<T> {
   // running independent tasks in parallel
   const [user] = await Promise.all([
-    loginNewClient(userLogin),
+    loginNewUser(userLogin),
     (async () => {
       // if no page is open, go to the home page
       if (page.url() === 'about:blank') {
@@ -243,3 +258,5 @@ export async function asClient<T extends any>(
 
   return callbackResult
 }
+
+

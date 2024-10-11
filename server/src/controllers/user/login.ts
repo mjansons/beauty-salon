@@ -23,6 +23,8 @@ export default t.procedure
     })
   )
   .mutation(async ({ input: { email, password }, ctx: { repositories } }) => {
+
+    
     const user =
       await repositories.userRepository.findRegisteredUserByEmail(email)
 
@@ -32,7 +34,6 @@ export default t.procedure
         message: 'We could not find an account with this email address',
       })
     }
-
     const passwordMatch = await bcrypt.compare(password, user.password)
 
     if (!passwordMatch) {
