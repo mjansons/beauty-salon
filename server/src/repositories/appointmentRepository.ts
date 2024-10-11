@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
 import type { Database } from '@server/database'
 import { sql } from 'kysely'
 import type { DBAppointment } from '@server/schemas/appointmentSchema'
@@ -115,10 +117,17 @@ export function appointmentRepository(db: Database) {
       date: string, // YYYY-MM-DD
       page: number
     ) {
-      const limit: number = 10
-      const outerOffset: number = limit * (page - 1)
-      const totalResults: number = limit * page
-      let innerOffset: number = 0
+      const limit = 10
+      const startIndex = limit * (page - 1)
+      const endIndex = startIndex + limit
+      let offset = 0
+      const foundSpecialists = []
+
+      const queryDate = new Date(date)
+      const endDate = new Date(queryDate)
+      endDate.setDate(endDate.getDate() + 7)
+
+      const dayOfWeek = queryDate.getDay()
 
       type PotentialSpecialists = {
         businessId: number
@@ -138,36 +147,33 @@ export function appointmentRepository(db: Database) {
         endTime: string
       }
 
-      const queryDate = new Date(date)
-      const endDate = new Date(queryDate) // Create a copy of startDate
-      endDate.setDate(endDate.getDate() + 7)
-
-      const dayOfWeek = queryDate.getDay()
-      const foundSpecialists = []
-      let potentialSpecialists: PotentialSpecialists[]
-      async function getPotentialSpecialists() {
+      // Renamed function parameters to avoid variable shadowing
+      async function getPotentialSpecialists(
+        queryOffset: number,
+        queryLimit: number
+      ): Promise<PotentialSpecialists[]> {
         const values = await db
           .selectFrom('specialists')
           .innerJoin(
             'registeredUsers',
             'registeredUsers.id',
             'specialists.registeredUserId'
-          ) // specialist personal details
+          )
           .innerJoin(
             'specialities',
             'specialities.id',
             'specialists.specialityId'
-          ) // speciality name
+          )
           .innerJoin(
             'businessEmployees',
             'businessEmployees.employeeId',
             'specialists.registeredUserId'
-          ) // which business
+          )
           .innerJoin(
             'businesses',
             'businesses.id',
             'businessEmployees.businessId'
-          ) // business details
+          )
           .innerJoin('businessSpecialities', (join) =>
             join
               .onRef('businessSpecialities.businessId', '=', 'businesses.id')
@@ -176,17 +182,16 @@ export function appointmentRepository(db: Database) {
                 '=',
                 'specialities.id'
               )
-          ) // business speciality details
+          )
           .innerJoin(
             'specialistAvailability',
             'specialistAvailability.specialistId',
             'specialists.registeredUserId'
-          ) // specialist work hours
+          )
           .where('businesses.city', '=', location)
           .where('specialities.speciality', '=', service)
           .where('specialistAvailability.dayOfWeek', '=', dayOfWeek)
           .where(
-            // specialist has 60 mins between opening and closing hours
             sql<boolean>`(specialist_availability.end_time - specialist_availability.start_time) >= INTERVAL '60 minutes'`
           )
           .select([
@@ -207,10 +212,9 @@ export function appointmentRepository(db: Database) {
             'specialistAvailability.endTime',
           ])
           .distinctOn('specialists.registeredUserId')
-          .orderBy('specialists.registeredUserId')
-          .orderBy('specialists.createdAt', 'desc')
-          .offset(innerOffset)
-          .limit(limit)
+          .orderBy('specialists.registeredUserId', 'desc')
+          .offset(queryOffset)
+          .limit(queryLimit)
           .execute()
 
         return values
@@ -229,7 +233,7 @@ export function appointmentRepository(db: Database) {
         specialistId: number
       ): Promise<DBAppointment[]> {
         const values = await db
-          .selectFrom('userAppointments') // I will need the employee Ids of the business
+          .selectFrom('userAppointments')
           .where('specialistId', '=', specialistId)
           .where(sql`DATE(appointment_start_time)`, '>=', date)
           .orderBy('appointmentStartTime', `asc`)
@@ -278,7 +282,6 @@ export function appointmentRepository(db: Database) {
       ): Record<number, [string, string]> {
         const workingHours: Record<number, [string, string]> = {}
 
-        // eslint-disable-next-line no-restricted-syntax
         for (const specialistDay of specialistSchedule) {
           const businessDay = businessSchedule.find(
             (b) => b.dayOfWeek === specialistDay.dayOfWeek
@@ -317,13 +320,20 @@ export function appointmentRepository(db: Database) {
         })
 
         if (filteredAppointments.length === 0) {
-          // I already checked 60min gap in db filter
+          // No appointments, so there is at least a 60-minute gap
           return true
         }
-        const sortedAppointments = filteredAppointments.map((app) => ({
-          appointmentStartTime: new Date(app.appointmentStartTime),
-          appointmentEndTime: new Date(app.appointmentEndTime),
-        }))
+
+        const sortedAppointments = filteredAppointments
+          .map((app) => ({
+            appointmentStartTime: new Date(app.appointmentStartTime),
+            appointmentEndTime: new Date(app.appointmentEndTime),
+          }))
+          .sort(
+            (a, b) =>
+              a.appointmentStartTime.getTime() -
+              b.appointmentStartTime.getTime()
+          )
 
         // Check gap before the first appointment
         const firstGap =
@@ -332,6 +342,7 @@ export function appointmentRepository(db: Database) {
         if (firstGap >= 60 * 60 * 1000) {
           return true
         }
+
         // Check gaps between appointments
         for (let i = 1; i < sortedAppointments.length; i += 1) {
           const previousEnd =
@@ -343,6 +354,7 @@ export function appointmentRepository(db: Database) {
             return true
           }
         }
+
         // Check gap after the last appointment
         const lastGap =
           availabilityEndTime.getTime() -
@@ -352,27 +364,25 @@ export function appointmentRepository(db: Database) {
         if (lastGap >= 60 * 60 * 1000) {
           return true
         }
+
         // No gap found
         return false
       }
 
-      do {
-        // I get 10 specialists
-        // eslint-disable-next-line no-await-in-loop
-        potentialSpecialists = await getPotentialSpecialists()
+      while (foundSpecialists.length < endIndex) {
+        const potentialSpecialists = await getPotentialSpecialists(
+          offset,
+          limit
+        )
+        if (potentialSpecialists.length === 0) {
+          break // No more specialists to process
+        }
 
-        // eslint-disable-next-line no-continue
-        if (potentialSpecialists.length < 1) continue
-
-        // validate specialist
-        // eslint-disable-next-line no-restricted-syntax
         for (const specialist of potentialSpecialists) {
-          // eslint-disable-next-line no-await-in-loop
           const appointments = await getSpecialistAppointments(
             specialist.specialistId
           )
 
-          // here I need to now find if there is a 60 min gap between the appointments on the specified day
           const hasGap = hasSixtyMinuteGap(
             appointments,
             specialist.startTime,
@@ -380,25 +390,22 @@ export function appointmentRepository(db: Database) {
           )
 
           if (hasGap) {
-            // eslint-disable-next-line no-await-in-loop
             const specialistSchedule = await getSpecialistSchedule(
               specialist.specialistId
             )
-            // Fetch business operational hours
-            // eslint-disable-next-line no-await-in-loop
             const businessSchedule = await getBusinessOperationalHours(
               specialist.businessId
             )
-            // Compute overlapping working hours
+
             const workingHours = computeOverlappingWorkingHours(
               specialistSchedule,
               businessSchedule
             )
+
             // Construct bookings object
             const bookings: Record<string, { start: string; end: string }[]> =
               {}
 
-            // eslint-disable-next-line no-restricted-syntax
             for (const appointment of appointments) {
               const appointmentDate = new Date(appointment.appointmentStartTime)
                 .toISOString()
@@ -439,21 +446,23 @@ export function appointmentRepository(db: Database) {
               bookings,
             }
 
-            // Add the specialist data to foundSpecialists
             foundSpecialists.push(specialistData)
+
+            // If we've collected enough specialists, break the loop
+            if (foundSpecialists.length >= endIndex) {
+              break
+            }
           }
         }
-        innerOffset += 10
-      } while ( // I need to keep doing this until I get totalResults or less than 10 specialists are returned
-        foundSpecialists.length !== totalResults &&
-        getPotentialSpecialists.length === 10
-      )
 
-      // // if found specialists is less or equal than totalResults, I return []
-      if (foundSpecialists.length <= outerOffset) return []
+        offset += limit // Increment offset to fetch next set of specialists
+      }
 
-      // else I return foundSpecialists - outerOffset from the first foundBusinesses
-      return foundSpecialists.slice(outerOffset)
+      // Return the specialists for the requested page
+      if (foundSpecialists.length <= startIndex) {
+        return [] // Not enough specialists to cover this page
+      }
+      return foundSpecialists.slice(startIndex, endIndex)
     },
   }
 }

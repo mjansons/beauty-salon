@@ -13,7 +13,7 @@ export const random = process.env.CI ? Chance(1) : Chance()
  */
 export const fakeUser = () => ({
   email: random.email(),
-  firstName: random.first(),
+  firstName: random.first().split(' ')[0],
   lastName: random.last(),
   password: 'password.123',
   phoneNumber: `${random.string({ length: 8, pool: '0123456789' })}`,

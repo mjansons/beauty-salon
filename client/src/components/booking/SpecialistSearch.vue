@@ -9,7 +9,6 @@ import UnregisteredModal from './UnregisteredModal.vue'
 import RegisteredModal from './RegisteredModal.vue'
 import { isLoggedIn } from '@/stores/user'
 
-
 const services = ref<{ id: number; speciality: string }[]>([])
 const locations = ref<string[]>([])
 const selectedService = ref('')
@@ -60,6 +59,21 @@ const page = ref(1)
 const lastFetchCount = ref(0)
 
 async function findSpecialist() {
+  page.value = 1
+  const fetchedSpecialists = await getSpecialistSlots({
+    date: selectedDate.value,
+    location: selectedLoacation.value,
+    service: selectedService.value,
+    page: page.value,
+  })
+
+  specialists.value = fetchedSpecialists
+  lastFetchCount.value = fetchedSpecialists.length
+}
+
+async function loadMore() {
+  page.value++
+
   const fetchedSpecialists = await getSpecialistSlots({
     date: selectedDate.value,
     location: selectedLoacation.value,
@@ -69,11 +83,6 @@ async function findSpecialist() {
 
   specialists.value.push(...fetchedSpecialists)
   lastFetchCount.value = fetchedSpecialists.length
-}
-
-async function loadMore() {
-  page.value++
-  await findSpecialist()
 }
 
 // const specialistExample = [
@@ -311,7 +320,12 @@ function goForwardDays(days: number) {
 
         <!-- Availability Calendar -->
         <div class="calendar-wrapper">
-          <button class="arrow" type="button" @click="goBackDays(3)" :disabled="!showBackButton">
+          <button
+            class="arrow"
+            type="button"
+            @click="goBackDays(3)"
+            :disabled="!showBackButton"
+          >
             &leftarrow;
           </button>
           <div class="calendar">
@@ -382,7 +396,9 @@ function goForwardDays(days: number) {
       </div>
     </div>
 
-    <button type="button" v-if="lastFetchCount === 10" @click="loadMore">Load More</button>
+    <button type="button" v-if="lastFetchCount === 10" @click="loadMore">
+      Load More
+    </button>
   </div>
   <!-- Modals -->
   <UnregisteredModal

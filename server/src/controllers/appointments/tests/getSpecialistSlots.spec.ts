@@ -103,6 +103,7 @@ it('gets 1/2 businesses, because of employee work time', async () => {
     employeeId: createdUser2.id,
   })
 
+
   const [businessSpeciality2] = await insertAll(db, 'businessSpecialities', {
     businessId: createdBusiness2.id,
     price: 30,
@@ -318,18 +319,18 @@ it('gets 2/2 businesses, because of employee work time', async () => {
     {
       postalCode: 'ev123',
       price: 30,
-      specialistFirstName: 'user',
-      specialistId: createdUser.id,
-      specialistLastName: 'surname',
-      businessSpecialityId: businessSpeciality.id,
-    },
-    {
-      postalCode: 'ev123',
-      price: 30,
       specialistFirstName: 'user2',
       specialistId: createdUser2.id,
       specialistLastName: 'surname2',
       businessSpecialityId: businessSpeciality2.id,
+    },
+    {
+      postalCode: 'ev123',
+      price: 30,
+      specialistFirstName: 'user',
+      specialistId: createdUser.id,
+      specialistLastName: 'surname',
+      businessSpecialityId: businessSpeciality.id,
     },
   ])
 })

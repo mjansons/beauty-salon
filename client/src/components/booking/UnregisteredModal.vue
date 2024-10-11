@@ -1,52 +1,55 @@
+<!-- UnregisteredModal.vue -->
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { trpc } from '@/trpc'
+import { ref, computed } from 'vue';
+import { trpc } from '@/trpc';
 
-const emit = defineEmits(['isUnregisteredModalOn'])
+const emit = defineEmits(['isUnregisteredModalOn']);
 const props = defineProps<{
   signupForm: {
-    businessName: string
-    address: string
-    city: string
-    specialistFirstName: string
-    specialistLastName: string
-    price: number
-    specialityName: string
-    clientId: number | null
-    firstName: string
-    lastName: string
-    email: string
-    phoneNumber: string
-    businessId: number
-    businessSpecialityId: number
-    specialistId: number
-    appointmentStartTime: Date
-    appointmentEndTime: Date
-    comment?: string
-  }
-}>()
+    businessName: string;
+    address: string;
+    city: string;
+    specialistFirstName: string;
+    specialistLastName: string;
+    price: number;
+    specialityName: string;
+    clientId: number | null;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    businessId: number;
+    businessSpecialityId: number;
+    specialistId: number;
+    appointmentStartTime: Date;
+    appointmentEndTime: Date;
+    comment?: string;
+  };
+}>();
 
-const prefix = ref('+371')
-const number = ref('')
-const name = ref('')
-const surname = ref('')
-const comment = ref('')
-const email = ref('')
-const completePhoneNumber = computed(() => `${prefix.value}${number.value}`)
-const currentStep = ref(1)
+const prefix = ref('+371');
+const number = ref('');
+const name = ref('');
+const surname = ref('');
+const comment = ref('');
+const email = ref('');
+const completePhoneNumber = computed(() => `${prefix.value}${number.value}`);
+const currentStep = ref(1);
+const isSubmitting = ref(false);
 
 const formatDateTime = (date: Date) => {
   return new Intl.DateTimeFormat('en-US', {
     dateStyle: 'medium',
     timeStyle: 'short',
-  }).format(new Date(date))
-}
+  }).format(new Date(date));
+};
 
 const capitalizeFirstLetter = (str: string) => {
-  return str.replace(/\b\w/g, (char) => char.toUpperCase())
-}
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+};
 
 const submitAppointment = async () => {
+  isSubmitting.value = true;
   try {
     await trpc.appointments.addPublicAppointment.mutate({
       specialistId: props.signupForm.specialistId,
@@ -54,28 +57,31 @@ const submitAppointment = async () => {
       businessSpecialityId: props.signupForm.businessSpecialityId,
       appointmentStartTime: props.signupForm.appointmentStartTime,
       appointmentEndTime: props.signupForm.appointmentEndTime,
-      firstName: name.value.trim().toLocaleLowerCase(),
-      lastName: surname.value.trim().toLocaleLowerCase(),
+      firstName: name.value.trim().toLowerCase(),
+      lastName: surname.value.trim().toLowerCase(),
       email: email.value,
       phoneNumber: completePhoneNumber.value,
       comment: comment.value,
-    })
+    });
+    currentStep.value++;
   } catch (error) {
-    console.log('error', error)
+    console.error('Error submitting appointment:', error);
+    // Handle error (e.g., display a message to the user)
+  } finally {
+    isSubmitting.value = false;
   }
-
-  currentStep.value++
-}
+};
 
 const exitModal = () => {
-  emit('isUnregisteredModalOn', false)
-}
+  emit('isUnregisteredModalOn', false);
+};
 </script>
 
 <template>
   <div class="modal-backdrop"></div>
   <div class="modal-wrapper">
-    <div class="additional-details" v-if="currentStep === 1">
+    <!-- Step 1: Contact Details -->
+    <div v-if="currentStep === 1">
       <button @click="exitModal">x</button>
       <h1>Your Contact Details</h1>
       <form @submit.prevent="currentStep++">
@@ -85,17 +91,17 @@ const exitModal = () => {
           name="name"
           id="name"
           required
-          minlength="3"
+          minlength="1"
           maxlength="64"
           v-model="name"
         />
         <label for="surname">Surname</label>
         <input
           type="text"
-          name="name"
-          id="suraname"
+          name="surname"
+          id="surname"
           required
-          minlength="2"
+          minlength="1"
           maxlength="64"
           v-model="surname"
         />
@@ -138,18 +144,20 @@ const exitModal = () => {
         <button
           type="submit"
           :disabled="
+            isSubmitting ||
             name.length < 1 ||
             surname.length < 1 ||
             number.length < 1 ||
             email.length < 1
           "
-          @click="currentStep++"
         >
           Continue
         </button>
       </form>
     </div>
-    <div class="summary" v-if="currentStep === 2">
+
+    <!-- Step 2: Appointment Summary -->
+    <div v-if="currentStep === 2">
       <button @click="exitModal">x</button>
       <h1>Appointment Summary</h1>
       <p>
@@ -169,11 +177,19 @@ const exitModal = () => {
         Appointment Start:
         {{ formatDateTime(props.signupForm.appointmentStartTime) }}
       </p>
-      <button @click="currentStep--">Back</button>
-      <button @click="submitAppointment">Submit</button>
+      <form @submit.prevent="submitAppointment">
+        <div class="button-group">
+          <button type="button" @click="currentStep--">Back</button>
+          <button type="submit" :disabled="isSubmitting">
+            {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="success" v-if="currentStep === 3">
-      <p>Success!</p>
+
+    <!-- Step 3: Success Message -->
+    <div v-if="currentStep === 3">
+      <p>Success! Your appointment has been booked.</p>
       <button @click="exitModal">Return</button>
     </div>
   </div>
@@ -202,15 +218,49 @@ const exitModal = () => {
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  padding: 16px;
+  padding: 24px;
   z-index: 11;
   max-width: 90%;
   width: 400px;
 }
 
+.modal-wrapper button {
+  margin-top: 16px;
+}
+
+.phone-number-container {
+  display: flex;
+  align-items: center;
+}
+
+.phone-number-container select {
+  margin-right: 8px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
 form {
   display: flex;
   flex-direction: column;
-  max-width: 400px;
+  width: 100%;
+}
+
+form label {
+  margin-top: 8px;
+}
+
+form input,
+form select {
+  margin-bottom: 8px;
+  padding: 8px;
+  font-size: 16px;
+}
+
+form button {
+  margin-top: 16px;
 }
 </style>
