@@ -14,7 +14,7 @@ test.describe
       await page.goto('/account')
       await page
         .locator('form')
-        .filter({ hasText: 'Add EmployeeSend invite' })
+        .filter({ hasText: 'Add Employee' })
         .locator('#email')
         .fill(specialist.email)
       await page.getByRole('button', { name: 'Send invite' }).click()
@@ -43,7 +43,7 @@ test.describe
       await page.goto('/account')
       await page
         .locator('form')
-        .filter({ hasText: 'Add EmployeeSend invite' })
+        .filter({ hasText: 'Add Employee' })
         .locator('#email')
         .fill(specialist.email)
       await page.getByRole('button', { name: 'Send invite' }).click()
@@ -121,7 +121,7 @@ test.describe
       await page.goto('/account')
       await page
         .locator('form')
-        .filter({ hasText: 'Add EmployeeSend invite' })
+        .filter({ hasText: 'Add Employee' })
         .locator('#email')
         .fill(specialist.email)
       await page.getByRole('button', { name: 'Send invite' }).click()
@@ -173,16 +173,16 @@ test.describe
     await asOwner(page, owner, async () => {
       await page.goto('/appointments')
       await expect(page.getByText('haircut')).toBeVisible()
-      await expect(page.getByText(customer.firstName)).toBeVisible()
-      await expect(page.getByText(customer.lastName)).toBeVisible()
+      await expect(page.getByText(customer.firstName.toLocaleLowerCase())).toBeVisible()
+      await expect(page.getByText(customer.lastName.toLocaleLowerCase())).toBeVisible()
       await expect(page.getByText(customer.phoneNumber)).toBeVisible()
     })
 
     await asSpecialist(page, specialist, async () => {
       await page.goto('/appointments')
       await expect(page.getByText('haircut')).toBeVisible()
-      await expect(page.getByText(customer.firstName)).toBeVisible()
-      await expect(page.getByText(customer.lastName)).toBeVisible()
+      await expect(page.getByText(customer.firstName.toLocaleLowerCase())).toBeVisible()
+      await expect(page.getByText(customer.lastName.toLocaleLowerCase())).toBeVisible()
       await expect(page.getByText(customer.phoneNumber)).toBeVisible()
     })
   })

@@ -37,8 +37,8 @@ const emitDetails = async () => {
     <label for="surname">Surname</label>
     <input
       type="text"
-      name="name"
-      id="suraname"
+      name="surname"
+      id="surname"
       required
       minlength="2"
       maxlength="64"

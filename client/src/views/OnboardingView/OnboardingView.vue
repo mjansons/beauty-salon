@@ -144,8 +144,6 @@ watch(onBoardingStep, async (newVal, oldValue) => {
 </script>
 
 <template>
-  <p>{{ userDetails }}</p>
-  <p>{{ onBoardingStep }}</p>
   <button
     type="button"
     v-if="

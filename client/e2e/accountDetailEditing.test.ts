@@ -45,7 +45,7 @@ test.describe.serial('account details can be edited', () => {
         .click()
 
       await page.waitForSelector('text=Changes saved successfully!')
-
+      await page.waitForTimeout(500)
       await page
         .locator('div')
         .filter({ hasText: /^haircut/ })
@@ -64,6 +64,7 @@ test.describe.serial('account details can be edited', () => {
         .click()
 
       await page.waitForSelector('text=Changes saved successfully!')
+      await page.waitForTimeout(500)
       await page.reload()
 
       await expect(

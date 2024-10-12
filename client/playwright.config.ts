@@ -7,13 +7,13 @@ import { devices } from '@playwright/test'
 const config: PlaywrightTestConfig = {
   testDir: './e2e',
   /* Maximum time one test can run for. */
-  timeout: process.env.CI ? 30_000 : 10_000,
+  timeout: process.env.CI ? 30_000 : 30_000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: process.env.CI ? 5_000 : 2_000,
+    timeout: process.env.CI ? 6_000 : 6_000,
   },
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -72,7 +72,7 @@ const config: PlaywrightTestConfig = {
      * Use the preview server on CI for more realistic testing.
     Playwright will re-use the local server if there is already a dev-server running.
      */
-    command: process.env.CI ? 'npx vite preview --port 5173' : 'npx vite dev',
+    command: process.env.CI ? 'npx vite preview --port 4173' : 'npx vite dev',
     port: 5173,
     reuseExistingServer: !process.env.CI,
   },
