@@ -9,6 +9,8 @@ import UnregisteredModal from './UnregisteredModal.vue'
 import RegisteredModal from './RegisteredModal.vue'
 import { isLoggedIn } from '@/stores/user'
 
+const emit = defineEmits(['response'])
+
 const services = ref<{ id: number; speciality: string }[]>([])
 const locations = ref<string[]>([])
 const selectedService = ref('')
@@ -55,10 +57,12 @@ const currentDate = computed(() => {
   return new Date().toISOString().split('T')[0]
 })
 
+const searchPressed = ref(false)
 const page = ref(1)
 const lastFetchCount = ref(0)
 
 async function findSpecialist() {
+  searchPressed.value = true
   page.value = 1
   const fetchedSpecialists = await getSpecialistSlots({
     date: selectedDate.value,
@@ -69,6 +73,8 @@ async function findSpecialist() {
 
   specialists.value = fetchedSpecialists
   lastFetchCount.value = fetchedSpecialists.length
+
+  emit('response', true)
 }
 
 async function loadMore() {
@@ -277,6 +283,9 @@ function goForwardDays(days: number) {
       <button type="submit">Search</button>
     </form>
 
+    <p v-if="specialists.length === 0 && searchPressed">
+      No specialists match your search criteria...
+    </p>
     <div v-if="specialists.length > 0">
       <div
         v-for="specialist in specialists"

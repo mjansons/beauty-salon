@@ -1,10 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+/* Thin 100
+Light 300
+Regular 400
+Medium 500
+Bold 700
+Black 900
+Thin 100 Italic
+Light 300 Italic
+Regular 400 Italic
+Medium 500 Italic
+Bold 700 Italic
+Black 900 Italic */
+
+@import url('https://fonts.googleapis.com/css2?family=Calistoga&display=swap');
+
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-synthesis: none;
   text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothinig: grayscale;
+
+  --white: #fff;
+  --gray: #f8f9fb;
+  --purple-100: #F2EEFB;
+  --purple-200: #C3AEFF;
+  --purple-300: #9A81E1;
+  --purple-500: #3604C4;
+  --purple-600: #414075;
+  --purple-700: #200179;
+  --purple-900: #0D0327;
+  --small: 14px;
+  --medium: 16px;
+  --large: 18px;
+  --extra-large: 24px;
+  --extra-extra-large: 32px;
+}
+
+*{
+  font-family: Roboto, sans-serif;
+  color: var(--purple-900);
+}
+
+a {
+  text-decoration: none;
 }
 
 header {
@@ -12,6 +53,8 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: var(--white);
+  border-bottom: 1px solid var(--gray);
 
   & a {
     display: flex;
@@ -21,6 +64,16 @@ header {
 
   & .logo {
     margin-right: 32px;
+  }
+
+  & .logo:hover {
+    margin-right: 32px;
+    opacity: 0.8;
+  }
+
+  & .logo:active {
+    margin-right: 32px;
+    opacity: 0.5;
   }
 
   & .nav-container {
@@ -37,9 +90,55 @@ header {
 }
 
 body {
+  background-color: var(--gray);
   margin: 0;
 }
 
 p {
   margin: 0;
+}
+
+.btn-primary {
+  background-color: var(--purple-500);
+  padding: 8px 12px;
+  border: 1px solid var(--purple-500);
+  border-radius: 8px;
+  font-family: Roboto, sans-serif;
+  font-size: var(--medium);
+  color: var(--white);
+  font-weight: 500;
+}
+
+.btn-primary:hover {
+  background-color: var(--purple-700);
+  border-color: var(--purple-700);
+}
+
+.btn-primary:active {
+  background-color: var(--purple-300);
+  border-color: var(--purple-300);
+  text-decoration: none;
+}
+
+.btn-secondary {
+  background-color: var(--purple-100);
+  padding: 8px 12px;
+  border: 1px solid var(--purple-100);
+  border-radius: 8px;
+  font-family: Roboto, sans-serif;
+  font-size: var(--medium);
+  color: var(--purple-500);
+  font-weight: 500;
+}
+
+.btn-secondary:hover {
+  background-color: var(--purple-200);
+  border-color: var(--purple-200);
+}
+
+.btn-secondary:active {
+  background-color: var(--purple-100);
+  border-color: var(--purple-100);
+  color: var(--purple-200);
+  text-decoration: none;
 }

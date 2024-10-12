@@ -10,10 +10,10 @@ import { RouterLink } from 'vue-router'
     <div class="nav-container">
       <div class="auth-container">
         <RouterLink :to="{ name: 'signup' }" tabindex="-1">
-          <button type="button">Sign up</button></RouterLink
+          <button type="button" class="btn-secondary">Sign up</button></RouterLink
         >
         <RouterLink :to="{ name: 'login' }" tabindex="-1">
-          <button type="button">Log in</button>
+          <button type="button" class="btn-primary">Log in</button>
         </RouterLink>
       </div>
     </div>
@@ -30,5 +30,15 @@ button {
   height: 40px;
   padding: 8px 20px;
   white-space: nowrap;
+}
+
+@media only screen and (width <= 400px) {
+  .logo{
+    display: none;
+  }
+
+  header{
+    justify-content: center;
+  }
 }
 </style>

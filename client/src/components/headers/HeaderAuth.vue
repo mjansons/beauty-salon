@@ -9,10 +9,10 @@
       <div class="category-container"></div>
       <div class="auth-container">
         <RouterLink :to="{ name: 'appointments' }" tabindex="-1">
-          <p>Appointments</p>
+          <p class="header-link">Appointments</p>
         </RouterLink>
         <RouterLink :to="{ name: 'account' }" tabindex="-1">
-          <button type="button">Account</button>
+          <button type="button" class="btn-secondary">Account</button>
         </RouterLink>
       </div>
     </div>
@@ -25,9 +25,39 @@
   gap: 16px;
 }
 
+.header-link {
+  text-decoration: none;
+  color: var(--purple-900);
+}
+
+.header-link:hover {
+  text-decoration: none;
+  color: var(--purple-500);
+}
+
+.header-link:active {
+  text-decoration: none;
+  color: var(--purple-300);
+}
+
+.header-link:visited {
+  text-decoration: none;
+  color: var(--purple-900);
+}
+
 button {
   height: 40px;
   padding: 8px 20px;
   white-space: nowrap;
+}
+
+@media only screen and (width <= 400px) {
+  .logo {
+    display: none;
+  }
+
+  header {
+    justify-content: center;
+  }
 }
 </style>
