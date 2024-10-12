@@ -152,37 +152,38 @@ async function updateSchedule() {
   <InfoToast :showToast="showToast" />
   <h1>Specialist Details</h1>
   <!-- Specialities -->
-  <p>Specialities:</p>
-  <div
-    class="speciality"
-    v-for="speciality in updatedSpecialities"
-    :key="speciality"
-  >
-    <p>{{ speciality }}</p>
-    <button type="button" @click="removeSpeciality(speciality)">x</button>
-  </div>
-
-  <div v-if="addableSpecialities.length > 0">
-    <select name="prefix" v-model="selectedSpeciality">
-      <option disabled value="">Select a speciality</option>
-      <option
-        v-for="speciality in addableSpecialities"
-        :key="speciality"
-        :value="speciality"
-      >
-        {{ speciality }}
-      </option></select
-    ><button
-      type="button"
-      :disabled="selectedSpeciality === ''"
-      @click="addSpeciality"
+  <div class="specialities-wrapper">
+    <p>Specialities:</p>
+    <div
+      class="speciality"
+      v-for="speciality in updatedSpecialities"
+      :key="speciality"
     >
-      Add
-    </button>
+      <p>{{ speciality }}</p>
+      <button type="button" @click="removeSpeciality(speciality)">x</button>
+    </div>
+    <div v-if="addableSpecialities.length > 0">
+      <select name="prefix" v-model="selectedSpeciality">
+        <option disabled value="">Select a speciality</option>
+        <option
+          v-for="speciality in addableSpecialities"
+          :key="speciality"
+          :value="speciality"
+        >
+          {{ speciality }}
+        </option></select
+      ><button
+        type="button"
+        :disabled="selectedSpeciality === ''"
+        @click="addSpeciality"
+      >
+        Add
+      </button>
+    </div>
+    <button type="button" @click="saveChanges">Save changes</button>
   </div>
 
   <!-- Invitations -->
-  <button type="button" @click="saveChanges">Save changes</button>
   <div v-if="invitations.length > 0" class="invitations">
     <p>Invitations:</p>
     <div v-for="invitation in invitations" :key="invitation.businessId">

@@ -71,7 +71,7 @@ const fireEmployee = async (email: string) => {
       <button type="button" @click="fireEmployee(employee.email)">Delete Employee</button>
     </div>
 
-    <button type="submit">Save Changes</button>
+    <button type="submit" v-if="employees.length > 0">Save Changes</button>
   </form>
 </template>
 

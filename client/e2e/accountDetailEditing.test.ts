@@ -1,189 +1,174 @@
-// import { test, expect } from '@playwright/test'
-// import { fakeUser } from 'utils/fakeData'
-// import { asOwner, asSpecialist, loginNewSpecialist, asUser } from 'utils/api'
+import { test, expect } from '@playwright/test'
+import { fakeUser, fakeBusiness } from 'utils/fakeData'
+import { asOwner, asSpecialist, asUser } from 'utils/api'
 
-// test.describe
-//   .serial('account details can be edited', () => {
-//   test('business owner can edit account details', async ({ page }) => {
-//     const specialist = fakeUser()
-//     const owner = fakeUser()
+test.describe.serial('account details can be edited', () => {
+  test('business owner can edit account details', async ({ page }) => {
+    const owner = fakeUser()
+    const businessDetails = fakeBusiness()
 
-//     await loginNewSpecialist(specialist)
+    await asOwner(page, owner, async () => {
+      await page.goto('/account')
+      await page
+        .locator('form')
+        .filter({ hasText: 'Business name' })
+        .locator('#email')
+        .fill(businessDetails.email)
+      await page.getByLabel('City').selectOption('liepaja')
+      await page.getByLabel('Address').fill(businessDetails.address)
+      await page.getByLabel('Postal code').fill(businessDetails.postalCode)
+      await page
+        .locator('form')
+        .filter({ hasText: 'Business name' })
+        .locator('select[name="prefix"]')
+        .selectOption('+371')
+      await page
+        .locator('form')
+        .filter({ hasText: 'Business name' })
+        .locator('#phone-number')
+        .fill(businessDetails.phoneNumber)
+      await page
+        .locator('form')
+        .filter({ hasText: 'Business name' })
+        .getByRole('button')
+        .click()
 
-//     await asOwner(page, owner, async () => {
-//       await page.goto('/account')
-//       await page
-//         .locator('form')
-//         .filter({ hasText: 'Add EmployeeSend invite' })
-//         .locator('#email')
-//         .fill(specialist.email)
-//       await page.getByRole('button', { name: 'Send invite' }).click()
-//     })
+      await page.waitForSelector('text=Changes saved successfully!')
 
-//     await asSpecialist(page, specialist, async () => {
-//       await page.goto('/account')
-//       await page.getByRole('button', { name: 'Accept' }).click()
-//     })
+      await page.locator('#Monday-open').fill('08:00')
+      await page.locator('#Monday-close').fill('22:00')
+      await page.locator('#Tuesday-operational').uncheck()
+      await page
+        .locator('form')
+        .filter({ hasText: 'Monday-Tuesday-Wednesday-' })
+        .getByRole('button')
+        .click()
 
-//     await asOwner(page, owner, async () => {
-//       await page.goto('/account')
-//       await expect(page.locator('text=Employees:')).toBeVisible()
-//       await expect(page.locator(`text=${specialist.email}`)).toBeVisible()
-//     })
-//   })
+      await page.waitForSelector('text=Changes saved successfully!')
 
-//   test('specialists can edit account details', async ({ page }) => {
-//     const customer = fakeUser()
-//     const specialist = fakeUser()
-//     const owner = fakeUser()
+      await page
+        .locator('div')
+        .filter({ hasText: /^haircut/ })
+        .getByPlaceholder('Price')
+        .fill('30')
+      await page
+        .locator('div')
+        .filter({ hasText: /^nails/ })
+        .getByPlaceholder('Price')
+        .fill('30')
 
-//     await loginNewSpecialist(specialist)
+      await page
+        .locator('form')
+        .filter({ hasText: 'Business Specialities' })
+        .getByRole('button', { name: 'Save changes' })
+        .click()
 
-//     await asOwner(page, owner, async () => {
-//       await page.goto('/account')
-//       await page
-//         .locator('form')
-//         .filter({ hasText: 'Add EmployeeSend invite' })
-//         .locator('#email')
-//         .fill(specialist.email)
-//       await page.getByRole('button', { name: 'Send invite' }).click()
-//     })
+      await page.waitForSelector('text=Changes saved successfully!')
+      await page.reload()
 
-//     await asSpecialist(page, specialist, async () => {
-//       await page.goto('/account')
-//       await page.getByRole('button', { name: 'Accept' }).click()
-//     })
+      await expect(
+        page
+          .locator('form')
+          .filter({ hasText: 'Business nameBusiness' })
+          .locator('#email')
+      ).toHaveValue(businessDetails.email.toLowerCase())
+      await expect(page.getByLabel('City')).toHaveValue('liepaja')
+      await expect(page.getByLabel('Address')).toHaveValue(
+        businessDetails.address.toLowerCase()
+      )
+      await expect(page.getByLabel('Postal code')).toHaveValue(
+        businessDetails.postalCode.toLowerCase()
+      )
+      await expect(page.locator('#Monday-open')).toHaveValue('08:00')
+      await expect(page.locator('#Monday-close')).toHaveValue('22:00')
+      await expect(page.locator('#Tuesday-operational')).not.toBeChecked()
 
-//     const date = new Date()
-//     date.setDate(date.getDate() + 1)
-//     const formattedDate = date.toISOString().split('T')[0]
+      await expect(
+        page
+          .locator('div')
+          .filter({ hasText: /^haircut/ })
+          .getByPlaceholder('Price')
+      ).toHaveValue('30')
 
-//     await page.goto('/')
-//     await page.locator('select[name="service"]').selectOption('haircut')
-//     await page.locator('select[name="location"]').selectOption('riga')
-//     await page.locator('#date').fill(formattedDate)
-//     await page.getByRole('button', { name: 'Search' }).click()
-//     await page.waitForSelector('.specialist-container')
+      await expect(
+        page
+          .locator('div')
+          .filter({ hasText: /^nails/ })
+          .getByPlaceholder('Price')
+      ).toHaveValue('30')
+    })
+  })
 
-//     const formattedFirstName =
-//       specialist.firstName.charAt(0).toUpperCase() +
-//       specialist.firstName.slice(1).toLowerCase()
-//     const formattedLastName =
-//       specialist.lastName.charAt(0).toUpperCase() +
-//       specialist.lastName.slice(1).toLowerCase()
-//     const specialistName = `${formattedFirstName} ${formattedLastName}`
+  test('specialists can edit account details', async ({ page }) => {
+    const specialist = fakeUser()
 
-//     const container = page.locator(
-//       `.specialist-container:has(h2:has-text("${specialistName}"))`
-//     )
-//     await expect(container).toHaveCount(1)
+    await asSpecialist(page, specialist, async () => {
+      await page.goto('/account')
 
-//     const appointmentButton = container
-//       .locator('.slots > button:enabled')
-//       .first()
-//     await expect(appointmentButton).toBeVisible()
-//     await appointmentButton.click()
+      await page.locator('#Monday-open').fill('08:00')
+      await page.locator('#Monday-close').fill('22:00')
+      await page.locator('#Tuesday-operational').uncheck()
+      await page
+        .locator('form')
+        .filter({ hasText: 'Monday-Tuesday-Wednesday-' })
+        .getByRole('button')
+        .click()
 
-//     await page.getByLabel('Name', { exact: true }).fill(customer.firstName)
-//     await page.getByLabel('Surname', { exact: true }).fill(customer.lastName)
-//     await page.getByLabel('Email Address').fill(customer.email)
-//     await page.getByLabel('Phone number').fill(customer.phoneNumber)
-//     await page.getByLabel('Comment').fill('no comment')
-//     await page.getByRole('button', { name: 'Continue' }).click()
-//     await page.getByRole('button', { name: 'Submit' }).click()
-//     await page.getByRole('button', { name: 'Return' }).click()
+      await page.waitForSelector('text=Changes saved successfully!')
 
-//     await asOwner(page, owner, async () => {
-//       await page.goto('/appointments')
-//       await expect(page.getByText('haircut')).toBeVisible()
-//       await expect(page.getByText(customer.firstName)).toBeVisible()
-//       await expect(page.getByText(customer.lastName)).toBeVisible()
-//       await expect(page.getByText(customer.phoneNumber)).toBeVisible()
-//     })
+      await page
+        .locator('.speciality')
+        .filter({ hasText: 'haircut' })
+        .getByRole('button')
+        .click()
 
-//     await asSpecialist(page, specialist, async () => {
-//       await page.goto('/appointments')
-//       await expect(page.getByText('haircut')).toBeVisible()
-//       await expect(page.getByText(customer.firstName)).toBeVisible()
-//       await expect(page.getByText(customer.lastName)).toBeVisible()
-//       await expect(page.getByText(customer.phoneNumber)).toBeVisible()
-//     })
-//   })
+      await page
+        .locator('.specialities-wrapper')
+        .getByRole('button', { name: 'Save Changes' })
+        .click()
 
-//   test('users can edit account details', async ({ page }) => {
-//     const customer = fakeUser()
-//     const specialist = fakeUser()
-//     const owner = fakeUser()
+      await page.waitForSelector('text=Changes saved successfully!')
 
-//     await loginNewSpecialist(specialist)
+      await expect(page.locator('#Monday-open')).toHaveValue('08:00')
+      await expect(page.locator('#Monday-close')).toHaveValue('22:00')
+      await expect(page.locator('#Tuesday-operational')).not.toBeChecked()
+      await expect(page.getByText('haircut')).not.toBeVisible()
+    })
+  })
 
-//     await asOwner(page, owner, async () => {
-//       await page.goto('/account')
-//       await page
-//         .locator('form')
-//         .filter({ hasText: 'Add EmployeeSend invite' })
-//         .locator('#email')
-//         .fill(specialist.email)
-//       await page.getByRole('button', { name: 'Send invite' }).click()
-//     })
+  test('users can edit account details', async ({ page }) => {
+    const customer = fakeUser()
+    const newCustomer = fakeUser()
 
-//     await asSpecialist(page, specialist, async () => {
-//       await page.goto('/account')
-//       await page.getByRole('button', { name: 'Accept' }).click()
-//     })
+    await asUser(page, customer, async () => {
+      await page.goto('/account')
+      await page.getByLabel('Name').fill(newCustomer.firstName)
+      await page.locator('#suraname').fill(newCustomer.lastName)
+      await page.getByLabel('Email').fill(newCustomer.email)
+      await page
+        .locator('form')
+        .filter({ hasText: 'NameSurnameEmailPhone number' })
+        .getByRole('combobox')
+        .selectOption('+371')
+      await page.getByLabel('Phone number').fill(newCustomer.phoneNumber)
+      await page.locator('form').getByRole('button').click()
 
-//     await asUser(page, customer, async () => {
-//       const date = new Date()
-//       date.setDate(date.getDate() + 1)
-//       const formattedDate = date.toISOString().split('T')[0]
+      await page.waitForSelector('text=Changes saved successfully!')
 
-//       await page.goto('/')
-//       await page.locator('select[name="service"]').selectOption('haircut')
-//       await page.locator('select[name="location"]').selectOption('riga')
-//       await page.locator('#date').fill(formattedDate)
+      await page.reload()
 
-//       await page.getByRole('button', { name: 'Search' }).click()
-//       await page.waitForSelector('.specialist-container')
-
-//       const formattedFirstName =
-//         specialist.firstName.charAt(0).toUpperCase() +
-//         specialist.firstName.slice(1).toLowerCase()
-//       const formattedLastName =
-//         specialist.lastName.charAt(0).toUpperCase() +
-//         specialist.lastName.slice(1).toLowerCase()
-//       const specialistName = `${formattedFirstName} ${formattedLastName}`
-
-//       const container = page.locator(
-//         `.specialist-container:has(h2:has-text("${specialistName}"))`
-//       )
-//       await expect(container).toHaveCount(1)
-
-//       const appointmentButton = container
-//         .locator('.slots > button:enabled')
-//         .first()
-//       await expect(appointmentButton).toBeVisible()
-//       await appointmentButton.click()
-
-//       await page.getByRole('button', { name: 'Continue' }).click()
-//       await page.getByLabel('Comment').fill('no comment')
-//       await page.getByRole('button', { name: 'Submit' }).click()
-//       await page.getByRole('button', { name: 'Return' }).click()
-//     })
-
-//     await asOwner(page, owner, async () => {
-//       await page.goto('/appointments')
-//       await expect(page.getByText('haircut')).toBeVisible()
-//       await expect(page.getByText(customer.firstName)).toBeVisible()
-//       await expect(page.getByText(customer.lastName)).toBeVisible()
-//       await expect(page.getByText(customer.phoneNumber)).toBeVisible()
-//     })
-
-//     await asSpecialist(page, specialist, async () => {
-//       await page.goto('/appointments')
-//       await expect(page.getByText('haircut')).toBeVisible()
-//       await expect(page.getByText(customer.firstName)).toBeVisible()
-//       await expect(page.getByText(customer.lastName)).toBeVisible()
-//       await expect(page.getByText(customer.phoneNumber)).toBeVisible()
-//     })
-//   })
-// })
+      await expect(page.getByLabel('Name')).toHaveValue(
+        newCustomer.firstName.toLowerCase()
+      )
+      await expect(page.locator('#suraname')).toHaveValue(
+        newCustomer.lastName.toLowerCase()
+      )
+      await expect(page.getByLabel('Email')).toHaveValue(
+        newCustomer.email.toLowerCase()
+      )
+      await expect(page.getByLabel('Phone number')).toHaveValue(
+        newCustomer.phoneNumber
+      )
+    })
+  })
+})
