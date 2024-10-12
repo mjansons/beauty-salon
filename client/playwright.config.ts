@@ -72,7 +72,7 @@ const config: PlaywrightTestConfig = {
      * Use the preview server on CI for more realistic testing.
     Playwright will re-use the local server if there is already a dev-server running.
      */
-    command: process.env.CI ? 'npx vite preview --port 4173' : 'npx vite dev',
+    command: process.env.CI ? 'npx vite preview --port 5173' : 'npx vite dev',
     port: 5173,
     reuseExistingServer: !process.env.CI,
   },
