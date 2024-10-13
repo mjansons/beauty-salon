@@ -22,9 +22,16 @@ const isRegisteredModalOn = ref(false)
 
 const showBackButton = computed(() => {
   const selected = new Date(selectedDate.value)
+  selected.setHours(0, 0, 0, 0)
+
   const today = new Date()
+  today.setHours(0, 0, 0, 0)
   today.setDate(today.getDate() + 3)
-  return selected > today
+
+  console.log('Selected Date:', selected)
+  console.log('Today + 3:', today)
+
+  return selected >= today
 })
 
 const signupForm = ref({
@@ -74,7 +81,7 @@ async function findSpecialist() {
   specialists.value = fetchedSpecialists
   lastFetchCount.value = fetchedSpecialists.length
 
-  emit('response', true)
+  emit('response', searchPressed.value)
 }
 
 async function loadMore() {
@@ -120,6 +127,7 @@ async function loadMore() {
 // ]
 
 // Helper function to generate the next seven days
+
 function getNextDays(dayAmount: number) {
   const days = []
   const today = new Date(selectedDate.value)
@@ -128,6 +136,10 @@ function getNextDays(dayAmount: number) {
     date.setDate(today.getDate() + i)
     days.push({
       date: date.toISOString().split('T')[0],
+      dateString: date.toLocaleDateString('en-US', {
+        day: 'numeric',
+        month: 'short',
+      }),
       dayOfWeek: date.toLocaleDateString('en-US', { weekday: 'short' }),
     })
   }
@@ -255,9 +267,12 @@ function goForwardDays(days: number) {
 
 <template>
   <div>
-    <form @submit.prevent="findSpecialist">
+    <form
+      @submit.prevent="findSpecialist"
+      :class="{ 'form-as-header': searchPressed }"
+    >
       <select name="service" v-model="selectedService" required>
-        <option disabled value="">Select a service</option>
+        <option disabled value="">Service</option>
         <option
           v-for="service in services"
           :key="service.id"
@@ -267,7 +282,7 @@ function goForwardDays(days: number) {
         </option>
       </select>
       <select name="location" v-model="selectedLoacation" required>
-        <option disabled value="">Select a Location</option>
+        <option disabled value="">Location</option>
         <option v-for="location in locations" :key="location" :value="location">
           {{ location }}
         </option>
@@ -280,12 +295,18 @@ function goForwardDays(days: number) {
         v-model="selectedDate"
         required
       />
-      <button type="submit">Search</button>
+      <button
+        type="submit"
+        :class="searchPressed ? 'btn-secondary' : 'btn-primary'"
+      >
+        Search
+      </button>
     </form>
 
-    <p v-if="specialists.length === 0 && searchPressed">
-      No specialists match your search criteria...
-    </p>
+    <div class="no-results" v-if="specialists.length === 0 && searchPressed">
+      <img src="../../assets/images/EmptyState.svg" alt="no results" />
+      <h3>No results, try something else...</h3>
+    </div>
     <div v-if="specialists.length > 0">
       <div
         v-for="specialist in specialists"
@@ -293,49 +314,60 @@ function goForwardDays(days: number) {
         class="specialist-container"
       >
         <!-- Specialist Info -->
-        <div class="specialist-info">
-          <h2>
-            {{
-              specialist.specialistFirstName.charAt(0).toUpperCase() +
-              specialist.specialistFirstName.slice(1)
-            }}
-            {{
-              specialist.specialistLastName.charAt(0).toUpperCase() +
-              specialist.specialistLastName.slice(1)
-            }}
-          </h2>
-          <p>
-            {{
-              specialist.businessName.charAt(0).toUpperCase() +
-              specialist.businessName.slice(1)
-            }},
-            {{
-              specialist.address.charAt(0).toUpperCase() +
-              specialist.address.slice(1)
-            }}, {{ specialist.postalCode.toUpperCase() }},
-            {{
-              specialist.city.charAt(0).toUpperCase() + specialist.city.slice(1)
-            }}
-          </p>
+        <div class="info-container">
+          <div class="specialist-info-wrapper">
+            <img src="../../assets/images/Avatars.png" alt="profile picture" />
+            <div class="specialist-info">
+              <h2>
+                {{
+                  specialist.specialistFirstName.charAt(0).toUpperCase() +
+                  specialist.specialistFirstName.slice(1)
+                }}
+                {{
+                  specialist.specialistLastName.charAt(0).toUpperCase() +
+                  specialist.specialistLastName.slice(1)
+                }}
+              </h2>
+              <p>
+                {{
+                  specialist.businessName.charAt(0).toUpperCase() +
+                  specialist.businessName.slice(1)
+                }},
+                {{
+                  specialist.address.charAt(0).toUpperCase() +
+                  specialist.address.slice(1)
+                }}, {{ specialist.postalCode.toUpperCase() }},
+                {{
+                  specialist.city.charAt(0).toUpperCase() +
+                  specialist.city.slice(1)
+                }}
+              </p>
+            </div>
+          </div>
 
-          <h3>
-            {{
-              specialist.specialityName.charAt(0).toUpperCase() +
-              specialist.specialityName.slice(1)
-            }}
-          </h3>
-          <p>{{ specialist.price }} EUR</p>
+          <div class="speciality-info-wrapper">
+            <h3>
+              {{
+                specialist.specialityName.charAt(0).toUpperCase() +
+                specialist.specialityName.slice(1)
+              }}
+            </h3>
+            <p>{{ specialist.price }} EUR</p>
+          </div>
         </div>
 
         <!-- Availability Calendar -->
         <div class="calendar-wrapper">
           <button
-            class="arrow"
+            class="btn-secondary arrow"
             type="button"
             @click="goBackDays(3)"
             :disabled="!showBackButton"
           >
-            &leftarrow;
+            <img
+              src="../../assets/images/arrows/arrow-left.svg"
+              alt="arrow left"
+            />
           </button>
           <div class="calendar">
             <div class="calendar-header">
@@ -344,7 +376,10 @@ function goForwardDays(days: number) {
                 v-for="day in getNextDays(3)"
                 :key="day.date"
               >
-                <strong>{{ day.dayOfWeek }} ({{ day.date }})</strong>
+                <div class="date-wrapper">
+                  <h3>{{ day.dayOfWeek }}</h3>
+                  <p>{{ day.dateString }}</p>
+                </div>
               </div>
             </div>
             <div class="calendar-body">
@@ -372,6 +407,7 @@ function goForwardDays(days: number) {
                           slot.slotDateObj
                         ),
                       }"
+                      class="btn-secondary slot-button"
                       @click="
                         selectSlot(
                           specialist.businessName,
@@ -398,16 +434,26 @@ function goForwardDays(days: number) {
               </div>
             </div>
           </div>
-          <button class="arrow" type="button" @click="goForwardDays(3)">
-            &rightarrow;
+          <button
+            class="btn-secondary arrow"
+            type="button"
+            @click="goForwardDays(3)"
+          >
+            <img
+              src="../../assets/images/arrows/arrow-right.svg"
+              alt="arrow left"
+            />
           </button>
         </div>
       </div>
+      <div class="more-button-wrapper">
+      <button type="button" v-if="lastFetchCount === 10" @click="loadMore" class="btn-secondary">
+        Load More
+      </button>
+    </div>
     </div>
 
-    <button type="button" v-if="lastFetchCount === 10" @click="loadMore">
-      Load More
-    </button>
+
   </div>
   <!-- Modals -->
   <UnregisteredModal
@@ -423,43 +469,146 @@ function goForwardDays(days: number) {
 </template>
 
 <style scoped>
+
+.more-button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 32px auto;
+  max-width: 120px;
+}
+.arrow {
+  display: flex;
+  flex-grow: 0;
+  padding: 8px;
+
+  & img {
+    width: 16px;
+  }
+}
+
+.btn-primary {
+  font-weight: 400;
+  padding-left: 40px;
+  padding-right: 40px;
+  flex: 1 1 0;
+}
+
+.slot-button {
+  margin: 16px 0;
+}
+
+.slot-button:disabled {
+  margin: 16px 0;
+  background-color: var(--gray);
+  border-color: transparent;
+  color: var(--purple-300);
+  text-decoration: line-through;
+}
+
 .specialist-container {
-  border: 1px solid #ccc;
-  padding: 16px;
-  margin-bottom: 24px;
+  border-radius: 16px;
+  background-color: var(--white);
+  padding: 24px;
+  margin: 16px 10%;
+}
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  padding-bottom: 24px;
+
+  & img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+  }
+}
+
+.specialist-info-wrapper {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .specialist-info {
-  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  & h2 {
+    font-family: Calistoga, sans-serif;
+    margin: 0;
+  }
+
+  & p {
+    font-weight: 300;
+  }
+}
+
+.speciality-info-wrapper {
+  & h3 {
+    margin: 0;
+  }
+  & p {
+    font-weight: 300;
+  }
 }
 
 .calendar-wrapper {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: flex-start;
+  overflow: auto;
+  gap: 16px;
 }
 
 .calendar {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 }
 
 .calendar-header {
   display: flex;
+  gap: 32px;
+  transition: gap 0.3s ease;
+}
+.date-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 50px;
+  overflow: auto;
+
+  & h3 {
+    font-family: Calistoga, sans-serif;
+    margin: 0;
+    text-align: center;
+    overflow: auto;
+  }
+
+  & p {
+    margin: 0;
+    text-align: center;
+  }
+}
+
+.calendar-day-header {
+  flex: 1 1 0;
+  overflow: auto;
 }
 
 .calendar-body {
   display: flex;
-}
-
-.calendar-day-header {
-  flex: 1;
-  margin-right: 8px;
+  gap: 32px;
+  margin: 0;
+  transition: gap 0.3s ease;
 }
 
 .calendar-day-body {
   flex: 1;
-  margin-right: 8px;
 }
 
 .slots {
@@ -467,17 +616,121 @@ function goForwardDays(days: number) {
   flex-direction: column;
 }
 
-.slots button {
-  margin-bottom: 4px;
+form {
+  background-color: var(--white);
+  padding: 8px;
+  border-radius: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 0 20% 64px 20%;
+  transition:
+    padding 0.3s ease,
+    margin 0.3s ease,
+    border-radius 0.3s ease;
 }
 
-.slots button.selected {
-  background-color: #007bff;
-  color: white;
+input[type='date'] {
+  appearance: none;
+  flex: 1 1 0;
+  padding-right: 40px;
+  background-image: url('../../assets/images/arrows/arrow-down-gray.svg');
+  background-position: calc(100% - 16px) center;
+  background-repeat: no-repeat;
+  background-size: 24px;
+  position: relative;
+  font-size: 16px;
+  min-width: 100px;
 }
 
-.slots button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+input[type='date']::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.form-as-header {
+  border-radius: 0px;
+  margin: 0;
+  padding: 24px 64px;
+}
+
+.no-results {
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--white);
+  margin: 16px 10%;
+  border-radius: 24px;
+  padding: 16px 16px 10% 16px;
+
+  & img {
+    opacity: 0.8;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  & h3 {
+    text-align: center;
+    margin: 0;
+    font-family: Calistoga, sans-serif;
+    font-size: 100%;
+    color: var(--purple-700);
+  }
+}
+
+@media only screen and (width <= 500px) {
+  
+
+  .form-as-header {
+    padding: 8px;
+  }
+
+  .calendar-header {
+    gap: 4px;
+    transition: gap 0.6s ease;
+  }
+  .calendar-body {
+    gap: 4px;
+    transition: gap 0.6s ease;
+  }
+
+  .arrow {
+    padding: 4px;
+    transition: padding 0.6s ease;
+  }
+
+  .calendar-wrapper {
+    gap: 4px;
+  }
+
+}
+
+@media only screen and (width <= 700px) {
+  .info-container {
+    padding-left: 8px;
+  }
+
+  .calendar-wrapper {
+    gap: 8px;
+  }
+  .specialist-container {
+    margin: 0;
+    border-radius: 0;
+    padding: 8px;
+  }
+
+  .calendar-body {
+    gap: 4px;
+    transition: gap 0.6s ease;
+  }
+
 }
 </style>

@@ -41,7 +41,7 @@ Black 900 Italic */
 
 *{
   font-family: Roboto, sans-serif;
-  color: var(--purple-900);
+  color: var(--purple-700);
 }
 
 a {
@@ -96,49 +96,4 @@ body {
 
 p {
   margin: 0;
-}
-
-.btn-primary {
-  background-color: var(--purple-500);
-  padding: 8px 12px;
-  border: 1px solid var(--purple-500);
-  border-radius: 8px;
-  font-family: Roboto, sans-serif;
-  font-size: var(--medium);
-  color: var(--white);
-  font-weight: 500;
-}
-
-.btn-primary:hover {
-  background-color: var(--purple-700);
-  border-color: var(--purple-700);
-}
-
-.btn-primary:active {
-  background-color: var(--purple-300);
-  border-color: var(--purple-300);
-  text-decoration: none;
-}
-
-.btn-secondary {
-  background-color: var(--purple-100);
-  padding: 8px 12px;
-  border: 1px solid var(--purple-100);
-  border-radius: 8px;
-  font-family: Roboto, sans-serif;
-  font-size: var(--medium);
-  color: var(--purple-500);
-  font-weight: 500;
-}
-
-.btn-secondary:hover {
-  background-color: var(--purple-200);
-  border-color: var(--purple-200);
-}
-
-.btn-secondary:active {
-  background-color: var(--purple-100);
-  border-color: var(--purple-100);
-  color: var(--purple-200);
-  text-decoration: none;
 }

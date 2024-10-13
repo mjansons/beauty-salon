@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import HeaderNotAuth from '@/components/headers/HeaderNotAuth.vue'
 import SpecialistSearch from '@/components/booking/SpecialistSearch.vue'
+import FooterElement from '@/components/FooterElement.vue'
+import HowItWorks from '@/components/HowItWorks.vue'
 
 const searchClicked = ref(false)
 </script>
@@ -20,6 +22,8 @@ const searchClicked = ref(false)
   <SpecialistSearch
     @response="(msg) => (searchClicked = msg)"
   ></SpecialistSearch>
+  <HowItWorks v-if="!searchClicked"></HowItWorks>
+  <FooterElement></FooterElement>
 </template>
 
 <style scoped>
@@ -28,6 +32,7 @@ h1 {
   font-size: var(--extra-extra-large);
   text-align: center;
   margin-bottom: 8px;
+  margin-top: 64px;
 }
 
 p {
