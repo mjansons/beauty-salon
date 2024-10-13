@@ -1,0 +1,125 @@
+@import url('/src/assets/styles/main.css');
+
+.btn-primary {
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--purple-500);
+    padding: 8px 12px;
+    border: 1px solid var(--purple-500);
+    border-radius: 8px;
+    font-family: Roboto, sans-serif;
+    font-size: var(--medium);
+    color: var(--white);
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: var(--purple-700);
+    border-color: var(--purple-700);
+}
+
+.btn-primary:active {
+    background-color: var(--purple-300);
+    border-color: var(--purple-300);
+    text-decoration: none;
+}
+
+.btn-primary:disabled {
+    background-color: var(--purple-300);
+    border-color: var(--purple-300);
+    text-decoration: none;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--purple-100);
+    padding: 8px 12px;
+    border: 1px solid var(--purple-100);
+    border-radius: 8px;
+    font-family: Roboto, sans-serif;
+    font-size: var(--medium);
+    color: var(--purple-500);
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    background-color: var(--purple-200);
+    border-color: var(--purple-200);
+}
+
+.btn-secondary:active {
+    background-color: var(--purple-100);
+    border-color: var(--purple-100);
+    color: var(--purple-200);
+    text-decoration: none;
+}
+
+.btn-secondary:disabled {
+    background-color: var(--purple-100);
+    border-color: var(--purple-100);
+    color: var(--purple-200);
+    text-decoration: none;
+    cursor: not-allowed;
+}
+
+.back-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    & p {
+        color: var(--purple-500);
+        font-size: var(--medium);
+        font-weight: 400;
+    }
+}
+
+.back-button:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.back-button:active {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+select {
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    padding: 8px 16px;
+    background-color: var(--gray);
+    border: 1px solid var(--purple-100);
+    color: var(--purple-900);
+    border-radius: 8px;
+    font-weight: 400;
+    font-size: 16px;
+    appearance: none;
+    padding-right: 56px;
+    background-image: url('../images/arrows/arrow-down-gray.svg');
+    background-position: calc(100% - 16px) center;
+    background-repeat: no-repeat;
+    background-size: 24px;
+}
+
+input {
+    display: flex;
+    flex: 1;
+    padding: 8px 16px;
+    background-color: var(--gray);
+    border: 1px solid var(--purple-100);
+    color: var(--purple-900);
+    border-radius: 8px;
+    font-weight: 400;
+    font-size: 16px;
+}
