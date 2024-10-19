@@ -67,8 +67,8 @@ export function appointmentRepository(db: Database) {
           'businesses.address',
           'businesses.phoneNumber',
           'businesses.postalCode',
-          'registeredUsers.firstName as SpecialistFirstName',
-          'registeredUsers.lastName as SpecialistLastName',
+          'registeredUsers.firstName as specialistFirstName',
+          'registeredUsers.lastName as specialistLastName',
         ])
         .execute()
       return values
@@ -147,7 +147,6 @@ export function appointmentRepository(db: Database) {
         endTime: string
       }
 
-      // Renamed function parameters to avoid variable shadowing
       async function getPotentialSpecialists(
         queryOffset: number,
         queryLimit: number
@@ -188,11 +187,20 @@ export function appointmentRepository(db: Database) {
             'specialistAvailability.specialistId',
             'specialists.registeredUserId'
           )
+          .innerJoin(
+            'businessAvailability',
+            'businessAvailability.businessId',
+            'businesses.id'
+          )
           .where('businesses.city', '=', location)
+          .where('businessAvailability.dayOfWeek', '=', dayOfWeek)
           .where('specialities.speciality', '=', service)
           .where('specialistAvailability.dayOfWeek', '=', dayOfWeek)
           .where(
             sql<boolean>`(specialist_availability.end_time - specialist_availability.start_time) >= INTERVAL '60 minutes'`
+          )
+          .where(
+            sql<boolean>`(business_availability.end_time - business_availability.start_time) >= INTERVAL '60 minutes'`
           )
           .select([
             'businesses.id as businessId',

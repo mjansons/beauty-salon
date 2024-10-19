@@ -37,34 +37,35 @@ test.describe.serial('account details can be edited', () => {
 
       await page.locator('#Monday-open').fill('08:00')
       await page.locator('#Monday-close').fill('22:00')
-      await page.locator('#Tuesday-operational').uncheck()
+      await page.locator('#Tuesday-operational').click()
       await page
         .locator('form')
-        .filter({ hasText: 'Monday-Tuesday-Wednesday-' })
+        .filter({ hasText: 'Monday—Tuesday—Wednesday—' })
         .getByRole('button')
         .click()
 
       await page.waitForSelector('text=Changes saved successfully!')
       await page.waitForTimeout(500)
       await page
-        .locator('div')
-        .filter({ hasText: /^haircut/ })
+        .locator('.existing-speciality-wrapper')
+        .filter({ hasText: 'haircut' })
         .getByPlaceholder('Price')
-        .fill('30')
+        .click()
+
       await page
-        .locator('div')
-        .filter({ hasText: /^nails/ })
+        .locator('.existing-speciality-wrapper')
+        .filter({ hasText: 'haircut' })
         .getByPlaceholder('Price')
         .fill('30')
 
       await page
         .locator('form')
         .filter({ hasText: 'Business Specialities' })
-        .getByRole('button', { name: 'Save changes' })
+        .getByRole('button')
+        .filter({ hasText: 'Save changes' })
         .click()
 
       await page.waitForSelector('text=Changes saved successfully!')
-      await page.waitForTimeout(500)
       await page.reload()
 
       await expect(
@@ -82,19 +83,14 @@ test.describe.serial('account details can be edited', () => {
       )
       await expect(page.locator('#Monday-open')).toHaveValue('08:00')
       await expect(page.locator('#Monday-close')).toHaveValue('22:00')
-      await expect(page.locator('#Tuesday-operational')).not.toBeChecked()
+      await expect(page.locator('#Tuesday-operational')).toHaveClass(
+        'unchecked'
+      )
 
       await expect(
         page
-          .locator('div')
-          .filter({ hasText: /^haircut/ })
-          .getByPlaceholder('Price')
-      ).toHaveValue('30')
-
-      await expect(
-        page
-          .locator('div')
-          .filter({ hasText: /^nails/ })
+          .locator('.existing-speciality-wrapper')
+          .filter({ hasText: 'haircut' })
           .getByPlaceholder('Price')
       ).toHaveValue('30')
     })
@@ -108,10 +104,10 @@ test.describe.serial('account details can be edited', () => {
 
       await page.locator('#Monday-open').fill('08:00')
       await page.locator('#Monday-close').fill('22:00')
-      await page.locator('#Tuesday-operational').uncheck()
+      await page.locator('#Tuesday-operational').click()
       await page
         .locator('form')
-        .filter({ hasText: 'Monday-Tuesday-Wednesday-' })
+        .filter({ hasText: 'Monday—Tuesday—Wednesday—' })
         .getByRole('button')
         .click()
 
@@ -124,15 +120,17 @@ test.describe.serial('account details can be edited', () => {
         .click()
 
       await page
-        .locator('.specialities-wrapper')
-        .getByRole('button', { name: 'Save Changes' })
+        .locator('.specialities-main-wrapper')
+        .getByRole('button', { name: 'Save changes' })
         .click()
 
       await page.waitForSelector('text=Changes saved successfully!')
 
       await expect(page.locator('#Monday-open')).toHaveValue('08:00')
       await expect(page.locator('#Monday-close')).toHaveValue('22:00')
-      await expect(page.locator('#Tuesday-operational')).not.toBeChecked()
+      await expect(page.locator('#Tuesday-operational')).toHaveClass(
+        'unchecked'
+      )
       await expect(page.getByText('haircut')).not.toBeVisible()
     })
   })

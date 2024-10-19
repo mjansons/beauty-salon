@@ -9,24 +9,33 @@ const searchClicked = ref(false)
 </script>
 
 <template>
-  <HeaderNotAuth></HeaderNotAuth>
-  <div v-if="!searchClicked">
-    <div class="main-text">
-      <h1>Book your next beauty appointment in a Wink</h1>
-      <p>
-        No calls—just a few taps. Browse available appointments, view real-time
-        pricing, and choose a time that suits you.
-      </p>
+  <div class="main">
+    <HeaderNotAuth></HeaderNotAuth>
+    <div v-if="!searchClicked">
+      <div class="main-text">
+        <h1>Book your next beauty appointment in a Wink</h1>
+        <p>
+          No calls—just a few taps. Browse available appointments, view real-time
+          pricing, and choose a time that suits you.
+        </p>
+      </div>
     </div>
+    <SpecialistSearch
+      @response="(msg) => (searchClicked = msg)"
+    ></SpecialistSearch>
+    <HowItWorks v-if="!searchClicked"></HowItWorks>
+    <FooterElement></FooterElement>
   </div>
-  <SpecialistSearch
-    @response="(msg) => (searchClicked = msg)"
-  ></SpecialistSearch>
-  <HowItWorks v-if="!searchClicked"></HowItWorks>
-  <FooterElement></FooterElement>
 </template>
 
 <style scoped>
+.main {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100%;
+}
+
 h1 {
   font-family: Calistoga, sans-serif;
   font-size: var(--extra-extra-large);
@@ -40,7 +49,6 @@ p {
   font-weight: 300;
   font-size: var(--medium);
   text-align: center;
-  margin-bottom: 32px;
 }
 
 .main-text {

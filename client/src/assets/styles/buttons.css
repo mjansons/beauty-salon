@@ -69,6 +69,41 @@
     cursor: not-allowed;
 }
 
+.btn-tertiary {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--white);
+    padding: 8px 12px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-family: Roboto, sans-serif;
+    font-size: var(--medium);
+    color: var(--purple-500);
+    font-weight: 500;
+}
+
+.btn-tertiary:hover {
+    background-color: var(--purple-100);
+    border-color: var(--purple-100);
+}
+
+.btn-tertiary:active {
+    background-color: var(--white);
+    border-color: var(--white);
+    color: var(--purple-300);
+    text-decoration: none;
+}
+
+.btn-tertiary:disabled {
+    background-color: var(--purple-100);
+    border-color: var(--purple-100);
+    color: var(--purple-100);
+    text-decoration: none;
+    cursor: not-allowed;
+}
+
 .back-button {
     display: flex;
     flex-direction: row;
@@ -122,4 +157,44 @@ input {
     border-radius: 8px;
     font-weight: 400;
     font-size: 16px;
+    cursor: pointer;
+}
+
+.unchecked {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--purple-100);
+    background-color: var(--white);
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 4px;
+}
+
+.unchecked:hover {
+    background-color: var(--purple-100);
+    border-color: var(--purple-500);
+}
+
+.unchecked:active {
+    outline: 4px solid var(--purple-100);
+}
+
+.checked {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--purple-500);
+    background-color: var(--purple-100);
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 4px;
+}
+
+.checked:active {
+    outline: 4px solid var(--purple-100);
 }

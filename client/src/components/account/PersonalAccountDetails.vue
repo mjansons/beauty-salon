@@ -68,6 +68,8 @@ onBeforeMount(async () => {
 
 <template>
   <InfoToast :showToast="showToast" />
+  <div class="background">
+    <div class="modal-wrapper">
   <h1>Personal details</h1>
   <form @submit.prevent="updateDetails">
     <label for="name">Name</label>
@@ -120,7 +122,9 @@ onBeforeMount(async () => {
         required
       />
     </div>
+    <div class="button-wrapper">
     <button
+    class="btn-primary"
       type="submit"
       :disabled="
         userForm.firstName.length < 1 ||
@@ -131,22 +135,58 @@ onBeforeMount(async () => {
     >
       Save changes
     </button>
+    </div>
   </form>
+
+</div>
+</div>
 </template>
 
 <style scoped>
-form {
+h1 {
+  font-family: Calistoga, sans-serif;
+  margin-bottom: 16px;
+}
+.modal-wrapper {
+  max-width: 400px;
   display: flex;
   flex-direction: column;
-  max-width: 300px;
-  justify-content: center;
+  padding: 24px;
+  border-radius: 16px;
+  background-color: var(--white);
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 24px;
+}
+
+label {
+  margin-bottom: 16px;
 }
 
 .phone-number-container {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
 
   & input {
-    width: 100%;
+    margin-bottom: 0px;
+    flex: 3;
+    min-width: 130px;
   }
+}
+
+.phone-number-container select {
+  flex: 1;
+}
+
+.btn-primary {
+  margin-top: 32px;
+  margin-left: auto;
+  white-space: nowrap;
 }
 </style>

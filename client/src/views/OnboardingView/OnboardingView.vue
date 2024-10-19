@@ -144,19 +144,6 @@ watch(onBoardingStep, async (newVal, oldValue) => {
 </script>
 
 <template>
-  <button
-    type="button"
-    v-if="
-      onBoardingStep > 1 &&
-      !(onBoardingStep === 3 && isClientAccount) &&
-      onBoardingStep !== 7 &&
-      !(onBoardingStep === 6 && isSpecialistAccount)
-    "
-    @click="onBoardingStep--"
-  >
-    Back
-  </button>
-
   <BusinessOrClient
     v-if="onBoardingStep === 1"
     @is-client-account="(value) => (isClientAccount = value)"
@@ -167,6 +154,7 @@ watch(onBoardingStep, async (newVal, oldValue) => {
     v-if="onBoardingStep === 2 && !isClientAccount"
     @is-specialist-account="(value) => (isSpecialistAccount = value)"
     @next-step="() => onBoardingStep++"
+    @previous-step="() => onBoardingStep--"
   ></AccountType>
 
   <AdditionalUserDetails
@@ -177,6 +165,7 @@ watch(onBoardingStep, async (newVal, oldValue) => {
     "
     @next-step="() => onBoardingStep++"
     @user-details="(value) => (userDetails = value)"
+    @previous-step="() => onBoardingStep--"
   ></AdditionalUserDetails>
 
   <Services
@@ -186,18 +175,21 @@ watch(onBoardingStep, async (newVal, oldValue) => {
     "
     @next-step="() => onBoardingStep++"
     @services="(value) => (services = value)"
+    @previous-step="() => onBoardingStep--"
   ></Services>
 
   <BusinessDetails
     v-if="onBoardingStep === 3 && !isSpecialistAccount && !isClientAccount"
     @next-step="() => onBoardingStep++"
     @business-details="(value) => (businessDetails = value)"
+    @previous-step="() => onBoardingStep--"
   ></BusinessDetails>
 
   <BusinessHours
     v-if="onBoardingStep === 4 && !isClientAccount"
     @next-step="() => onBoardingStep++"
     @working-days="(value) => (workingHours = value)"
+    @previous-step="() => onBoardingStep--"
   ></BusinessHours>
 
   <OnboardingSuccess

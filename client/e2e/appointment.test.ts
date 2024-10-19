@@ -27,8 +27,12 @@ test.describe
 
     await asOwner(page, owner, async () => {
       await page.goto('/account')
-      await expect(page.locator('text=Employees:')).toBeVisible()
-      await expect(page.locator(`text=${specialist.email}`)).toBeVisible()
+      await page.waitForTimeout(500)
+      await expect(
+        page.locator('div.employee p').filter({
+          hasText: new RegExp(`\\b${specialist.email}\\b`, 'i')
+        })
+      ).toBeVisible()
     })
   })
 
@@ -173,16 +177,24 @@ test.describe
     await asOwner(page, owner, async () => {
       await page.goto('/appointments')
       await expect(page.getByText('haircut')).toBeVisible()
-      await expect(page.getByText(customer.firstName.toLocaleLowerCase())).toBeVisible()
-      await expect(page.getByText(customer.lastName.toLocaleLowerCase())).toBeVisible()
+      await expect(
+        page.getByText(customer.firstName.toLocaleLowerCase())
+      ).toBeVisible()
+      await expect(
+        page.getByText(customer.lastName.toLocaleLowerCase())
+      ).toBeVisible()
       await expect(page.getByText(customer.phoneNumber)).toBeVisible()
     })
 
     await asSpecialist(page, specialist, async () => {
       await page.goto('/appointments')
       await expect(page.getByText('haircut')).toBeVisible()
-      await expect(page.getByText(customer.firstName.toLocaleLowerCase())).toBeVisible()
-      await expect(page.getByText(customer.lastName.toLocaleLowerCase())).toBeVisible()
+      await expect(
+        page.getByText(customer.firstName.toLocaleLowerCase())
+      ).toBeVisible()
+      await expect(
+        page.getByText(customer.lastName.toLocaleLowerCase())
+      ).toBeVisible()
       await expect(page.getByText(customer.phoneNumber)).toBeVisible()
     })
   })

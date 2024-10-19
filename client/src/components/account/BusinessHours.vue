@@ -53,6 +53,7 @@ onBeforeMount(async () => {
     businessId: props.businessId,
   })
 })
+
 </script>
 
 <template>
@@ -60,9 +61,24 @@ onBeforeMount(async () => {
   <WorkingHours
     :buttonText="'Save changes'"
     :defaultWorkingDays="defaultWorkingDays"
+    :account-view="true"
     @working-days="handleWorkingDays"
     @next-step="updateSchedule"
+    class="work-hours"
   ><h3>Business operational hours</h3></WorkingHours>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+h3 {
+  margin-top: 8px;
+  margin-bottom: 24px;
+  font-family: Calistoga, sans-serif;
+}
+
+.work-hours {
+  border: 2px dashed var(--purple-100);
+  border-radius: 16px;
+}
+
+</style>

@@ -24,7 +24,9 @@ Black 900 Italic */
   -moz-osx-font-smoothinig: grayscale;
 
   --white: #fff;
+  --green: rgb(174 255 233 / 90%);
   --gray: #f8f9fb;
+  --gray-500: #6B6A99;
   --purple-100: #F2EEFB;
   --purple-200: #C3AEFF;
   --purple-300: #9A81E1;
@@ -32,6 +34,7 @@ Black 900 Italic */
   --purple-600: #414075;
   --purple-700: #200179;
   --purple-900: #0D0327;
+  --red-500: #ff2776;
   --small: 14px;
   --medium: 16px;
   --large: 18px;
@@ -42,6 +45,13 @@ Black 900 Italic */
 *{
   font-family: Roboto, sans-serif;
   color: var(--purple-700);
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
 }
 
 a {
@@ -92,8 +102,17 @@ header {
 body {
   background-color: var(--gray);
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
 }
 
 p {
+  margin: 0;
+}
+
+.error-message{
+  color: var(--red-500);
   margin: 0;
 }

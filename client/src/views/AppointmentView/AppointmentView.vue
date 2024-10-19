@@ -8,6 +8,7 @@ import {
   getOwnerBusinesses,
 } from '@/stores/trpcCalls'
 import { getUserRoles } from '@/stores/trpcCalls'
+import FooterElement from '@/components/FooterElement.vue'
 
 const userRoles = ref<string[]>([])
 
@@ -22,8 +23,8 @@ const personalAppointments = ref<
     appointmentEndTime: Date
     appointmentStartTime: Date
     speciality: string
-    SpecialistFirstName: string
-    SpecialistLastName: string
+    specialistFirstName: string
+    specialistLastName: string
   }[]
 >([])
 
@@ -38,7 +39,6 @@ const specialistAppointments = ref<
     speciality: string
   }[]
 >([])
-
 
 const businessAppointmentsList = ref<
   {
@@ -90,83 +90,232 @@ onBeforeMount(async () => {
     specialistAppointments.value = await getSpecialistAppointments()
   }
 })
-</script>
 
+function formatDate(date: Date): string {
+  return date.toLocaleString('en-US', {
+    weekday: 'short', // 'Mon'
+    month: 'short', // 'Oct'
+    day: 'numeric', // '21'
+    year: 'numeric', // '2024'
+    hour: '2-digit', // '11'
+    minute: '2-digit', // '00'
+    hour12: false,
+  })
+}
+</script>
 
 <template>
   <HeaderAuth></HeaderAuth>
   <!-- Business Appointments Section -->
-  <div v-if="userRoles.includes('owner')" class="appointment-wrapper">
-    <h4>Upcoming business appointments:</h4>
-    <div v-if="businessAppointmentsList.length === 0">
-      <p>No upcoming appointments</p>
-    </div>
-    <div v-else>
-      <!-- Loop through each business and its appointments -->
-      <div
-        v-for="businessData in businessAppointmentsList"
-        :key="businessData.business.id"
-        class="business-section"
-      >
-        <!-- Business Name -->
-        <h3>{{ businessData.business.name }}</h3>
-        <!-- Check if the business has appointments -->
-        <div v-if="businessData.appointments.length === 0">
-          <p>No appointments for this business</p>
+  <div class="all-appointment-wrapper">
+    <div v-if="userRoles.includes('owner')" class="appointment-container">
+      <h1>Upcoming business appointments</h1>
+      <div v-if="businessAppointmentsList.length === 0">
+        <p>No upcoming appointments</p>
+      </div>
+      <div v-else class="businesses-wrapper">
+        <!-- Loop through each business and its appointments -->
+        <div
+          v-for="businessData in businessAppointmentsList"
+          :key="businessData.business.id"
+          class="business"
+        >
+          <!-- Business Name -->
+          <h2>{{ businessData.business.name }}</h2>
+          <!-- Check if the business has appointments -->
+          <div v-if="businessData.appointments.length === 0">
+            <p>No appointments for this business, yet!</p>
+          </div>
+          <div v-else class="appointment-wrapper">
+            <!-- Loop through appointments for this business -->
+            <div
+              v-for="appointment in businessData.appointments"
+              :key="
+                appointment.appointmentStartTime.toISOString() +
+                '-' +
+                appointment.clientPhoneNumber
+              "
+              class="appointment"
+            >
+              <div class="detail-wrapper">
+                <h4>Start time</h4>
+                <p>{{ formatDate(appointment.appointmentStartTime) }}</p>
+              </div>
+
+              <div class="detail-wrapper">
+                <h4>End time</h4>
+                <p>{{ formatDate(appointment.appointmentEndTime) }}</p>
+              </div>
+              <div class="detail-wrapper">
+                <h4>Client</h4>
+                <p>
+                  {{ appointment.clientFirstName }}
+                  {{ appointment.clientLastName }}
+                </p>
+              </div>
+              <div class="detail-wrapper">
+                <h4>Client number</h4>
+                <p>{{ appointment.clientPhoneNumber }}</p>
+              </div>
+              <div v-if="appointment.comment" class="detail-wrapper">
+                <h4>Comment</h4>
+                <p>{{ appointment.comment }}</p>
+              </div>
+
+              <div class="detail-wrapper">
+                <h4>Specailist</h4>
+                <p>
+                  {{ appointment.specialistFirstName }}
+                  {{ appointment.specialistLastName }}
+                </p>
+              </div>
+              <div class="detail-wrapper">
+                <h4>Service</h4>
+                <p>{{ appointment.speciality }}</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div v-else>
-          <!-- Loop through appointments for this business -->
-          <div
-            v-for="appointment in businessData.appointments"
-            :key="appointment.appointmentStartTime.toISOString() + '-' + appointment.clientPhoneNumber"
-          >
+      </div>
+    </div>
+
+    <!-- Specialist Appointments Section -->
+    <div v-if="userRoles.includes('specialist')" class="appointment-container">
+      <h1>Upcoming specialist appointments</h1>
+      <div v-if="specialistAppointments.length === 0">
+        <p>No upcoming appointments</p>
+      </div>
+      <div v-else class="appointment-wrapper">
+        <div
+          v-for="appointment in specialistAppointments"
+          :key="appointment.appointmentStartTime.toISOString()"
+          class="appointment"
+        >
+          <div class="detail-wrapper">
+            <h4>Start time</h4>
+            <p>{{ formatDate(appointment.appointmentStartTime) }}</p>
+          </div>
+          <div class="detail-wrapper">
+            <h4>End time</h4>
+            <p>{{ formatDate(appointment.appointmentEndTime) }}</p>
+          </div>
+          <div class="detail-wrapper">
+            <h4>Client</h4>
+            <p>{{ appointment.firstName }} {{ appointment.lastName }}</p>
+          </div>
+          <div class="detail-wrapper">
+            <h4>Client number</h4>
+            <p>{{ appointment.phoneNumber }}</p>
+          </div>
+          <div v-if="appointment.comment" class="detail-wrapper">
+            <h4>Comment</h4>
+            <p>{{ appointment.comment }}</p>
+          </div>
+          <div class="detail-wrapper">
+            <h4>Service</h4>
             <p>{{ appointment.speciality }}</p>
-            <p>{{ appointment.appointmentStartTime }}</p>
-            <p>{{ appointment.appointmentEndTime }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal Appointments Section -->
+    <div class="appointment-container">
+      <h1>Upcoming personal appointments</h1>
+      <div v-if="personalAppointments.length === 0">
+        <p>No upcoming personal appointments</p>
+      </div>
+      <div v-else class="appointment-wrapper">
+        <div
+          v-for="appointment in personalAppointments"
+          :key="appointment.appointmentStartTime.toISOString()"
+          class="appointment"
+        >
+          <div class="detail-wrapper">
+            <h4>Start time</h4>
+            <p>{{ formatDate(appointment.appointmentStartTime) }}</p>
+          </div>
+          <div class="detail-wrapper">
+            <h4>End time</h4>
+            <p>{{ formatDate(appointment.appointmentEndTime) }}</p>
+          </div>
+          <div class="detail-wrapper">
+            <h4>Specialist</h4>
             <p>
               {{ appointment.specialistFirstName }}
               {{ appointment.specialistLastName }}
             </p>
-            <p>{{ appointment.clientFirstName }} {{ appointment.clientLastName }}</p>
-            <p>{{ appointment.clientPhoneNumber }}</p>
-            <p>{{ appointment.comment }}</p>
+          </div>
+          <div class="detail-wrapper">
+            <h4>Salon number</h4>
+            <p>{{ appointment.phoneNumber }}</p>
+          </div>
+          <div class="detail-wrapper">
+            <h4>Service</h4>
+            <p>{{ appointment.speciality }}</p>
+          </div>
+          <div class="detail-wrapper">
+            <h4>Price</h4>
+            <p>{{ appointment.price }} EUR</p>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- Specialist Appointments Section -->
-  <div v-if="userRoles.includes('specialist')" class="appointment-wrapper">
-    <h4>Upcoming specialist appointments:</h4>
-    <p v-if="specialistAppointments.length === 0">No upcoming appointments</p>
-    <div
-      v-for="appointment in specialistAppointments"
-      :key="appointment.appointmentStartTime.toISOString()"
-    >
-      <p>{{ appointment.speciality }}</p>
-      <p>{{ appointment.appointmentStartTime }}</p>
-      <p>{{ appointment.appointmentEndTime }}</p>
-      <p>{{ appointment.firstName }} {{ appointment.lastName }}</p>
-      <p>{{ appointment.phoneNumber }}</p>
-      <p>{{ appointment.comment }}</p>
-    </div>
-  </div>
-
-  <!-- Personal Appointments Section -->
-  <div class="appointment-wrapper">
-    <h4>Upcoming personal appointments:</h4>
-    <p v-if="personalAppointments.length === 0">No upcoming appointments</p>
-    <div
-      v-for="appointment in personalAppointments"
-      :key="appointment.appointmentStartTime.toISOString()"
-    >
-      <p>{{ appointment.speciality }}</p>
-      <p>{{ appointment.appointmentStartTime }}</p>
-      <p>{{ appointment.appointmentEndTime }}</p>
-      <p>{{ appointment.SpecialistFirstName }} {{ appointment.SpecialistLastName }}</p>
-      <p>{{ appointment.phoneNumber }}</p>
-      <p>{{ appointment.price }}</p>
-    </div>
-  </div>
+  <FooterElement></FooterElement>
 </template>
 
+<style scoped>
+h1 {
+  font-family: Calistoga, sans-serif;
+  margin-bottom: 16px;
+}
+
+h4 {
+  margin: 0;
+}
+
+.all-appointment-wrapper {
+  display: flex;
+  gap: 16px;
+  padding: 32px;
+  flex-direction: column;
+}
+
+.appointment-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+  border-radius: 16px;
+}
+.businesses-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.business {
+  padding: 16px;
+  background-color: var(--gray-100);
+  border: 2px dashed var(--purple-100);
+  border-radius: 16px;
+}
+
+.appointment-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.appointment {
+  padding: 16px;
+  background-color: var(--gray-100);
+  border: 2px dashed var(--purple-100);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+}
+</style>

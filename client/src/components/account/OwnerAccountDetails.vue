@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount } from 'vue'
-import {
-  getOwnerBusinesses,
-  updateBusinessDetails,
-} from '@/stores/trpcCalls'
+import { getOwnerBusinesses, updateBusinessDetails } from '@/stores/trpcCalls'
 import BusinessDetails from '../signup/BusinessDetails.vue'
 import InfoToast from './InfoToast.vue'
 import InviteSender from './InviteSender.vue'
@@ -73,28 +70,57 @@ async function updateBusiness() {
 
 <template>
   <InfoToast :showToast="showToast" />
-  <!-- <h1>owner account details</h1> -->
-  <div v-for="business in myBusinesses" :key="business.id">
-    <BusinessDetails
-      :buttonText="'Save changes'"
-      :defaultBusinessDetails="{
-        id: business.id,
-        name: business.name,
-        address: business.address,
-        city: business.city,
-        postalCode: business.postalCode,
-        email: business.email,
-        phoneNumber: business.phoneNumber,
-      }"
-      @business-details="receiveBusinessDetails"
-      @next-step="updateBusiness"
-    />
-    <EmployeeList :businessId="business.id" />
-    <InviteSender :businessId="business.id" />
-    <BusinessServices :businessId="business.id" />
-    <BusinessHours :businessId="business.id" />
-
+  <div
+    v-for="business in myBusinesses"
+    :key="business.id"
+    class="account-detail-wrapper"
+  >
+    <h1>{{ business.name }}</h1>
+    <div class="account-components">
+      <BusinessDetails
+        :buttonText="'Save changes'"
+        :account-view="true"
+        :defaultBusinessDetails="{
+          id: business.id,
+          name: business.name,
+          address: business.address,
+          city: business.city,
+          postalCode: business.postalCode,
+          email: business.email,
+          phoneNumber: business.phoneNumber,
+        }"
+        @business-details="receiveBusinessDetails"
+        @next-step="updateBusiness"
+      />
+      <BusinessHours :businessId="business.id" :account-view="true" />
+      <BusinessServices :businessId="business.id" />
+      <InviteSender :businessId="business.id" />
+      <EmployeeList :businessId="business.id" />
+    </div>
   </div>
 </template>
 
-<!-- <style scoped></style> -->
+<style scoped>
+h1 {
+  font-family: Calistoga, sans-serif;
+  margin-bottom: 32px;
+  width: 100%;
+}
+
+.account-detail-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background-color: var(--white);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.account-components {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 16px;
+}
+</style>

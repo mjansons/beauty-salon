@@ -53,8 +53,8 @@ test.describe.serial('signup and login sequence', () => {
     await page.getByLabel('Repeat password').fill(user.password)
     await page.getByRole('button', { name: 'Create Account' }).click()
 
-    // Select 'Work or manage my business'
-    await page.getByText('Work or manage my business').click()
+    // Select 'Manage a business or work'
+    await page.getByText('Manage a business or work').click()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Select 'Business' option
@@ -81,7 +81,7 @@ test.describe.serial('signup and login sequence', () => {
       'Sunday',
     ]
     for (const day of operationalDays) {
-      await page.locator(`#${day}-operational`).check()
+      await page.locator(`#${day}-operational`).click()
       await page.locator(`#${day}-open`).fill('10:00')
       await page.locator(`#${day}-close`).fill('19:00')
     }
@@ -125,8 +125,8 @@ test.describe.serial('signup and login sequence', () => {
     await page.getByLabel('Repeat password').fill(user.password)
     await page.getByRole('button', { name: 'Create Account' }).click()
 
-    // Select 'Work or manage my business'
-    await page.getByText('Work or manage my business').click()
+    // Select 'Manage a business or work'
+    await page.getByText('Manage a business or work').click()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     // Select 'Specialist' option
@@ -151,7 +151,7 @@ test.describe.serial('signup and login sequence', () => {
       'Sunday',
     ]
     for (const day of operationalDays) {
-      await page.locator(`#${day}-operational`).check()
+      await page.locator(`#${day}-operational`).click()
       await page.locator(`#${day}-open`).fill('10:00')
       await page.locator(`#${day}-close`).fill('19:00')
     }

@@ -78,17 +78,26 @@ const exitModal = () => {
 </script>
 
 <template>
-  <div class="modal-backdrop"></div>
+  <div class="modal-backdrop">
   <div class="modal-wrapper">
     <!-- Step 1: Contact Details -->
-    <div v-if="currentStep === 1">
-      <div class="back-button-wrapper">
+    <div class="modal-wrapper-child" v-if="currentStep === 1">
+      <div class="back-button-wrapper" @click="exitModal">
         <div class="back-button">
-          <img
-            src="../../assets/images/arrows/arrow-back.svg"
-            alt="back"
-            @click="exitModal"
-          />
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="#3604C4"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M11.6536 16.4928C11.3814 16.8051 10.9076 16.8375 10.5954 16.5653L6.00715 12.5653C5.84377 12.4229 5.75 12.2167 5.75 12C5.75 11.7832 5.84377 11.5771 6.00715 11.4347L10.5954 7.43466C10.9076 7.16247 11.3814 7.19491 11.6536 7.50714C11.9258 7.81936 11.8933 8.29312 11.5811 8.56532L8.50161 11.25L17.5 11.25C17.9142 11.25 18.25 11.5858 18.25 12C18.25 12.4142 17.9142 12.75 17.5 12.75L8.50161 12.75L11.5811 15.4347C11.8933 15.7069 11.9258 16.1806 11.6536 16.4928Z"
+              fill="#6C38FF"
+            />
+          </svg>
           <p>Return</p>
         </div>
       </div>
@@ -168,11 +177,25 @@ const exitModal = () => {
       </form>
     </div>
 
+
     <!-- Step 2: Appointment Summary -->
-    <div v-if="currentStep === 2">
-      <div class="back-button-wrapper">
-        <div class="back-button" @click="currentStep--">
-          <img src="../../assets/images/arrows/arrow-back.svg" alt="back" />
+    <div class="modal-wrapper-child" v-if="currentStep === 2">
+      <div class="back-button-wrapper" @click="currentStep--">
+        <div class="back-button">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="#3604C4"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M11.6536 16.4928C11.3814 16.8051 10.9076 16.8375 10.5954 16.5653L6.00715 12.5653C5.84377 12.4229 5.75 12.2167 5.75 12C5.75 11.7832 5.84377 11.5771 6.00715 11.4347L10.5954 7.43466C10.9076 7.16247 11.3814 7.19491 11.6536 7.50714C11.9258 7.81936 11.8933 8.29312 11.5811 8.56532L8.50161 11.25L17.5 11.25C17.9142 11.25 18.25 11.5858 18.25 12C18.25 12.4142 17.9142 12.75 17.5 12.75L8.50161 12.75L11.5811 15.4347C11.8933 15.7069 11.9258 16.1806 11.6536 16.4928Z"
+              fill="#6C38FF"
+            />
+          </svg>
           <p>Back</p>
         </div>
       </div>
@@ -217,11 +240,12 @@ const exitModal = () => {
     </div>
 
     <!-- Step 3: Success Message -->
-    <div v-if="currentStep === 3">
+    <div class="modal-wrapper-child" v-if="currentStep === 3">
       <p>Success! Your appointment has been booked.</p>
       <div class="return-button-wrapper"><button @click="exitModal" class="btn-primary">Return</button></div>
     </div>
   </div>
+</div>
 </template>
 
 <style scoped>
@@ -230,7 +254,7 @@ const exitModal = () => {
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
-  margin: 16px 0;
+  margin: 8px 0;
 
   & h4 {
     white-space: nowrap;
@@ -246,9 +270,6 @@ h1 {
   margin: 32px 0 0 0;
 }
 
-select {
-  min-width: 120px;
-}
 
 .back-button-wrapper {
   display: flex;
@@ -270,35 +291,39 @@ select {
 }
 
 .modal-backdrop {
+  display: flex;
+  justify-content: center;
+  align-self: center;
   position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   background: rgb(0 0 0 / 50%);
   backdrop-filter: blur(10px);
   z-index: 10;
+  overflow: auto;
 }
 
 .modal-wrapper {
+  width: 400px;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: auto;
   font-size: 16px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   background: white;
   padding: 32px;
   z-index: 11;
-  max-width: 90%;
   border-radius: 16px;
 }
 
 .modal-wrapper button {
   margin-top: 16px;
+}
+
+.modal-wrapper-child {
+  width: 100%;
 }
 
 .phone-number-container {
@@ -326,11 +351,20 @@ form label {
   margin-top: 8px;
 }
 
+select {
+  flex: 1;
+}
+
+form input {
+  flex: 2;
+}
 form input,
 form select {
   margin-bottom: 8px;
   padding: 8px;
   font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 form button {
@@ -344,17 +378,13 @@ form button {
     justify-content: center;
     align-items: center;
     font-size: 16px;
-    position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     background: white;
     padding: 32px;
     z-index: 11;
     max-width: 100%;
-    width: 100%;
-    height: 100%;
-    border-radius: 0px;
+
   }
 
   .phone-number-container {

@@ -28,9 +28,6 @@ const showBackButton = computed(() => {
   today.setHours(0, 0, 0, 0)
   today.setDate(today.getDate() + 3)
 
-  console.log('Selected Date:', selected)
-  console.log('Today + 3:', today)
-
   return selected >= today
 })
 
@@ -359,7 +356,7 @@ function goForwardDays(days: number) {
         <!-- Availability Calendar -->
         <div class="calendar-wrapper">
           <button
-            class="btn-secondary arrow"
+            class="btn-secondary arrow arrow-left"
             type="button"
             @click="goBackDays(3)"
             :disabled="!showBackButton"
@@ -429,7 +426,7 @@ function goForwardDays(days: number) {
                   </div>
                 </div>
                 <div v-else>
-                  <p>Not available</p>
+                  <div class="not-available">N/A</div>
                 </div>
               </div>
             </div>
@@ -447,13 +444,16 @@ function goForwardDays(days: number) {
         </div>
       </div>
       <div class="more-button-wrapper">
-      <button type="button" v-if="lastFetchCount === 10" @click="loadMore" class="btn-secondary">
-        Load More
-      </button>
+        <button
+          type="button"
+          v-if="lastFetchCount === 10"
+          @click="loadMore"
+          class="btn-secondary"
+        >
+          Load More
+        </button>
+      </div>
     </div>
-    </div>
-
-
   </div>
   <!-- Modals -->
   <UnregisteredModal
@@ -469,7 +469,6 @@ function goForwardDays(days: number) {
 </template>
 
 <style scoped>
-
 .more-button-wrapper {
   display: flex;
   justify-content: center;
@@ -484,6 +483,10 @@ function goForwardDays(days: number) {
   & img {
     width: 16px;
   }
+}
+
+.arrow-left:disabled {
+  background-color: var(--white);
 }
 
 .btn-primary {
@@ -625,7 +628,7 @@ form {
   justify-content: center;
   align-items: center;
   gap: 8px;
-  margin: 0 20% 64px 20%;
+  margin: 64px 20% 64px 20%;
   transition:
     padding 0.3s ease,
     margin 0.3s ease,
@@ -661,7 +664,6 @@ input[type='date']::-webkit-calendar-picker-indicator {
 }
 
 .no-results {
-
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -687,8 +689,6 @@ input[type='date']::-webkit-calendar-picker-indicator {
 }
 
 @media only screen and (width <= 500px) {
-  
-
   .form-as-header {
     padding: 8px;
   }
@@ -710,7 +710,6 @@ input[type='date']::-webkit-calendar-picker-indicator {
   .calendar-wrapper {
     gap: 4px;
   }
-
 }
 
 @media only screen and (width <= 700px) {
@@ -731,6 +730,15 @@ input[type='date']::-webkit-calendar-picker-indicator {
     gap: 4px;
     transition: gap 0.6s ease;
   }
+}
 
+.not-available {
+  background-color: var(--gray);
+  border-radius: 8px;
+  padding: 8px 12px;
+  text-align: center;
+  margin-top: 16px;
+  box-sizing: border-box;
+  cursor: not-allowed;
 }
 </style>

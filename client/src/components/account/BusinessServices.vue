@@ -142,50 +142,135 @@ const saveChanges = async () => {
 <template>
   <InfoToast :showToast="showToast" :buttonText="'Changes saved!'" />
   <form @submit.prevent="saveChanges">
-    <p>Business Specialities</p>
-    <div
-      v-for="(speciality, index) in adjustedBusinessSpecialities"
-      :key="speciality.speciality"
-    >
-      <span>{{ speciality.speciality }} - </span>
-      <input
-        type="number"
-        v-model.number="speciality.price"
-        placeholder="Price"
-        min="0"
-      />
-      <span>EUR</span>
-      <button type="button" @click="removeSpeciality(index)">Remove</button>
-    </div>
-    <div class="new-speciality-wrapper" v-if="availableSpecialities.length > 0">
-      <select name="speciality" id="speciality" v-model="selectedSpeciality">
-        <option value="" disabled selected>Select a speciality</option>
-        <option v-for="bs in availableSpecialities" :key="bs" :value="bs">
-          {{ bs }}
-        </option>
-      </select>
-      <label for="price">Price</label>
-      <input
-        id="price"
-        type="number"
-        v-model="selectedPrice"
-        placeholder="Price"
-        min="1"
-      />
-      <button
-        type="button"
-        :disabled="
-          selectedSpeciality === '' ||
-          selectedPrice === undefined ||
-          selectedPrice === 0
-        "
-        @click="addSpeciality"
+    <h3>Business Specialities</h3>
+    <div class="all-specialities">
+      <div
+        class="existing-speciality-wrapper"
+        v-for="(speciality, index) in adjustedBusinessSpecialities"
+        :key="speciality.speciality"
       >
-        Add
-      </button>
+        <h4>{{ speciality.speciality }}</h4>
+        <input
+          type="number"
+          v-model.number="speciality.price"
+          placeholder="Price"
+          min="0"
+        />
+        <span>EUR</span>
+        <button
+          class="btn-secondary"
+          type="button"
+          @click="removeSpeciality(index)"
+        >
+          Remove
+        </button>
+      </div>
     </div>
-    <button type="submit">Save Changes</button>
+
+    <div class="new-speciality-wrapper" v-if="availableSpecialities.length > 0">
+      <div class="new-speciality-input">
+        <select name="speciality" id="speciality" v-model="selectedSpeciality">
+          <option value="" disabled selected>Select a speciality</option>
+          <option v-for="bs in availableSpecialities" :key="bs" :value="bs">
+            {{ bs }}
+          </option>
+        </select>
+        <input
+          id="price"
+          type="number"
+          v-model="selectedPrice"
+          placeholder="Price"
+          min="1"
+        />
+        <button
+          type="button"
+          :disabled="
+            selectedSpeciality === '' ||
+            selectedPrice === undefined ||
+            selectedPrice === 0
+          "
+          @click="addSpeciality"
+          class="btn-secondary"
+        >
+          Add new
+        </button>
+      </div>
+    </div>
+    <button class="btn-primary" type="submit">Save changes</button>
   </form>
 </template>
 
-<style scoped></style>
+<style scoped>
+h3 {
+  margin-top: 8px;
+  margin-bottom: 24px;
+  font-family: Calistoga, sans-serif;
+}
+
+h4 {
+  margin: 0;
+}
+form {
+  display: flex;
+  flex: 1 1 0;
+  width: 100%;
+  flex-direction: column;
+  border: 2px dashed var(--purple-100);
+  padding: 16px;
+  border-radius: 16px;
+  max-height: fit-content;
+}
+
+.all-specialities {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.existing-speciality-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+  gap: 8px;
+  border: 2px dashed var(--purple-100);
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.new-speciality-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-left: 4px;
+  padding-right: 4px;
+  gap: 16px;
+}
+
+.new-speciality-input {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+}
+
+.btn-primary {
+  margin-top: 32px;
+  max-height: fit-content;
+  margin-left: auto;
+}
+
+.btn-secondary {
+  max-width: fit-content;
+  flex: 0 0 auto;
+  margin-left: auto;
+  max-height: fit-content;
+}
+
+input {
+  max-width: 55px;
+}
+</style>
