@@ -24,7 +24,6 @@ export default t.procedure
   )
   .mutation(async ({ input: { email, password }, ctx: { repositories } }) => {
 
-    
     const user =
       await repositories.userRepository.findRegisteredUserByEmail(email)
 
